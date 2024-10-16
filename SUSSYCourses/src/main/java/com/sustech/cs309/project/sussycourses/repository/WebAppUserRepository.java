@@ -1,6 +1,6 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.repository;
+package com.sustech.cs309.project.sussycourses.repository;
 
-import com.sustech.cs309.project.sussycourses.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.sustech.cs309.project.sussycourses.sussycourses;
+package com.sustech.cs309.project.sussycourses;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,7 +1,7 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.service;
+package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.sussycourses.domain.WebAppUser;
-import com.sustech.cs309.project.sussycourses.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

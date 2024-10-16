@@ -1,4 +1,4 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.security;
+package com.sustech.cs309.project.sussycourses.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

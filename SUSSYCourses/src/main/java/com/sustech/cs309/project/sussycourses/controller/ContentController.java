@@ -1,4 +1,4 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.controller;
+package com.sustech.cs309.project.sussycourses.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

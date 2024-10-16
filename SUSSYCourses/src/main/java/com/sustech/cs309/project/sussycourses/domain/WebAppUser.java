@@ -1,4 +1,4 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.domain;
+package com.sustech.cs309.project.sussycourses.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,6 +1,6 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.security;
+package com.sustech.cs309.project.sussycourses.security;
 
-import com.sustech.cs309.project.sussycourses.sussycourses.service.WebAppUserDetailsService;
+import com.sustech.cs309.project.sussycourses.service.WebAppUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

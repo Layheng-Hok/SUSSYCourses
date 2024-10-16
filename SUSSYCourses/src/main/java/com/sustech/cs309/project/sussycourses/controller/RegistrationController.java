@@ -1,7 +1,7 @@
-package com.sustech.cs309.project.sussycourses.sussycourses.controller;
+package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.sussycourses.domain.WebAppUser;
-import com.sustech.cs309.project.sussycourses.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
