@@ -5,7 +5,7 @@ server:
 
 spring:
   datasource:
-    username: layhenghok
+    username: zerhounijawhara
     password:
     url: jdbc:postgresql://localhost:5432/cs309_project
   jpa:
