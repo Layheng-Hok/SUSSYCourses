@@ -7,12 +7,12 @@
   >
     <el-menu-item index="0">
       <router-link to="/">
-      <img
-          src="@/assets/logo.png"
-          alt="Element logo"
-      /> </router-link>
+        <img
+            src="@/assets/logo.png"
+            alt="Element logo"
+        /> </router-link>
     </el-menu-item>
-    <el-menu-item index="1"><router-link to="/teacherpage">Teach on SUSSY</router-link></el-menu-item>
+    <el-menu-item index="1"><router-link to="">Study on SUSSY</router-link></el-menu-item>
     <el-menu-item index="2"><router-link to="">Log in</router-link></el-menu-item>
     <el-menu-item index="3"><router-link to="/signup">Sign up</router-link></el-menu-item>
   </el-menu>
@@ -21,7 +21,7 @@
     <el-carousel
         motion-blur
         :interval="5000"
-        arrow="always"
+        arrow="never"
         class="custom-carousel">
       <el-carousel-item v-for="(img, index) in images" :key="index">
         <img :src="img.src" :alt="img.alt" class="carousel-image"/>
@@ -30,27 +30,20 @@
   </div>
 
   <div class="intro-section">
-    <h1>Unlock Your Future</h1>
-    <p>Learn new skills to elevate your career and achieve personal growth. Explore courses and find your passion today.</p>
+    <h1>So many reasons to start</h1>
   </div>
+
 
 </template>
 
 <script setup>
-const handleSelect = (index) => {
-  console.log(`Selected menu item index: ${index}`);
-  // Add routing logic or other actions here based on the selected index
-};
-
-
 const images = [
   {src: require('@/assets/img.png'), alt: 'Image 1'},
-  {src: require('@/assets/img_1.png'), alt: 'Image 2'},
 ];
 </script>
 
-<style scoped>
 
+<style scoped>
 
 /* Menu styling */
 .el-menu-demo {
@@ -98,6 +91,7 @@ const images = [
   text-decoration: none !important;
 }
 
+
 .carousel-container{
   margin-top: 75px;
   width: 100%; /* Make the carousel span full width */
@@ -107,8 +101,7 @@ const images = [
 }
 
 .custom-carousel {
-  width: 90%; /* Adjust horizontal width */
-  border-radius: 8px; /* Slight rounding for modern feel */
+  width: 100%; /* Adjust horizontal width */
   overflow: hidden;
 }
 
@@ -117,7 +110,6 @@ const images = [
   width: 100%;
   height: 100%;
   object-fit: cover; /* Ensures the image fits the container without distortion */
-  border-radius: 8px;
 }
 
 .el-carousel__item {
@@ -128,9 +120,10 @@ const images = [
   background-color: transparent; /* Optional: removes the background color */
 }
 
+
 .intro-section {
-  text-align: left;
-  margin: 50px auto 50px 100px; /* Adjust spacing top right bottom left*/
+  text-align: center;
+  margin: 50px auto 50px auto; /* Adjust spacing top right bottom left*/
   max-width: 800px; /* Optional: limit the text width */
 }
 
@@ -140,13 +133,5 @@ const images = [
   margin-bottom: 5px !important;
 }
 
-.intro-section p {
-  font-size: 18px;
-  color: #666; /* Subtle color for the description */
-  line-height: 1.6;
-  margin-top: 0 !important;
-}
 
-
-
-</style>
+</style>/
