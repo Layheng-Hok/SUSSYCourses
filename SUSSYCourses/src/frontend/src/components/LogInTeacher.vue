@@ -16,10 +16,10 @@
       <router-link to="/teacherpage">Teach on SUSSY</router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to="/login">Log in</router-link>
+      <router-link to="/loginteacher">Log in</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/signup">Sign up</router-link>
+      <router-link to="/signupteacher">Sign up</router-link>
     </el-menu-item>
   </el-menu>
 
@@ -27,13 +27,11 @@
     <div class="content-wrapper">
       <img src="@/assets/signup.gif" alt="signup Image" class="sign-up"/>
       <div class="signup-content">
-        <h1>Sign up and start learning</h1>
-        <p>Join thousands of learners on their journey to success!</p>
+        <h1>Log in to continue your teaching journey</h1>
         <div class="signup-form">
           <input v-model="name" type="text" placeholder="Full name"/>
           <input v-model="email" type="email" placeholder="Email"/>
           <input v-model="password" type="password" placeholder="Password"/>
-          <input v-model="confirmPassword" type="password" placeholder="Confirm Password"/>
         </div>
         <div class="terms-policy">
           <p>By signing up, you agree to our
@@ -43,9 +41,9 @@
             .
           </p>
         </div>
-        <button @click="handleSignup">Sign up</button>
+        <button @click="handleSignup">Log in</button>
         <h3>Already have an account?
-          <router-link to="/login" class="login-link">Log in</router-link>
+          <router-link to="/signupteacher" class="signup-link">Sign Up</router-link>
         </h3>
       </div>
     </div>
@@ -259,7 +257,7 @@ const handleSignup = () => {
 
 }
 
-.login-link {
+.signup-link {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
