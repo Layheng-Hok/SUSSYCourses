@@ -1,9 +1,15 @@
-document.getElementById("signupForm").addEventListener("submit", function (e) {
+document.getElementById("registerForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('passwordcon').value;
+    const role = 'ADMIN'
     const errorMessage = document.getElementById('errorMessage');
+
+    console.log('Email:', email);
+    console.log('Password:', password);
+    console.log('Confirm Password:', confirmPassword);
+    console.log('Role:', role);
 
     errorMessage.textContent = '';
 
@@ -13,11 +19,12 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
     }
 
     const data = {
-        username,
-        password
+        email,
+        password,
+        role
     };
 
-    fetch('/stay-with-me/signup', {
+    fetch('/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -28,7 +35,7 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
             if (response.status === 409) {
                 errorMessage.textContent = 'User already exists';
             } else if (response.status === 200) {
-                window.location.href = '/stay-with-me/login';
+                window.location.href = '/login';
             } else {
                 errorMessage.textContent = 'An error occurred. Please try again.';
             }

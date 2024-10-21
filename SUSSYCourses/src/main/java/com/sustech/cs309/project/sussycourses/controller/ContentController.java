@@ -6,32 +6,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ContentController {
     @GetMapping({"/", "/home"})
-    public String handleWelcome() {
+    public String showHomePage() {
         return "home";
     }
 
     @GetMapping("/admin/home")
-    public String handleAdminHome() {
+    public String showAdminHomePage() {
         return "home_admin";
     }
 
     @GetMapping("/student/home")
-    public String handleStudentHome() {
+    public String showStudentHomePage() {
         return "home_student";
     }
 
     @GetMapping("/instructor/home")
-    public String handleInstructorHome() {
+    public String showInstructorHomePage() {
         return "home_instructor";
     }
 
     @GetMapping("/login")
-    public String handleLogin() {
+    public String showLoginPage() {
         return "login";
     }
 
     @GetMapping("/register")
-    public String handleRegister() {
+    public String showRegisterPage() {
         return "register";
     }
 }

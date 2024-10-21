@@ -1,7 +1,7 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,11 +15,11 @@ public class RegistrationController {
     private WebAppUserRepository webAppUserRepository;
 
     @Autowired
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<String> createWebAppUser(@RequestBody WebAppUser webAppUser) {
-        if (webAppUserRepository.findByUsername(webAppUser.getUsername()).isPresent()) {
+        if (webAppUserRepository.findByEmail(webAppUser.getEmail()).isPresent()) {
             return ResponseEntity.status(409).body("User already exists");
         }
 

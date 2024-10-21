@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface WebAppUserRepository extends JpaRepository<WebAppUser, Long> {
-        Optional<WebAppUser> findByUsername(String username);
+    Optional<WebAppUser> findByEmail(String email);
 }

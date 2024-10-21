@@ -1,7 +1,7 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,18 +17,18 @@ public class WebAppUserDetailsService implements UserDetailsService {
     private WebAppUserRepository webAppUserRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<WebAppUser> webAppUser = webAppUserRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<WebAppUser> webAppUser = webAppUserRepository.findByEmail(email);
 
         if (webAppUser.isPresent()) {
             WebAppUser webAppUserObj = webAppUser.get();
             return User.builder()
-                    .username(webAppUserObj.getUsername())
+                    .username(webAppUserObj.getEmail())
                     .password(webAppUserObj.getPassword())
-                    .roles(new String[]{webAppUserObj.getRole()})
+                    .roles(String.valueOf(webAppUserObj.getRole()))
                     .build();
         } else {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(email);
         }
     }
 }
