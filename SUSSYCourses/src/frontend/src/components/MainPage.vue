@@ -13,8 +13,10 @@
       /> </router-link>
     </el-menu-item>
     <el-menu-item index="1"><router-link to="/teacherpage">Teach on SUSSY</router-link></el-menu-item>
-    <el-menu-item index="2"><router-link to="/loginstudent">Log in</router-link></el-menu-item>
-    <el-menu-item index="3"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
+    <el-menu-item index="2"><router-link to="/studentpage">Study on SUSSY</router-link></el-menu-item>
+
+    <el-menu-item index="3"><router-link to="/loginstudent">Log in</router-link></el-menu-item>
+    <el-menu-item index="4"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
   </el-menu>
 
   <div class="block text-center carousel-container">
@@ -42,7 +44,6 @@ const handleSelect = (index) => {
   // Add routing logic or other actions here based on the selected index
 };
 
-
 const images = [
   {src: require('@/assets/img.png'), alt: 'Image 1'},
   {src: require('@/assets/img_1.png'), alt: 'Image 2'},
@@ -50,8 +51,6 @@ const images = [
 </script>
 
 <style scoped>
-
-
 /* Menu styling */
 .el-menu-demo {
   background-color: white; /* Transparent to match the topbar */

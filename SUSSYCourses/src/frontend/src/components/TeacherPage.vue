@@ -12,7 +12,7 @@
             alt="Element logo"
         /> </router-link>
     </el-menu-item>
-    <el-menu-item index="1"><router-link to="">Study on SUSSY</router-link></el-menu-item>
+    <el-menu-item index="1"><router-link to="/studentpage">Study on SUSSY</router-link></el-menu-item>
     <el-menu-item index="2"><router-link to="/loginteacher">Log in</router-link></el-menu-item>
     <el-menu-item index="3"><router-link to="/signupteacher">Sign up</router-link></el-menu-item>
   </el-menu>
