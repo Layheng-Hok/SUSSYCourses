@@ -321,8 +321,9 @@ const handleClick = (tab, event) => {
   align-items: center; /* Vertically align content */
   justify-content: space-between; /* Space between text and image */
   gap: 20px; /* Add space between elements */
-  margin-top: 5px !important; /* Adjust space under the tabs */
+  margin-top: 10px !important; /* Adjust space under the tabs */
   color: black;
+
 }
 
 .el-menu-item:nth-child(3) a {
