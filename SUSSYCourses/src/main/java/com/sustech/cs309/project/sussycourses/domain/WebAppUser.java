@@ -12,13 +12,17 @@ public class WebAppUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(length = 50, nullable = false)
+    private String fullName;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Column(nullable = false)

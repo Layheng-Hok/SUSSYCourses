@@ -1,28 +1,27 @@
 document.getElementById("registerForm").addEventListener("submit", function (e) {
     e.preventDefault();
+    const fullName = document.getElementById("fullName").value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('passwordcon').value;
+    const passwordCon = document.getElementById('passwordCon').value;
     const role = 'ADMIN'
     const errorMessage = document.getElementById('errorMessage');
 
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);
-    console.log('Role:', role);
-
     errorMessage.textContent = '';
 
-    if (password !== confirmPassword) {
+    if (password !== passwordCon) {
         errorMessage.textContent = 'Passwords do not match';
         return;
     }
 
     const data = {
+        fullName,
         email,
         password,
         role
     };
+
+    console.log(data);
 
     fetch('/register', {
         method: 'POST',
