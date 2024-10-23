@@ -11,6 +11,9 @@
     "core-js": "^3.8.3",
     "element-plus": "^2.8.5",
     "frontend": "file:",
+
+    "swiper": "^11.1.14",
+
     "vue": "^3.2.13",
     "vue-router": "^4.4.5"
   },

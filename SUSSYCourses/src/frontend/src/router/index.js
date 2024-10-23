@@ -12,9 +12,7 @@ import CoursePage from "@/components/CoursePage.vue";
 
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
-import LogInStudent from "@/components/LogInStudent.vue";
-import LogInTeacher from "@/components/LogInTeacher.vue";
-
+import LogIn from "@/components/LogIn.vue";
 const routes = [
     {
         path: '/', // Home route
@@ -57,15 +55,12 @@ const routes = [
         component: SignUpTeacher
     },
     {
-        path: '/loginstudent',
-        name: 'LogInStudent',
-        component: LogInStudent
+        path: '/login',
+        name: 'LogIn',
+        component: LogIn
     },
-    {
-        path: '/loginteacher',
-        name: 'LogInTeacher',
-        component: LogInTeacher
-    },
+
+
 
 
 ];

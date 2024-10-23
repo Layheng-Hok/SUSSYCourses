@@ -13,15 +13,12 @@
       /> </router-link>
     </el-menu-item>
     <el-menu-item index="1"><router-link to="/teacherpage">Teach on SUSSY</router-link></el-menu-item>
-<<<<<<< Updated upstream
+
     <el-menu-item index="2"><router-link to="/studentpage">Study on SUSSY</router-link></el-menu-item>
 
-    <el-menu-item index="3"><router-link to="/loginstudent">Log in</router-link></el-menu-item>
+    <el-menu-item index="3"><router-link to="/login">Log in</router-link></el-menu-item>
     <el-menu-item index="4"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
-=======
-    <el-menu-item index="2"><router-link to="/login">Log in</router-link></el-menu-item>
-    <el-menu-item index="3"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
->>>>>>> Stashed changes
+
   </el-menu>
 
   <div class="block text-center carousel-container">
@@ -106,8 +103,6 @@ const images = [
 </script>
 
 <style scoped>
-<<<<<<< Updated upstream
-=======
 
 .course-swiper {
   width: 80%;
@@ -139,7 +134,7 @@ const images = [
 }
 
 
->>>>>>> Stashed changes
+
 /* Menu styling */
 .el-menu-demo {
   background-color: white; /* Transparent to match the topbar */

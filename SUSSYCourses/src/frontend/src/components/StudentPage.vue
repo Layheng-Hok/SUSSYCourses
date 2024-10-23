@@ -17,10 +17,10 @@
       <router-link to="/teacherpage">Teach on SUSSY</router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to="/loginteacher">Log in</router-link>
+      <router-link to="/login">Log in</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/signupteacher">Sign up</router-link>
+      <router-link to="/signupstudent">Sign up</router-link>
     </el-menu-item>
     <!-- Sidebar Toggle Profile Picture -->
     <el-menu-item index="4" @click="toggleSidebar" class="sidebar-toggle">
@@ -116,9 +116,9 @@ const goToCourse = (link) => {
   window.location.href = link;
 };
 
-const images = [
-  { src: require('@/assets/img.png'), alt: 'Image 1' },
-];
+//const images = [
+  //{ src: require('@/assets/img.png'), alt: 'Image 1' },
+//];
 </script>
 
 <style scoped>
