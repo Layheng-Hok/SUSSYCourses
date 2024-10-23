@@ -13,10 +13,15 @@
       /> </router-link>
     </el-menu-item>
     <el-menu-item index="1"><router-link to="/teacherpage">Teach on SUSSY</router-link></el-menu-item>
+<<<<<<< Updated upstream
     <el-menu-item index="2"><router-link to="/studentpage">Study on SUSSY</router-link></el-menu-item>
 
     <el-menu-item index="3"><router-link to="/loginstudent">Log in</router-link></el-menu-item>
     <el-menu-item index="4"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
+=======
+    <el-menu-item index="2"><router-link to="/login">Log in</router-link></el-menu-item>
+    <el-menu-item index="3"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
+>>>>>>> Stashed changes
   </el-menu>
 
   <div class="block text-center carousel-container">
@@ -36,7 +41,55 @@
     <p>Learn new skills to elevate your career and achieve personal growth. Explore courses and find your passion today.</p>
   </div>
 
+  <swiper
+      :slides-per-view="4"
+      :space-between="20"
+      navigation
+      pagination
+      class="course-swiper"
+  >
+    <swiper-slide v-for="(course, index) in courses" :key="index">
+      <div class="course-card">
+        <img :src="course.src" :alt="course.alt" class="course-image" />
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.instructor }}</p>
+        <div class="course-rating">
+          <span>{{ course.rating }} ★ ({{ course.reviews }})</span>
+        </div>
+        <div class="course-price">{{ course.price }}</div>
+      </div>
+    </swiper-slide>
+  </swiper>
 </template>
+<script>
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/swiper-bundle.css';
+
+export default {
+  components: {
+    Swiper,
+    SwiperSlide,
+  },
+  data() {
+    return {
+      courses: [
+        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
+        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
+        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        // Add more courses here...
+        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
+        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
+        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        // Add more courses here...
+        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
+        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
+        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        // Add more courses here...
+      ],
+    };
+  },
+};
+</script>
 
 <script setup>
 const handleSelect = (index) => {
@@ -48,9 +101,45 @@ const images = [
   {src: require('@/assets/img.png'), alt: 'Image 1'},
   {src: require('@/assets/img_1.png'), alt: 'Image 2'},
 ];
+
+
 </script>
 
 <style scoped>
+<<<<<<< Updated upstream
+=======
+
+.course-swiper {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.course-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: box-shadow 0.3s;
+}
+
+.course-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+>>>>>>> Stashed changes
 /* Menu styling */
 .el-menu-demo {
   background-color: white; /* Transparent to match the topbar */

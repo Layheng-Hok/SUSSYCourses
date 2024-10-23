@@ -13,12 +13,15 @@
         /></router-link>
     </el-menu-item>
     <el-menu-item index="1">
-      <router-link to="/teacherpage">Teach on SUSSY</router-link>
+      <router-link to="">Study on SUSSY</router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to="/login">Log in</router-link>
+      <router-link to="/teacherpage">Teach on SUSSY</router-link>
     </el-menu-item>
     <el-menu-item index="3">
+      <router-link to="/login">Log in</router-link>
+    </el-menu-item>
+    <el-menu-item index="4">
       <router-link to="/signupstudent">Sign up</router-link>
     </el-menu-item>
   </el-menu>
@@ -33,7 +36,7 @@
           <input v-model="name" type="text" placeholder="Full name"/>
           <input v-model="email" type="email" placeholder="Email"/>
           <input v-model="password" type="password" placeholder="Password"/>
-          <input v-model="confirmPassword" type="password" placeholder="Confirm Password"/>
+          <input v-model="confirmPassword" type="password" placeholder="Confirm password"/>
         </div>
         <div class="terms-policy">
           <p>By signing up, you agree to our
@@ -45,7 +48,7 @@
         </div>
         <button @click="handleSignup">Sign up</button>
         <h3>Already have an account?
-          <router-link to="/loginstudent" class="login-link">Log in</router-link>
+          <router-link to="/login" class="login-link">Log in</router-link>
         </h3>
       </div>
     </div>
@@ -122,7 +125,7 @@ const handleSignup = () => {
 }
 
 
-.el-menu-item:nth-child(3) a {
+.el-menu-item:nth-child(4) a {
   border: 1px solid black;
   padding: 5px 15px;
   color: black;
@@ -133,14 +136,14 @@ const handleSignup = () => {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.el-menu-item:nth-child(3) a:hover {
+.el-menu-item:nth-child(4) a:hover {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
 
 }
 
-.el-menu-item:nth-child(4) a {
+.el-menu-item:nth-child(5) a {
   border: 1px solid #74B3E3;
   background-color: #74B3E3;
   color: white;
@@ -151,7 +154,7 @@ const handleSignup = () => {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.el-menu-item:nth-child(4) a:hover {
+.el-menu-item:nth-child(5) a:hover {
   background-color: #9DCAEB;
   border: 1px solid #9DCAEB ;
   color: white;
@@ -167,10 +170,10 @@ const handleSignup = () => {
 .content-wrapper {
   display: flex;
   align-items: center;
-  gap: 140px; /* Space distribution */
+  gap: 150px; /* Space distribution */
   max-width: 1200px;
   margin: 0 auto; /* Center the content */
-  padding: 25px;
+  padding: 45px;
 }
 
 .signup-form {
@@ -197,7 +200,7 @@ const handleSignup = () => {
   transform: translateY(-50%);
   transition: all 0.3s ease;
   pointer-events: none;
-  color: #1F2937;
+  color: black;
   font-weight: bold;
 }
 
@@ -213,10 +216,9 @@ const handleSignup = () => {
   top: 5px;
   transform: translateY(0);
   font-size: 13px;
-  color: #1F2937;
+  color: black;
   font-weight: bold;
-
-
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .main-container button {
@@ -225,19 +227,24 @@ const handleSignup = () => {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer; /* Pointer on hover */
   font-weight: bold;
-  margin-top: 15px;
+  margin-top: 20px !important;
+
 
 }
 
 .main-container h1 {
   margin-bottom: 10px;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .main-container h3 {
   margin-top: 25px;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .main-container p {
@@ -245,13 +252,15 @@ const handleSignup = () => {
   color: #666;
   line-height: 1.6;
   margin-top: 0 !important;
+  margin-bottom: 30px;
 }
 
 .terms-policy p {
   font-size: 12px;
-  color: #666;
+  color: black;
   line-height: 1.6;
-  margin-top: 15px !important;
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
 }
 
 .sign-up {
@@ -263,7 +272,7 @@ const handleSignup = () => {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
-  margin-left: 5px; /* Add some space between the text and the link */
+  margin-left: 2px; /* Add some space between the text and the link */
 }
 
 
@@ -271,7 +280,7 @@ const handleSignup = () => {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 2px;
 }
 
 
@@ -279,7 +288,7 @@ const handleSignup = () => {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 2px;
 }
 
 .signup-content {
