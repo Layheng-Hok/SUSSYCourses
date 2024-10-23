@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface WebAppUserRepository extends JpaRepository<WebAppUser, Long> {
     Optional<WebAppUser> findByEmail(String email);
+
+    Optional<WebAppUser> findByVerificationToken(String verificationToken);
 }

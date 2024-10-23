@@ -1,4 +1,5 @@
 server:
+  port: 8081
   error:
     include-message: always
     include-binding-errors: always
@@ -17,8 +18,17 @@ spring:
         format_sql: true
     show-sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: henglayhok@gmail.com
+    password: esdd zmwj lxji hsrl
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 logging:
   level:
     org:
       springframework:
-        security=DEBUG:
+        security: DEBUG

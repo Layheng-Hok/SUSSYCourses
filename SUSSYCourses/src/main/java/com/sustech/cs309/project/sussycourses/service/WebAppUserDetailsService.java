@@ -1,6 +1,7 @@
 package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.exception.UserNotVerifiedException;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,15 +21,20 @@ public class WebAppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<WebAppUser> webAppUser = webAppUserRepository.findByEmail(email);
 
-        if (webAppUser.isPresent()) {
-            WebAppUser webAppUserObj = webAppUser.get();
-            return User.builder()
-                    .username(webAppUserObj.getEmail())
-                    .password(webAppUserObj.getPassword())
-                    .roles(String.valueOf(webAppUserObj.getRole()))
-                    .build();
-        } else {
+        if (webAppUser.isEmpty()) {
             throw new UsernameNotFoundException(email);
         }
+
+        WebAppUser webAppUserObj = webAppUser.get();
+
+        if (!webAppUserObj.isEnabled()) {
+            throw new UserNotVerifiedException("User not verified: Please check your email for verification");
+        }
+
+        return User.builder()
+                .username(webAppUserObj.getEmail())
+                .password(webAppUserObj.getPassword())
+                .roles(String.valueOf(webAppUserObj.getRole()))
+                .build();
     }
 }

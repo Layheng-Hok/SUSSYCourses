@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
     @Autowired
     private WebAppUserDetailsService webAppUserDetailsService;
 
@@ -26,7 +26,7 @@ public class SecurityConfig{
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/","/home", "/register", "/assets/css/**", "assets/js/**").permitAll();
+                    registry.requestMatchers("/", "/home", "/register", "/verify-email", "/assets/css/**", "assets/js/**").permitAll();
                     registry.requestMatchers("/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/student/**").hasRole("STUDENT");
                     registry.requestMatchers("/instructor/**").hasRole("INSTRUCTOR");
