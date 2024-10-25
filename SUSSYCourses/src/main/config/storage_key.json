@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sinuous-canto-439509-r4",
+  "private_key_id": "9b3ab598e061fa30375fb5b0451524d7e3e61986",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDUBBuj7W7Y66l7\nF+UgiAlb5gAKkhqtaEDum8dOkqi4S38167MFYY+A+48NnOBOwdyeznqD4orN9O76\ngQlAWfqJZ8V5fuiHCguUQnatItQ0aU+rrWNwC19tez2BcUKBd6qVNg30WJz0PZ18\nE+I82z12hNL042JcHuwkdgrQBpfIqSkRVcEnI1oGnoNq8J+egdd3Cn9h+ioRxUEE\nM/4eK/UM4B7tpDzPNX1gGsXn/1QNXv0Tt66dM5K+gH8xP5CBzDHf5yMsLFD3Mu2e\njeB73vGKHtLQ6nMIJWwBNsXa3Kk46+thwj97x7tTeTyo9U19vddliMFA5wfn6eu6\nmbERKEBfAgMBAAECggEASIClISBjbTvdx9HqkX7j0HDtZ7AB/nXt6osME8MUfn2W\n4Y4aOMddpyqfh3SzwksKUqZigDJa7EaL6M9ypfZ/Njjt73fmNbPKNOerpNaJweiX\njapsHFdPSWXBKUBdkV+mToNfL0WUWvOtJM656bzBnoOajpMpwj3y3B8f4Ha4ti3/\njLAIM1WDTFR9TaCD8uoEQGUCxqTCgpQZY/2/ia4EW9O9AAiUwiTFRabJKUDAwkK2\nZMH5XYJVRipoZjg71EUmupGHQTDuvdbu9/i5qR6oRu5z7Kue/FOeSS5P7Oxiafbw\nI+xuh0T8wjU5z7Mu8jzYBfArUtSrbDosyAEmjOASvQKBgQDvy4uNxUAgMgEGTLAX\nT9zjJEQMAh12ZqUYHptfXU4y8JSSC7TjT5nHBJdiqRaJJaW/8/fJbbIt0V4lrP6c\nzwr5tfcpfd9SPN+bpwkvz/r89OfYCIzaultm6NY5q4HdaZXv2jvX5qAqUt49jyt1\nHY8U+Iqmq6OZupwyr6lsCs1xhQKBgQDiV/w7wzCCq1GeGwnlkwy0dzjY3oFY01UR\n8SA1E7hggtAUG2+ZtWoiDq72NEI3EoTjAUIYd88VIgw8DN+c38zpGVq6bkqesDVq\n8CAoST2Fo4lFPAaUp6f2OaORsZk6kmipxeACtk2WKcdeJmHON1N2nxcjsVLHk/VW\n62yQsEQdkwKBgQCpw2NoGdY9NMlu6UndJygNErat/a1YDnEg80IyMH9VJuc3wdvs\n9YS71e9K5MRUkfeXPqQU0XlMYKYTbDbRUu7FPGLf2AILWZdAve+ODuL0xHmCgwMd\nMsPUxlArgdUtqDuDE/A7+EU50XMPB9XPUv7h7NdUCb2H7wn4BE6gc8FgdQKBgCvD\n14G2vCqH9cAcek1poYtDgjpsy5XhRxGxDgk1RvFiWdmJdIrECUGMlUgF0sfTTN6X\n36/beq8bZkI2OwaaP4TS4jgqG0OTzsBerdkcUEkG1gQNFzinMlLp0jbZoEczCAnL\nuQTNOzNN4L7TrRWynPDS0iaUouz0LvwfiV5wtrsBAoGBALccXJS5dCMlpYH4JnXb\nNtm30CoNmrLlyZuBe5IjIpZ/5itkA3+ws5GFL0vpOndm6/MvhOis9kU5Qwni8E6W\ndrVIvSygQLqYp4ZexW+Vqft4AZcXQlXa1l5HXwMbU2C6fbcj7vXWTGCQ7c9GcCU0\nBFWdMpRcTRfkLaE3WKY3sS1N\n-----END PRIVATE KEY-----\n",
+  "client_email": "sussy-teacher@sinuous-canto-439509-r4.iam.gserviceaccount.com",
+  "client_id": "110223543539835417659",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sussy-teacher%40sinuous-canto-439509-r4.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

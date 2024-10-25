@@ -6,8 +6,8 @@ server:
 
 spring:
   datasource:
-    username: layhenghok
-    password:
+    username: harroldtok
+    password: 6969
     url: jdbc:postgresql://localhost:5432/cs309_project
   jpa:
     hibernate:
