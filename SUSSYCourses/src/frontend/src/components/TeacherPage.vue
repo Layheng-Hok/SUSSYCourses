@@ -30,7 +30,6 @@
       <h1>Come teach with us</h1>
       <p>Become an instructor and change lives — including your own</p>
     </div>
-
   </div>
 
   <div class="intro-section">
@@ -57,6 +56,25 @@
       <p>
         Expand your professional network, build your expertise, and earn money on each paid enrollment.
       </p>
+    </div>
+  </div>
+
+  <div class="impact-bar">
+    <div class="bar-content">
+      <h1>10,000+</h1>
+      <p>Courses Published</p>
+    </div>
+    <div class="bar-content">
+      <h1>50,000+</h1>
+      <p>Satisfied Students</p>
+    </div>
+    <div class="bar-content">
+      <h1>1,200+</h1>
+      <p>Expert Instructors</p>
+    </div>
+    <div class="bar-content">
+      <h1>98%</h1>
+      <p>Positive Feedback</p>
     </div>
   </div>
 
@@ -121,8 +139,71 @@
       </div>
       <img src="@/assets/img_7.png" alt="Live Session Image"/>
     </el-tab-pane>
-
   </el-tabs>
+
+  <swiper
+      :modules="[Navigation]"
+      class="mySwiper"
+      @swiper="handleSwiper"
+  >
+    <swiper-slide>
+      <div class="slide-content">
+        <img src="@/assets/img_10.png" alt="Instructor Image" class="slide-image"/>
+        <div class="slide-text">
+          <p class="quote1">"Teaching is about creating a space where curiosity can thrive and knowledge becomes a tool
+            for growth. Every interaction is a chance to inspire a brighter future for both the student and the
+            teacher."</p>
+          <h3 class="author1">Maria Sanchez</h3>
+          <p class="author-title1">Leadership and Personal Development</p>
+        </div>
+      </div>
+    </swiper-slide>
+
+    <swiper-slide>
+      <div class="slide-content">
+        <img src="@/assets/img_11.png" alt="Instructor Image" class="slide-image"/>
+        <div class="slide-text">
+          <p class="quote2">"True learning is more than memorizing facts; it's about inspiring curiosity and encouraging
+            the drive to
+            explore. My goal is to empower every student to see beyond the textbook and embrace the wonders of
+            discovery.""</p>
+          <h3 class="author2">Thomas Meyer</h3>
+          <p class="author-title2">Medical Educator & Health Science</p>
+        </div>
+      </div>
+    </swiper-slide>
+
+    <swiper-slide>
+      <div class="slide-content">
+        <img src="@/assets/img_6.png" alt="Instructor Image" class="slide-image"/>
+        <div class="slide-text">
+          <p class="quote3">"The beauty of teaching lies in the ability to guide others to unlock their potential and
+            achieve things
+            they never thought possible. Every lesson is an opportunity to inspire growth, not just in students, but in
+            ourselves as well."
+          </p>
+          <h3 class="author3">Sophia Bennett
+          </h3>
+          <p class="author-title3">Digital Marketing Consultant & Instructor
+          </p>
+        </div>
+      </div>
+    </swiper-slide>
+    <div v-if="!atStart" class="swiper-button-prev" @click="goToPrev"></div>
+    <div v-if="!atEnd" class="swiper-button-next" @click="goToNext"></div>
+  </swiper>
+
+  <div class="teacher-journey">
+    <img src="@/assets/img_14.png" alt="Left Image" class="journey-img1"/>
+    <div class="journey-text">
+      <h1>You're not alone in this journey</h1>
+      <p>Whether you’re creating your first course or looking to refine your teaching approach, we’re here to support
+        you.
+        Our resources include tutorials, guides, and community discussions, helping you every step of the way. Connect
+        with fellow instructors and grow together in our supportive learning environment.</p>
+    </div>
+    <img src="@/assets/img_15.png" alt="Right Image" class="journey-img2"/>
+  </div>
 
   <div class="call-to-action">
     <h1>Become an instructor today</h1>
@@ -131,40 +212,57 @@
       <button class="cta-button">Get started</button>
     </router-link>
   </div>
-
-
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref} from 'vue';
+import {Swiper, SwiperSlide} from 'swiper/vue';
+import {Navigation} from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+const atStart = ref(true);  // Tracks if at the first slide
+const atEnd = ref(false);   // Tracks if at the last slide
+const swiperInstance = ref(null);
+
+const handleSwiper = (swiper) => {
+  swiperInstance.value = swiper;
+  swiper.on('slideChange', () => {
+    atStart.value = swiper.isBeginning;
+    atEnd.value = swiper.isEnd;
+  });
+};
+
+const goToPrev = () => {
+  swiperInstance.value?.slidePrev();
+};
+
+const goToNext = () => {
+  swiperInstance.value?.slideNext();
+};
 
 const activeTab = ref('create-course');
-
 const handleClick = (tab, event) => {
   console.log(`Tab: ${tab.label} clicked`, event);
 };
-
 </script>
 
-
 <style scoped>
-
-/* Menu styling */
 .el-menu-demo {
-  background-color: white; /* Transparent to match the topbar */
+  background-color: white;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  height: 75px; /* Adjust height to make it bigger */
-  padding: 0 20px; /* Add horizontal padding */
+  height: 75px;
+  padding: 0 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .el-menu-demo img {
-  width: 60px; /* Force the new size */
-  height: auto; /* Maintain aspect ratio */
+  width: 60px;
+  height: auto;
   object-fit: contain;
 }
 
@@ -172,54 +270,52 @@ const handleClick = (tab, event) => {
   margin-right: auto;
 }
 
-/* Remove the active color effect */
 .el-menu-demo .el-menu-item {
-  font-size: 18px; /* Adjust font size */
-  color: black !important; /* Default text color */
-  background-color: transparent !important; /* Prevent background highlighting */
-  transition: color 0.3s; /* Smooth transition */
+  font-size: 18px;
+  color: black !important;
+  background-color: transparent !important;
+  transition: color 0.3s;
   font-family: 'Aptos Narrow', sans-serif;
 
 }
 
-/* Add hover effect */
 .el-menu-demo .el-menu-item:not(:first-child):hover {
-  color: #74B3E3 !important; /* Change text color on hover */
+  color: #74B3E3 !important;
 }
 
-/* Prevent the background effect on selection */
+
 .el-menu-item.is-active {
   background-color: transparent !important;
   border-bottom: none !important;
 }
 
-/* Remove underline from all router links inside the menu */
 .el-menu-demo .el-menu-item a {
   text-decoration: none !important;
 }
 
 .main-picture {
   position: relative;
-  width: 100%; /* Make the image take up the full width */
   max-height: 600px; /* Adjust height as needed */
   overflow: hidden;
+  margin-right: -9px;
+  margin-left: -9px;
 }
 
 .main-picture img {
-  width: 100%; /* Image covers the full container width */
-  height: 100%; /* Maintain aspect ratio */
-  object-fit: cover; /* Ensure the image fits nicely */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .text-box {
   position: absolute;
-  top: 33%; /* Adjust the vertical position */
-  left: 10%; /* Align the box to the left */
-  background-color: rgba(255, 255, 255, 0.9); /* White background with opacity */
+  top: 33%;
+  left: 10%;
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 30px;
-  max-width: 320px; /* Adjust width of the box */
+  max-width: 320px;
   font-family: 'Aptos Narrow', sans-serif;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Optional: Subtle shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .main-picture h1 {
@@ -236,12 +332,12 @@ const handleClick = (tab, event) => {
 
 .intro-section {
   text-align: center;
-  margin: 50px auto 50px auto; /* Adjust spacing top right bottom left*/
-  max-width: 800px; /* Optional: limit the text width */
+  margin: 50px auto 50px auto;
+  max-width: 800px;
 }
 
 .intro-section h1 {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: bold;
   margin-bottom: 30px !important;
   margin-top: 100px !important;
@@ -270,9 +366,8 @@ const handleClick = (tab, event) => {
 .reason {
   flex: 1;
   margin: 0 20px 50px;
-  max-width: 300px; /* Restrict the width of each section */
+  max-width: 300px;
   text-align: center;
-
 }
 
 .reason img {
@@ -295,9 +390,7 @@ const handleClick = (tab, event) => {
   font-size: 16px;
   line-height: 1.5;
   color: black;
-
 }
-
 
 .tabs {
   margin-top: 30px;
@@ -321,9 +414,9 @@ const handleClick = (tab, event) => {
   align-items: center; /* Vertically align content */
   justify-content: space-between; /* Space between text and image */
   gap: 20px; /* Add space between elements */
-  margin-top: 10px !important; /* Adjust space under the tabs */
+  margin-top: 10px !important;
   color: black;
-
+  font-size: 18px;
 }
 
 .el-menu-item:nth-child(3) a {
@@ -372,14 +465,13 @@ const handleClick = (tab, event) => {
   margin-left: 0; /* Adjust the space between 'Log in' and 'Sign up' */
 }
 
-
 ::v-deep(.el-tabs__nav) {
   display: flex;
   justify-content: center; /* Center the tabs */
 }
 
 ::v-deep(.el-tabs__item) {
-  font-size: 20px; /* Adjust the font size */
+  font-size: 20px;
   font-weight: bold;
   padding: 27px 18.3px;
   color: #7A7A7A; /* Grey color for non-active tabs */
@@ -410,23 +502,24 @@ const handleClick = (tab, event) => {
   color: black; /* Black text on hover */
 }
 
-
 .call-to-action {
-  background-color: #f8f9fa; /* Light grey background */
+  background-color: #f8f9fa;
   text-align: center;
-  padding: 60px 20px; /* Add space around the content */
-  margin-top: 50px; /* Space above the section */
+  padding: 50px 20px; /* Add space around the content */
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center; /* Center horizontally */
   justify-content: center; /* Center vertically */
+  margin-left: -9px;
+  margin-right: -9px;
 }
 
 .call-to-action h1 {
   font-size: 40px;
-  font-weight: bold; /* Slightly bold */
+  font-weight: bold;
   margin-bottom: 15px !important;
-  color: black; /* Dark grey text */
+  color: black;
   font-family: 'Aptos Narrow', sans-serif;
 }
 
@@ -434,14 +527,13 @@ const handleClick = (tab, event) => {
   font-size: 23px;
   max-width: 500px;
   margin-bottom: 30px;
-  color: black; /* Lighter grey text */
+  color: black;
   margin-top: 0 !important;
-  text-align: center; /* Ensure the text is centered */
-
+  text-align: center;
 }
 
 .cta-button {
-  background-color: #333; /* Dark button background */
+  background-color: #333;
   color: white;
   padding: 15px 115px;
   border: none;
@@ -453,7 +545,227 @@ const handleClick = (tab, event) => {
 }
 
 .cta-button:hover {
-  background-color: #444; /* Slightly lighter on hover */
+  background-color: #444;
 }
 
-</style>/
+.mySwiper {
+  height: 370px;
+  margin-top: 100px;
+  margin-right: -9px;
+  margin-left: -9px;
+}
+
+.slide-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+.slide-image {
+  margin-right: auto;
+  margin-left: 400px;
+  width: 20%;
+  object-fit: cover;
+}
+
+.slide-text {
+  margin-left: 0 !important;
+  margin-right: 370px;
+  width: 25%;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.quote1 {
+  font-size: 18px;
+  line-height: 1.5;
+  color: black;
+  margin-bottom: 0;
+  font-style: italic;
+  margin-top: 0 !important;
+}
+
+.author1 {
+  margin-top: 80px;
+  margin-bottom: 0 !important;
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.author-title1 {
+  margin-top: 5px !important;
+  font-size: 16px;
+  color: black;
+  font-weight: lighter;
+  margin-bottom: 50px !important;
+}
+
+.quote2 {
+  font-size: 18px;
+  line-height: 1.5;
+  color: black;
+  margin-bottom: 10px;
+  font-style: italic;
+  margin-top: 0 !important;
+}
+
+.author2 {
+  margin-top: 80px;
+  margin-bottom: 0 !important;
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.author-title2 {
+  margin-top: 5px !important;
+  font-size: 16px;
+  color: black;
+  font-weight: lighter;
+  margin-bottom: 30px !important;
+}
+
+.quote3 {
+  font-size: 18px;
+  line-height: 1.5;
+  color: black;
+  margin-bottom: 5px;
+  font-style: italic;
+  margin-top: 0 !important;
+}
+
+.author3 {
+  margin-top: 50px;
+  margin-bottom: 0 !important;
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.author-title3 {
+  margin-top: 5px !important;
+  font-size: 16px;
+  color: black;
+  font-weight: lighter;
+  margin-bottom: 15px !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+  font-weight: bold;
+  background-color: #333;
+  border-radius: 50%; /* Make it circular */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: #444;
+  transform: scale(1.1);
+}
+
+.swiper-button-next {
+  right: 280px;
+}
+
+.swiper-button-prev {
+  left: 300px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  z-index: 10;
+}
+
+/* Change arrow icon size */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px;
+}
+
+.impact-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #74B3E3;
+  margin-top: 70px;
+  margin-bottom: 100px;
+  padding: 60px;
+  margin-left: -9px !important;
+  margin-right: -9px !important;
+}
+
+.bar-content h1 {
+  margin-top: 0;
+  font-size: 40px;
+  font-weight: bolder;
+  margin-bottom: 5px;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.bar-content p {
+  margin: 0 auto;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5;
+  color: black;
+  text-align: center;
+}
+
+.teacher-journey {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 70px;
+  padding: 0; /* Remove padding on the sides */
+  margin-left: -9px !important;
+  margin-right: -9px !important;
+}
+
+.journey-img1, .journey-img2 {
+  width: 25%;
+  object-fit: cover;
+}
+
+.journey-img1 {
+  margin-left: -30px;
+  margin-right: 110px;
+
+}
+
+.journey-img2 {
+  margin-left: auto;
+}
+
+.journey-text h1 {
+  margin-top: 0;
+  font-size: 40px;
+  font-weight: bolder;
+  margin-bottom: 5px;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.journey-text p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: black;
+  text-align: center;
+  max-width: 600px;
+  margin-top: 15px;
+}
+</style>
