@@ -3,7 +3,11 @@ import App from './App.vue'
 import router from './router'; // Import the router
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
-//createApp(App).use(router).mount('#app')
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+
 const app = createApp(App); // Create Vue app
 
 app.use(router); // Use Vue Router
