@@ -55,7 +55,7 @@ public class WebAppUserService {
 
         String recipientAddress = webAppUser.getEmail();
         String subject = "SUSSYCourses: Confirm Your Email Address";
-        String confirmationUrl = "http://localhost:8081/verify-email?verificationToken=" + webAppUser.getVerificationToken();
+        String confirmationUrl = "http://localhost:8080/verify-email?verificationToken=" + webAppUser.getVerificationToken();
         String message = "Dear " + webAppUser.getFullName() + ",\n\n"
                 + "Thank you for registering with SUSSYCourses. To complete your registration, please confirm your email address by clicking the link below:\n\n"
                 + confirmationUrl + "\n\n"
@@ -65,7 +65,7 @@ public class WebAppUserService {
 
         emailService.sendEmail(recipientAddress, subject, message);
 
-        return ResponseEntity.status(201).body("Dear user, please check your email for verification");
+        return ResponseEntity.status(201).body("Our dear user, please check your email to verify your account. Thank you for joining us.");
     }
 
     public ResponseEntity<String> loginWebAppUser(@RequestBody LoginDto loginDto) {

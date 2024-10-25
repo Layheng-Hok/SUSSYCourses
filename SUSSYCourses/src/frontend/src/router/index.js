@@ -13,6 +13,7 @@ import CoursePage from "@/components/CoursePage.vue";
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
 import LogIn from "@/components/LogIn.vue";
+import VerifyEmail from "@/components/VerifyEmail.vue";
 
 const routes = [
     {
@@ -54,6 +55,11 @@ const routes = [
         path: '/signup-teacher',
         name: 'SignUpTeacher',
         component: SignUpTeacher
+    },
+    {
+        path: '/verify-email',
+        name: 'VerifyEmail',
+        component: VerifyEmail
     },
     {
         path: '/login',

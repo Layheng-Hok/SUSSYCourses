@@ -85,7 +85,11 @@ const handleSignup = async () => {
     const response = await axios.post('http://localhost:8081/register/student', payload);
     alert(response.data);
   } catch (error) {
-    errorMessage.value = error.response.data || 'Registration failed';
+    if (error.response) {
+      errorMessage.value = error.response.data || 'Registration failed';
+    } else {
+      console.log("Something went wrong");
+    }
   }
 };
 </script>
