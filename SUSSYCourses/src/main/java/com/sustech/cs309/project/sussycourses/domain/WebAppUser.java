@@ -7,6 +7,7 @@ import lombok.ToString;
 @Data
 @ToString
 @Entity
+@Table(name = "web_app_user")
 public class WebAppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

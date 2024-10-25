@@ -16,10 +16,10 @@ public class EmailVerificationController {
     public String verifyEmail(@RequestParam("verificationToken") String token, Model model) {
         String result = webAppUserService.validateVerificationToken(token);
         if (result.equals("valid")) {
-            model.addAttribute("message", "Your account has been verified successfully.");
+            model.addAttribute("message", "Your account has been verified successfully");
             return "verified";
         } else {
-            model.addAttribute("message", "Invalid verification token.");
+            model.addAttribute("message", "Link has expired");
             return "verify-email";
         }
     }

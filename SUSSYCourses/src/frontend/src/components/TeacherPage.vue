@@ -20,7 +20,7 @@
       <router-link to="/login">Log in</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/signupteacher">Sign up</router-link>
+      <router-link to="/signup-teacher">Sign up</router-link>
     </el-menu-item>
   </el-menu>
 
@@ -127,7 +127,7 @@
   <div class="call-to-action">
     <h1>Become an instructor today</h1>
     <p>Join one of the world’s largest online learning marketplaces.</p>
-    <router-link to="/signupteacher">
+    <router-link to="/signup-teacher">
       <button class="cta-button">Get started</button>
     </router-link>
   </div>

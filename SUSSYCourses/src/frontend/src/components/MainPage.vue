@@ -7,17 +7,25 @@
   >
     <el-menu-item index="0">
       <router-link to="/">
-      <img
-          src="@/assets/logo.png"
-          alt="Element logo"
-      /> </router-link>
+        <img
+            src="@/assets/logo.png"
+            alt="Element logo"
+        /></router-link>
     </el-menu-item>
-    <el-menu-item index="1"><router-link to="/teacherpage">Teach on SUSSY</router-link></el-menu-item>
+    <el-menu-item index="1">
+      <router-link to="/teacherpage">Teach on SUSSY</router-link>
+    </el-menu-item>
 
-    <el-menu-item index="2"><router-link to="/studentpage">Study on SUSSY</router-link></el-menu-item>
+    <el-menu-item index="2">
+      <router-link to="/studentpage">Study on SUSSY</router-link>
+    </el-menu-item>
 
-    <el-menu-item index="3"><router-link to="/login">Log in</router-link></el-menu-item>
-    <el-menu-item index="4"><router-link to="/signupstudent">Sign up</router-link></el-menu-item>
+    <el-menu-item index="3">
+      <router-link to="/login">Log in</router-link>
+    </el-menu-item>
+    <el-menu-item index="4">
+      <router-link to="/signup-student">Sign up</router-link>
+    </el-menu-item>
 
   </el-menu>
 
@@ -35,7 +43,8 @@
 
   <div class="intro-section">
     <h1>Unlock Your Future</h1>
-    <p>Learn new skills to elevate your career and achieve personal growth. Explore courses and find your passion today.</p>
+    <p>Learn new skills to elevate your career and achieve personal growth. Explore courses and find your passion
+      today.</p>
   </div>
 
   <swiper
@@ -47,7 +56,7 @@
   >
     <swiper-slide v-for="(course, index) in courses" :key="index">
       <div class="course-card">
-        <img :src="course.src" :alt="course.alt" class="course-image" />
+        <img :src="course.src" :alt="course.alt" class="course-image"/>
         <h3>{{ course.title }}</h3>
         <p>{{ course.instructor }}</p>
         <div class="course-rating">
@@ -59,7 +68,7 @@
   </swiper>
 </template>
 <script>
-import { Swiper, SwiperSlide } from 'swiper/vue';
+import {Swiper, SwiperSlide} from 'swiper/vue';
 import 'swiper/swiper-bundle.css';
 
 export default {
@@ -70,17 +79,80 @@ export default {
   data() {
     return {
       courses: [
-        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
-        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
-        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        {
+          src: require('@/assets/tm1.png'),
+          title: 'Course 1',
+          instructor: 'Instructor A',
+          rating: 4.5,
+          reviews: 150,
+          price: '$99.99'
+        },
+        {
+          src: require('@/assets/tm2.png'),
+          title: 'Course 2',
+          instructor: 'Instructor B',
+          rating: 4.7,
+          reviews: 200,
+          price: '$89.99'
+        },
+        {
+          src: require('@/assets/tm3.png'),
+          title: 'Course 3',
+          instructor: 'Instructor C',
+          rating: 4.3,
+          reviews: 120,
+          price: '$79.99'
+        },
         // Add more courses here...
-        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
-        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
-        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        {
+          src: require('@/assets/tm1.png'),
+          title: 'Course 1',
+          instructor: 'Instructor A',
+          rating: 4.5,
+          reviews: 150,
+          price: '$99.99'
+        },
+        {
+          src: require('@/assets/tm2.png'),
+          title: 'Course 2',
+          instructor: 'Instructor B',
+          rating: 4.7,
+          reviews: 200,
+          price: '$89.99'
+        },
+        {
+          src: require('@/assets/tm3.png'),
+          title: 'Course 3',
+          instructor: 'Instructor C',
+          rating: 4.3,
+          reviews: 120,
+          price: '$79.99'
+        },
         // Add more courses here...
-        { src: require('@/assets/tm1.png'), title: 'Course 1', instructor: 'Instructor A', rating: 4.5, reviews: 150, price: '$99.99' },
-        { src: require('@/assets/tm2.png'), title: 'Course 2', instructor: 'Instructor B', rating: 4.7, reviews: 200, price: '$89.99' },
-        { src: require('@/assets/tm3.png'), title: 'Course 3', instructor: 'Instructor C', rating: 4.3, reviews: 120, price: '$79.99' },
+        {
+          src: require('@/assets/tm1.png'),
+          title: 'Course 1',
+          instructor: 'Instructor A',
+          rating: 4.5,
+          reviews: 150,
+          price: '$99.99'
+        },
+        {
+          src: require('@/assets/tm2.png'),
+          title: 'Course 2',
+          instructor: 'Instructor B',
+          rating: 4.7,
+          reviews: 200,
+          price: '$89.99'
+        },
+        {
+          src: require('@/assets/tm3.png'),
+          title: 'Course 3',
+          instructor: 'Instructor C',
+          rating: 4.3,
+          reviews: 120,
+          price: '$79.99'
+        },
         // Add more courses here...
       ],
     };
@@ -134,22 +206,22 @@ const images = [
 }
 
 
-
 /* Menu styling */
 .el-menu-demo {
   background-color: white; /* Transparent to match the topbar */
   position: fixed;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 1000;
   height: 75px; /* Adjust height to make it bigger */
   padding: 0 20px; /* Add horizontal padding */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
+
 .el-menu-demo img {
-  width: 60px ; /* Force the new size */
-  height: auto ; /* Maintain aspect ratio */
+  width: 60px; /* Force the new size */
+  height: auto; /* Maintain aspect ratio */
   object-fit: contain;
 }
 
@@ -160,13 +232,14 @@ const images = [
 /* Remove the active color effect */
 .el-menu-demo .el-menu-item {
   font-size: 18px; /* Adjust font size */
-  color: black !important;/* Default text color */
+  color: black !important; /* Default text color */
   background-color: transparent !important; /* Prevent background highlighting */
   transition: color 0.3s; /* Smooth transition */
 
 }
+
 /* Add hover effect */
-.el-menu-demo .el-menu-item:not(:first-child):hover{
+.el-menu-demo .el-menu-item:not(:first-child):hover {
   color: purple !important; /* Change text color on hover */
 }
 
@@ -181,7 +254,7 @@ const images = [
   text-decoration: none !important;
 }
 
-.carousel-container{
+.carousel-container {
   margin-top: 75px;
   width: 100%; /* Make the carousel span full width */
   display: flex;
@@ -204,7 +277,7 @@ const images = [
 }
 
 .el-carousel__item {
-  height:100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -229,7 +302,6 @@ const images = [
   line-height: 1.6;
   margin-top: 0 !important;
 }
-
 
 
 </style>

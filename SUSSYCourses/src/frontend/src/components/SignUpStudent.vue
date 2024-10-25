@@ -37,6 +37,7 @@
           <input v-model="email" type="email" placeholder="Email"/>
           <input v-model="password" type="password" placeholder="Password"/>
           <input v-model="confirmPassword" type="password" placeholder="Confirm password"/>
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         </div>
         <div class="terms-policy">
           <p>By signing up, you agree to our
@@ -57,24 +58,37 @@
 
 <script setup>
 import {ref} from 'vue';
+import axios from 'axios';
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+const errorMessage = ref('');
 
-const handleSignup = () => {
+const handleSignup = async () => {
+  errorMessage.value = '';
+
   if (password.value !== confirmPassword.value) {
-    console.error("Passwords don't match.");
+    errorMessage.value = 'Passwords do not match';
     return;
   }
 
-  // Send signup request to backend with the role
-  console.log('Sign up with:', name.value, email.value, password.value);
+  const payload = {
+    fullName: name.value,
+    email: email.value,
+    password: password.value,
+    role: 'STUDENT',
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8081/register/student', payload);
+    alert(response.data);
+  } catch (error) {
+    errorMessage.value = error.response.data || 'Registration failed';
+  }
 };
-
 </script>
-
 
 <style scoped>
 .el-menu-demo {
@@ -156,7 +170,7 @@ const handleSignup = () => {
 
 .el-menu-item:nth-child(5) a:hover {
   background-color: #9DCAEB;
-  border: 1px solid #9DCAEB ;
+  border: 1px solid #9DCAEB;
   color: white;
 }
 
@@ -297,5 +311,10 @@ const handleSignup = () => {
   flex-direction: column;
   align-items: center; /* Centers the content horizontally */
   width: 100%;
+}
+
+.error-message {
+  color: red !important;
+  margin-bottom: 0 !important;
 }
 </style>/

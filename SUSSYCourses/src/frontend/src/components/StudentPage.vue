@@ -1,16 +1,16 @@
 <template>
   <el-menu
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-    @select="handleSelect"
+      class="el-menu-demo"
+      mode="horizontal"
+      :ellipsis="false"
+      @select="handleSelect"
   >
     <el-menu-item index="0">
       <router-link to="/">
         <img
-          src="@/assets/logo.png"
-          alt="Element logo"
-        /> 
+            src="@/assets/logo.png"
+            alt="Element logo"
+        />
       </router-link>
     </el-menu-item>
     <el-menu-item index="1">
@@ -20,11 +20,11 @@
       <router-link to="/login">Log in</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/signupstudent">Sign up</router-link>
+      <router-link to="/signup-student">Sign up</router-link>
     </el-menu-item>
     <!-- Sidebar Toggle Profile Picture -->
     <el-menu-item index="4" @click="toggleSidebar" class="sidebar-toggle">
-       <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture" />
+      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
@@ -45,11 +45,11 @@
 
     <!-- Course Boxes Section -->
     <div :class="['course-boxes', {'content-shifted': isSidebarVisible}]">
-      <div 
-        v-for="(course, index) in courses" 
-        :key="index" 
-        class="course-box" 
-        @click="goToCourse(course.link)"
+      <div
+          v-for="(course, index) in courses"
+          :key="index"
+          class="course-box"
+          @click="goToCourse(course.link)"
       >
         <h3>{{ course.title }}</h3>
       </div>
@@ -59,16 +59,16 @@
     <el-aside class="right-sidebar" :class="{'visible': isSidebarVisible}">
       <!-- Profile Section -->
       <div class="profile-section">
-        <img class="profile-pic-large" :src="user.profilePic" alt="Profile Picture" />
+        <img class="profile-pic-large" :src="user.profilePic" alt="Profile Picture"/>
         <h3>{{ user.name }}</h3>
         <p>{{ user.email }}</p>
       </div>
 
       <!-- Sidebar Links -->
       <el-menu
-        class="sidebar-menu"
-        :default-active="activeIndex"
-        @select="handleMenuSelect"
+          class="sidebar-menu"
+          :default-active="activeIndex"
+          @select="handleMenuSelect"
       >
         <el-menu-item index="1">
           <router-link to="/profilepage">User's Profile</router-link>
@@ -89,7 +89,7 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const user = ref({
   name: 'John Doe',
@@ -106,10 +106,10 @@ const toggleSidebar = () => {
 };
 
 const courses = ref([
-  { title: 'Course 1', link: '/coursepage' },
-  { title: 'Course 2', link: '/course/2' }, //
-  { title: 'Course 3', link: '/course/3' }, //
-  { title: 'Course 4', link: '/course/4' }, //
+  {title: 'Course 1', link: '/coursepage'},
+  {title: 'Course 2', link: '/course/2'}, //
+  {title: 'Course 3', link: '/course/3'}, //
+  {title: 'Course 4', link: '/course/4'}, //
 ]);
 
 const goToCourse = (link) => {
@@ -117,7 +117,7 @@ const goToCourse = (link) => {
 };
 
 //const images = [
-  //{ src: require('@/assets/img.png'), alt: 'Image 1' },
+//{ src: require('@/assets/img.png'), alt: 'Image 1' },
 //];
 </script>
 
@@ -217,9 +217,9 @@ const goToCourse = (link) => {
 }
 
 .profile-pic-small {
-  width: 12px; 
+  width: 12px;
   height: 12px;
-  border-radius: 50%; 
+  border-radius: 50%;
   object-fit: cover;
 }
 

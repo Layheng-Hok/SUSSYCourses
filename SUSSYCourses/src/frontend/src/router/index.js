@@ -1,6 +1,6 @@
 // src/router/index.js
 
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import MainPage from "@/components/MainPage.vue"; // Import TopBar component
 import TeacherPage from "@/components/TeacherPage.vue";
 import StudentPage from "@/components/StudentPage.vue";
@@ -13,6 +13,7 @@ import CoursePage from "@/components/CoursePage.vue";
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
 import LogIn from "@/components/LogIn.vue";
+
 const routes = [
     {
         path: '/', // Home route
@@ -45,13 +46,13 @@ const routes = [
         component: CoursePage
     },
     {
-        path: '/signupstudent',
-        name: 'SignUPStudent',
+        path: '/signup-student',
+        name: 'SignUpStudent',
         component: SignUpStudent
     },
     {
-        path: '/signupteacher',
-        name: 'SignUPTeacher',
+        path: '/signup-teacher',
+        name: 'SignUpTeacher',
         component: SignUpTeacher
     },
     {
@@ -59,8 +60,6 @@ const routes = [
         name: 'LogIn',
         component: LogIn
     },
-
-
 
 
 ];
