@@ -48,119 +48,85 @@
   </div>
 
   <swiper
-      :slides-per-view="4"
-      :space-between="20"
-      navigation
-      pagination
-      class="course-swiper"
+      :modules="[Navigation]"
+      class="mySwiper"
+      @swiper="handleSwiper"
   >
-    <swiper-slide v-for="(course, index) in courses" :key="index">
+    <swiper-slide>
       <div class="course-card">
-        <img :src="course.src" :alt="course.alt" class="course-image"/>
-        <h3>{{ course.title }}</h3>
-        <p>{{ course.instructor }}</p>
-        <div class="course-rating">
-          <span>{{ course.rating }} ★ ({{ course.reviews }})</span>
-        </div>
-        <div class="course-price">{{ course.price }}</div>
+        <img src="@/assets/tm1.png" alt="Course 1" class="course-image"/>
+        <h3>The Complete Web Development Bootcamp</h3>
+        <p>Dr. Angela Yu, Developer and Lead Instructor</p>
+        <p class="rating">4.7 ⭐ (408,046)</p>
+        <p class="price">$16.99 <span class="old-price">$89.99</span></p>
+        <button class="enroll-button">Enroll Now</button>
       </div>
     </swiper-slide>
+
+    <swiper-slide>
+      <div class="course-card">
+        <img src="@/assets/tm2.png" alt="Course 2" class="course-image"/>
+        <h3>The Web Developer Bootcamp 2024</h3>
+        <p>Colt Steele</p>
+        <p class="rating">4.7 ⭐ (276,491)</p>
+        <p class="price">$27.99 <span class="old-price">$149.99</span></p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
+    </swiper-slide>
+
+    <swiper-slide>
+      <div class="course-card">
+        <img src="@/assets/tm1.png" alt="Course 3" class="course-image"/>
+        <h3>Web Development Masterclass - Online Certification</h3>
+        <p>YouAccel Training</p>
+        <p class="rating">4.3 ⭐ (9,981)</p>
+        <p class="price">$13.99 <span class="old-price">$69.99</span></p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
+    </swiper-slide>
+
+    <swiper-slide>
+      <div class="course-card">
+        <img src="@/assets/tm3.png" alt="Course 4" class="course-image"/>
+        <h3>Practical Web Development: 22 Courses in 1</h3>
+        <p>Creative Online School</p>
+        <p class="rating">4.2 ⭐ (4,352)</p>
+        <p class="price">$13.99 <span class="old-price">$54.99</span></p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
+    </swiper-slide>
+    <div v-if="!atStart" class="swiper-button-prev" @click="goToPrev"></div>
+    <div v-if="!atEnd" class="swiper-button-next" @click="goToNext"></div>
   </swiper>
 </template>
-<script>
-import {Swiper, SwiperSlide} from 'swiper/vue';
-import 'swiper/swiper-bundle.css';
-
-export default {
-  components: {
-    Swiper,
-    SwiperSlide,
-  },
-  data() {
-    return {
-      courses: [
-        {
-          src: require('@/assets/tm1.png'),
-          title: 'Course 1',
-          instructor: 'Instructor A',
-          rating: 4.5,
-          reviews: 150,
-          price: '$99.99'
-        },
-        {
-          src: require('@/assets/tm2.png'),
-          title: 'Course 2',
-          instructor: 'Instructor B',
-          rating: 4.7,
-          reviews: 200,
-          price: '$89.99'
-        },
-        {
-          src: require('@/assets/tm3.png'),
-          title: 'Course 3',
-          instructor: 'Instructor C',
-          rating: 4.3,
-          reviews: 120,
-          price: '$79.99'
-        },
-        // Add more courses here...
-        {
-          src: require('@/assets/tm1.png'),
-          title: 'Course 1',
-          instructor: 'Instructor A',
-          rating: 4.5,
-          reviews: 150,
-          price: '$99.99'
-        },
-        {
-          src: require('@/assets/tm2.png'),
-          title: 'Course 2',
-          instructor: 'Instructor B',
-          rating: 4.7,
-          reviews: 200,
-          price: '$89.99'
-        },
-        {
-          src: require('@/assets/tm3.png'),
-          title: 'Course 3',
-          instructor: 'Instructor C',
-          rating: 4.3,
-          reviews: 120,
-          price: '$79.99'
-        },
-        // Add more courses here...
-        {
-          src: require('@/assets/tm1.png'),
-          title: 'Course 1',
-          instructor: 'Instructor A',
-          rating: 4.5,
-          reviews: 150,
-          price: '$99.99'
-        },
-        {
-          src: require('@/assets/tm2.png'),
-          title: 'Course 2',
-          instructor: 'Instructor B',
-          rating: 4.7,
-          reviews: 200,
-          price: '$89.99'
-        },
-        {
-          src: require('@/assets/tm3.png'),
-          title: 'Course 3',
-          instructor: 'Instructor C',
-          rating: 4.3,
-          reviews: 120,
-          price: '$79.99'
-        },
-        // Add more courses here...
-      ],
-    };
-  },
-};
-</script>
 
 <script setup>
+import {ref} from 'vue';
+import {Swiper, SwiperSlide} from 'swiper/vue';
+import {Navigation} from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+const atStart = ref(true);  // Tracks if at the first slide
+const atEnd = ref(false);   // Tracks if at the last slide
+const swiperInstance = ref(null);
+
+const handleSwiper = (swiper) => {
+  swiperInstance.value = swiper;
+  swiper.on('slideChange', () => {
+    atStart.value = swiper.isBeginning;
+    atEnd.value = swiper.isEnd;
+  });
+};
+
+const goToPrev = () => {
+  swiperInstance.value?.slidePrev();
+};
+
+const goToNext = () => {
+  swiperInstance.value?.slideNext();
+};
+
 const handleSelect = (index) => {
   console.log(`Selected menu item index: ${index}`);
   // Add routing logic or other actions here based on the selected index
@@ -170,58 +136,24 @@ const images = [
   {src: require('@/assets/img.png'), alt: 'Image 1'},
   {src: require('@/assets/img_1.png'), alt: 'Image 2'},
 ];
-
-
 </script>
 
 <style scoped>
-
-.course-swiper {
-  width: 80%;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-
-.course-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  transition: box-shadow 0.3s;
-}
-
-.course-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.course-image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-
-/* Menu styling */
 .el-menu-demo {
-  background-color: white; /* Transparent to match the topbar */
+  background-color: white;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  height: 75px; /* Adjust height to make it bigger */
-  padding: 0 20px; /* Add horizontal padding */
+  height: 75px;
+  padding: 0 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .el-menu-demo img {
-  width: 60px; /* Force the new size */
-  height: auto; /* Maintain aspect ratio */
+  width: 60px;
+  height: auto;
   object-fit: contain;
 }
 
@@ -229,27 +161,24 @@ const images = [
   margin-right: auto;
 }
 
-/* Remove the active color effect */
 .el-menu-demo .el-menu-item {
-  font-size: 18px; /* Adjust font size */
-  color: black !important; /* Default text color */
-  background-color: transparent !important; /* Prevent background highlighting */
-  transition: color 0.3s; /* Smooth transition */
+  font-size: 18px;
+  color: black !important;
+  background-color: transparent !important;
+  transition: color 0.3s;
+  font-family: 'Aptos Narrow', sans-serif;
 
 }
 
-/* Add hover effect */
 .el-menu-demo .el-menu-item:not(:first-child):hover {
-  color: purple !important; /* Change text color on hover */
+  color: #74B3E3 !important;
 }
 
-/* Prevent the background effect on selection */
 .el-menu-item.is-active {
   background-color: transparent !important;
   border-bottom: none !important;
 }
 
-/* Remove underline from all router links inside the menu */
 .el-menu-demo .el-menu-item a {
   text-decoration: none !important;
 }
@@ -259,20 +188,18 @@ const images = [
   width: 100%; /* Make the carousel span full width */
   display: flex;
   justify-content: center;
-
 }
 
 .custom-carousel {
-  width: 90%; /* Adjust horizontal width */
-  border-radius: 8px; /* Slight rounding for modern feel */
+  width: 90%;
+  border-radius: 8px;
   overflow: hidden;
 }
-
 
 .carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the image fits the container without distortion */
+  object-fit: cover;
   border-radius: 8px;
 }
 
@@ -281,27 +208,133 @@ const images = [
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: transparent; /* Optional: removes the background color */
+  background-color: transparent;
 }
 
 .intro-section {
   text-align: left;
-  margin: 50px auto 50px 100px; /* Adjust spacing top right bottom left*/
-  max-width: 800px; /* Optional: limit the text width */
+  margin: 50px auto 50px 100px;
+  max-width: 800px;
 }
 
 .intro-section h1 {
   font-size: 36px;
   font-weight: bold;
-  margin-bottom: 5px !important;
+  margin-bottom: 10px !important;
+  margin-top: 90px;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .intro-section p {
   font-size: 18px;
-  color: #666; /* Subtle color for the description */
+  color: black;
   line-height: 1.6;
   margin-top: 0 !important;
+  margin-bottom: 80px;
 }
 
+.el-menu-item:nth-child(4) a {
+  border: 1px solid black;
+  padding: 5px 16px;
+  color: black;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 550;
+  background-color: white;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.el-menu-item:nth-child(4) a:hover {
+  background-color: #74B3E3;
+  border: 1px solid #74B3E3;
+  color: white;
+}
+
+.el-menu-item:nth-child(5) a {
+  border: 1px solid #74B3E3;
+  background-color: #74B3E3;
+  color: white;
+  padding: 5px 10px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.el-menu-item:nth-child(5) a:hover {
+  background-color: #9DCAEB;
+  border: 1px solid #9DCAEB;
+  color: white;
+}
+
+.el-menu-item:nth-child(4) {
+  margin-right: -25px; /* Adjust the space between 'Log in' and 'Sign up' */
+}
+
+.el-menu-item:nth-child(5) {
+  margin-left: 0; /* Adjust the space between 'Log in' and 'Sign up' */
+}
+
+
+.mySwiper {
+  height: 370px;
+  margin-top: 100px;
+  margin-right: -9px;
+  margin-left: -9px;
+}
+
+.slide-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+  font-weight: bold;
+  background-color: #333;
+  border-radius: 50%; /* Make it circular */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: #444;
+  transform: scale(1.1);
+}
+
+.swiper-button-next {
+  right: 280px;
+}
+
+.swiper-button-prev {
+  left: 300px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  z-index: 10;
+}
+
+/* Change arrow icon size */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px;
+}
 
 </style>

@@ -22,7 +22,7 @@
       <router-link to="/login">Log in</router-link>
     </el-menu-item>
     <el-menu-item index="4">
-      <router-link to="/signupstudent">Sign up</router-link>
+      <router-link to="/signup-student">Sign up</router-link>
     </el-menu-item>
   </el-menu>
 
