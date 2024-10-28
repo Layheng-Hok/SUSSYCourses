@@ -118,13 +118,12 @@ const handleSignup = async () => {
   margin-right: auto;
 }
 
-/* Remove the active color effect */
 .el-menu-demo .el-menu-item {
   font-size: 18px;
   color: black !important;
   background-color: transparent !important;
   transition: color 0.3s;
-
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 /* Add hover effect */
@@ -143,34 +142,36 @@ const handleSignup = async () => {
   text-decoration: none !important;
 }
 
-
 .el-menu-item:nth-child(4) a {
   border: 1px solid black;
-  padding: 5px 15px;
+  padding: 5px 16px;
   color: black;
   height: 30px;
   line-height: 30px;
-  font-weight: bold;
+  font-weight: 550;
   background-color: white;
   transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .el-menu-item:nth-child(4) a:hover {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
-
 }
 
 .el-menu-item:nth-child(5) a {
   border: 1px solid #74B3E3;
   background-color: #74B3E3;
   color: white;
-  padding: 5px 15px;
+  padding: 5px 10px;
   height: 30px;
   line-height: 30px;
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .el-menu-item:nth-child(5) a:hover {
@@ -179,6 +180,13 @@ const handleSignup = async () => {
   color: white;
 }
 
+.el-menu-item:nth-child(4) {
+  margin-right: -25px; /* Adjust the space between 'Log in' and 'Sign up' */
+}
+
+.el-menu-item:nth-child(5) {
+  margin-left: 0; /* Adjust the space between 'Log in' and 'Sign up' */
+}
 
 .main-container {
   margin-top: 100px;
@@ -189,17 +197,15 @@ const handleSignup = async () => {
 .content-wrapper {
   display: flex;
   align-items: center;
-  gap: 150px; /* Space distribution */
+  gap: 130px; /* Space distribution */
   max-width: 1200px;
   margin: 0 auto; /* Center the content */
-  padding: 25px;
 }
 
 .signup-form {
   background-color: transparent;
   max-width: 400px;
 }
-
 
 .signup-form input, .signup-form select {
   width: 100%;
@@ -252,14 +258,12 @@ const handleSignup = async () => {
   cursor: pointer; /* Pointer on hover */
   font-weight: bold;
   margin-top: 12px;
-
 }
 
 .main-container h1 {
   margin-bottom: 10px;
   color: black;
   font-family: 'Aptos Narrow', sans-serif;
-
 }
 
 .main-container h3 {
@@ -274,7 +278,6 @@ const handleSignup = async () => {
   line-height: 1.6;
   margin-top: 0 !important;
   margin-bottom: 30px;
-
 }
 
 .terms-policy p {
@@ -284,12 +287,10 @@ const handleSignup = async () => {
   margin-top: 12px !important;
   margin-bottom: 10px !important;
   font-family: 'Aptos Narrow', sans-serif;
-
 }
 
 .sign-up {
   width: 500px;
-
 }
 
 .login-link {
@@ -299,14 +300,12 @@ const handleSignup = async () => {
   margin-left: 2px; /* Add some space between the text and the link */
 }
 
-
 .terms-link {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
   margin-left: 2px;
 }
-
 
 .privacy-link {
   color: #74B3E3;

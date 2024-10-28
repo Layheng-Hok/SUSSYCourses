@@ -33,11 +33,33 @@
         <h1>Sign up and start learning</h1>
         <p>Join thousands of learners on their journey to success!</p>
         <div class="signup-form">
-          <input v-model="name" type="text" placeholder="Full name"/>
-          <input v-model="email" type="email" placeholder="Email"/>
-          <input v-model="password" type="password" placeholder="Password"/>
-          <input v-model="confirmPassword" type="password" placeholder="Confirm password"/>
-          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+          <input v-model="name" type="text" placeholder="Full name" @input="clearError('nameError')"
+                 @blur="capitalizeName"/>
+          <span v-if="nameError" class="field-error">{{ nameError }}</span>
+          <div class="email-input-wrapper">
+            <input v-model="email" type="email" placeholder="Email"
+                   @input="() => { clearError('emailError'); showSuggestions(); }"
+                   @blur="emailSuggestions.value = []; emptyEmail()"
+                   @keydown="handleKeydown"/>
+            <!-- Show suggestions dropdown -->
+            <ul v-if="emailSuggestions.length" class="suggestions-list">
+              <li v-for="(suggestion, index) in emailSuggestions"
+                  :key="suggestion"
+                  @click="selectSuggestion(suggestion)"
+                  :class="{ 'highlighted': index === selectedIndex }">
+                {{ email.split('@')[0] + '@' + suggestion }}
+              </li>
+            </ul>
+            <span v-if="emailError" class="field-error">{{ emailError }}</span>
+          </div>
+
+          <input v-model="password" type="password" placeholder="Password" @input="clearError('passwordError')"
+                 @blur="emptyPassword()"
+          />
+          <span v-if="passwordError" class="field-error">{{ passwordError }}</span>
+          <input v-model="confirmPassword" type="password" placeholder="Confirm password"
+                 @input="clearError('confirmPasswordError')" @blur="emptyConfirmPassword()"/>
+          <span v-if="confirmPasswordError" class="field-error">{{ confirmPasswordError }}</span>
         </div>
         <div class="terms-policy">
           <p>By signing up, you agree to our
@@ -62,15 +84,131 @@ import axios from 'axios';
 
 const name = ref('');
 const email = ref('');
+const emailSuggestions = ref([]);
+const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'sustech.edu.cn'];
+const selectedIndex = ref(-1); // Track the highlighted suggestion
 const password = ref('');
 const confirmPassword = ref('');
+
+const nameError = ref('');
+const emailError = ref('');
+const passwordError = ref('');
+const confirmPasswordError = ref('');
 const errorMessage = ref('');
 
-const handleSignup = async () => {
-  errorMessage.value = '';
+const clearError = (field) => {
+  if (field === 'nameError') nameError.value = '';
+  if (field === 'emailError') emailError.value = '';
+  if (field === 'passwordError') passwordError.value = '';
+  if (field === 'confirmPasswordError') confirmPasswordError.value = '';
+};
 
-  if (password.value !== confirmPassword.value) {
-    errorMessage.value = 'Passwords do not match';
+const capitalizeName = () => {
+  if (!name.value.trim()) {
+    nameError.value = 'Please enter your full name';
+    return;
+  }
+  const validName = /^[\u4e00-\u9fa5a-zA-Z\s]+$/;
+  if (!validName.test(name.value)) {
+    nameError.value = 'Name should only contain letters (English or Chinese)';
+  } else {
+    name.value = name.value.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+};
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/*
+username@.com (domain part cannot start with a period)
+@domain.com (missing username part)
+user@domaincom (missing dot in the domain part)
+ */
+const emptyEmail = () => {
+  if (!email.value.trim()) {
+    emailError.value = 'Please enter your email';
+  } else if (!emailPattern.test(email.value)) {
+    emailError.value = 'Please enter a valid email address';
+  } else {
+    emailError.value = ''; // Clear error if the email is valid
+  }
+};
+
+const emptyPassword = () => {
+  if (!password.value.trim()) {
+    passwordError.value = 'Please enter a password';
+    return;
+  }
+};
+
+const emptyConfirmPassword = () => {
+  if (!confirmPassword.value.trim()) {
+    confirmPasswordError.value = 'Please confirm your password';
+    return;
+  }
+};
+
+const showSuggestions = () => {
+  const atIndex = email.value.indexOf('@');
+
+  if (atIndex === -1) {
+    emailSuggestions.value = [];
+  } else if (atIndex === email.value.length - 1) {
+    // "@" is at the end, show all domains
+    emailSuggestions.value = commonDomains;
+  } else {
+    // Filter domains based on what is typed after "@"
+    const typedDomain = email.value.slice(atIndex + 1).toLowerCase();
+    emailSuggestions.value = commonDomains.filter(domain =>
+        domain.startsWith(typedDomain)
+    );
+  }
+};
+
+const handleKeydown = (event) => {
+  if (!emailSuggestions.value.length) return;
+  if (event.key === 'ArrowDown') {
+    selectedIndex.value = (selectedIndex.value + 1) % emailSuggestions.value.length;
+    event.preventDefault();
+  } else if (event.key === 'ArrowUp') {
+    selectedIndex.value = (selectedIndex.value - 1 + emailSuggestions.value.length) % emailSuggestions.value.length;
+    event.preventDefault();
+  } else if (event.key === 'Enter' && selectedIndex.value > -1) {
+    selectSuggestion(emailSuggestions.value[selectedIndex.value]);
+    event.preventDefault();
+  }
+};
+
+const selectSuggestion = (suggestion) => {
+  const atIndex = email.value.indexOf('@');
+  email.value = email.value.slice(0, atIndex + 1) + suggestion;
+  emailSuggestions.value = []; // Clear suggestions after selection
+  selectedIndex.value = -1; // Reset selected index
+};
+
+const handleSignup = async () => {
+  //errorMessage.value = '';
+  nameError.value = '';
+  emailError.value = '';
+  passwordError.value = '';
+  confirmPasswordError.value = '';
+
+  if (!name.value) {
+    nameError.value = 'Please enter your full name';
+  }
+  if (!email.value) {
+    emailError.value = 'Please enter your email';
+  }
+  if (!password.value) {
+    passwordError.value = 'Please enter a password';
+  }
+  if (!confirmPassword.value) {
+    confirmPasswordError.value = 'Please confirm your password';
+  }
+  if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+    confirmPasswordError.value = 'Passwords do not match';
+  }
+
+  // If there are any errors, stop submission
+  if (nameError.value || emailError.value || passwordError.value || confirmPasswordError.value) {
     return;
   }
 
@@ -117,13 +255,12 @@ const handleSignup = async () => {
   margin-right: auto;
 }
 
-/* Remove the active color effect */
 .el-menu-demo .el-menu-item {
   font-size: 18px;
   color: black !important;
   background-color: transparent !important;
   transition: color 0.3s;
-
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 /* Add hover effect */
@@ -142,34 +279,36 @@ const handleSignup = async () => {
   text-decoration: none !important;
 }
 
-
 .el-menu-item:nth-child(4) a {
   border: 1px solid black;
-  padding: 5px 15px;
+  padding: 5px 16px;
   color: black;
   height: 30px;
   line-height: 30px;
-  font-weight: bold;
+  font-weight: 550;
   background-color: white;
   transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .el-menu-item:nth-child(4) a:hover {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
-
 }
 
 .el-menu-item:nth-child(5) a {
   border: 1px solid #74B3E3;
   background-color: #74B3E3;
   color: white;
-  padding: 5px 15px;
+  padding: 5px 10px;
   height: 30px;
   line-height: 30px;
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .el-menu-item:nth-child(5) a:hover {
@@ -178,6 +317,13 @@ const handleSignup = async () => {
   color: white;
 }
 
+.el-menu-item:nth-child(4) {
+  margin-right: -25px; /* Adjust the space between 'Log in' and 'Sign up' */
+}
+
+.el-menu-item:nth-child(5) {
+  margin-left: 0; /* Adjust the space between 'Log in' and 'Sign up' */
+}
 
 .main-container {
   margin-top: 100px;
@@ -188,17 +334,16 @@ const handleSignup = async () => {
 .content-wrapper {
   display: flex;
   align-items: center;
-  gap: 150px; /* Space distribution */
+  gap: 130px; /* Space distribution */
   max-width: 1200px;
   margin: 0 auto; /* Center the content */
-  padding: 45px;
+  padding: 35px;
 }
 
 .signup-form {
   background-color: transparent;
   max-width: 400px;
 }
-
 
 .signup-form input, .signup-form select {
   width: 100%;
@@ -228,7 +373,6 @@ const handleSignup = async () => {
   padding-bottom: 15px;
 }
 
-
 .signup-form input:focus::placeholder,
 .signup-form input:not(:placeholder-shown)::placeholder {
   top: 5px;
@@ -249,8 +393,6 @@ const handleSignup = async () => {
   cursor: pointer; /* Pointer on hover */
   font-weight: bold;
   margin-top: 20px !important;
-
-
 }
 
 .main-container h1 {
@@ -283,7 +425,6 @@ const handleSignup = async () => {
 
 .sign-up {
   width: 500px;
-
 }
 
 .login-link {
@@ -293,14 +434,12 @@ const handleSignup = async () => {
   margin-left: 2px; /* Add some space between the text and the link */
 }
 
-
 .terms-link {
   color: #74B3E3;
   text-decoration: underline;
   font-weight: bold;
   margin-left: 2px;
 }
-
 
 .privacy-link {
   color: #74B3E3;
@@ -317,8 +456,59 @@ const handleSignup = async () => {
   width: 100%;
 }
 
-.error-message {
-  color: red !important;
-  margin-bottom: 0 !important;
+.field-error {
+  color: #D32F2F;
+  font-size: 14px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
+
+.field-error::before {
+  content: "⚠️"; /* Adding an icon for a modern touch */
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.email-input-wrapper {
+  position: relative;
+}
+
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 180px; /* Set a max height for scrolling */
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Softer shadow for depth */
+  transition: box-shadow 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
+}
+
+.suggestions-list li {
+  padding: 12px 16px; /* Increased padding for better spacing */
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
+  color: black;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.suggestions-list li:not(:last-child) {
+  border-bottom: 1px solid #eee; /* Light border between items */
+}
+
+.suggestions-list li:hover,
+.suggestions-list .highlighted {
+  background-color: #f7faff; /* Light blue background for hover and highlight */
+  color: #0066cc; /* Change text color on hover */
+  font-weight: bold;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
 </style>/

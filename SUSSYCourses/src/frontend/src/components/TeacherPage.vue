@@ -276,7 +276,6 @@ const handleClick = (tab, event) => {
   background-color: transparent !important;
   transition: color 0.3s;
   font-family: 'Aptos Narrow', sans-serif;
-
 }
 
 .el-menu-demo .el-menu-item:not(:first-child):hover {
