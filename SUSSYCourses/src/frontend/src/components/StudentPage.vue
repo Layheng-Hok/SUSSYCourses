@@ -106,10 +106,10 @@ const toggleSidebar = () => {
 };
 
 const courses = ref([
-  {title: 'Course 1', link: '/coursepage'},
-  {title: 'Course 2', link: '/course/2'}, //
-  {title: 'Course 3', link: '/course/3'}, //
-  {title: 'Course 4', link: '/course/4'}, //
+  {title: 'React Course', link: '/coursepage'},
+  {title: 'NA', link: '/course/2'}, //
+  {title: 'NA', link: '/course/3'}, //
+  {title: 'NA', link: '/course/4'}, //
 ]);
 
 const goToCourse = (link) => {
@@ -276,5 +276,7 @@ const goToCourse = (link) => {
   display: flex;
   align-items: center;
 }
+
+
 </style>
 

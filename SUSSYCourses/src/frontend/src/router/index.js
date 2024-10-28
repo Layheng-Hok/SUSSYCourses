@@ -9,7 +9,6 @@ import AdminPage from "@/components/AdminPage.vue";
 import ProfilePage from "@/components/ProfilePage.vue";
 import CoursePage from "@/components/CoursePage.vue";
 
-
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
 import LogIn from "@/components/LogIn.vue";
