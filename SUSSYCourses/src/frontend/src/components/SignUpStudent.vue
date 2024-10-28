@@ -509,6 +509,4 @@ const handleSignup = async () => {
   font-weight: bold;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-
-
 </style>/
