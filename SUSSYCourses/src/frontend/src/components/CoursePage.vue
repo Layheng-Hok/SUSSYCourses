@@ -15,15 +15,15 @@
     <!-- Course Description Section -->
     <el-card class="course-description" shadow="hover">
       <h2>Course Description</h2>
-      <!-- <el-row> -->
-        <!-- <el-col :span="4"> -->
-          <img src= "/assets/Courses/course.jpg" alt="Course Image" fit="cover" />
-        <!-- </el-col> -->
-        <!-- <el-col :span="20"> -->
-          <p><strong>{{ courseName }}</strong></p>
-          <p class="description">{{ courseDescription }}</p>
-        <!-- </el-col> -->
-      <!-- </el-row> -->
+      <img src="/assets/Courses/course.jpg" alt="Course Image" fit="cover" />
+      <p><strong>{{ courseName }}</strong></p>
+      <p class="description">{{ courseDescription }}</p>
+      
+      <!-- Like Button and Total Likes -->
+      <div class="like-section">
+        <el-button type="primary" icon="el-icon-thumb" @click="likeCourse">Like</el-button>
+        <span>Total Likes: {{ likes }}</span>
+      </div>
     </el-card>
 
     <!-- Instructor Info Section -->
@@ -87,8 +87,8 @@
 
     <!-- Comment Section -->
     <el-card class="comment-section" shadow="hover">
-      <h2>Comments</h2>
-      <el-input type="textarea" placeholder="Add a comment..." v-model="newComment" rows="3" />
+      <h2>Comments ({{ comments.length }})</h2>
+      <el-input class = "comment-input" type="textarea" placeholder="Add a comment..." v-model="newComment" rows="3" />
       <el-button type="primary" @click="submitComment">Submit</el-button>
 
       <div class="comments">
@@ -136,6 +136,11 @@ const comments = ref([
 ]);
 const newComment = ref("");
 
+const likes = ref(0);
+const likeCourse = () => {
+  likes.value += 1;
+};
+
 const materialIcon = (type) => {
   switch (type) {
     case 'pdf': return Document;
@@ -175,7 +180,14 @@ const submitComment = () => {
 .course-description, .instructor-info, .course-content, .comment-section {
   margin-top: 40px;
 }
+.like-section {
+  margin: auto ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
+}
 .chapter {
   margin-top: 10px;
 }
@@ -191,6 +203,9 @@ const submitComment = () => {
   text-align: left;
 }
 
+.comment-input {
+  margin-bottom: 20px;
+}
 .timestamp {
   font-size: 12px;
   color: #888;
