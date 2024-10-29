@@ -13,7 +13,7 @@
           >
             <template #suffix>
               <el-button @click="toggleShowPassword" type="text" size="small">
-                <i :class="showPassword ? 'el-icon-view' : 'el-icon-view-off'"></i>
+                <component :is="showPassword ? Hide : View" style="width: 1em; height: 1em" />
               </el-button>
             </template>
           </el-input>
@@ -25,7 +25,13 @@
             :type="showPassword ? 'text' : 'password'"
             v-model="passwordForm.confirmPassword"
             placeholder="Confirm your new password"
-          />
+          >
+            <template #suffix>
+              <el-button @click="toggleShowPassword" type="text" size="small">
+                <component :is="showPassword ? Hide : View" style="width: 1em; height: 1em"/>
+              </el-button>
+            </template>
+          </el-input>
         </el-form-item>
   
         <el-form-item>
@@ -38,14 +44,13 @@
   <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-import { ArrowLeft } from '@element-plus/icons-vue';
-
-
-const router = useRouter(); 
-
-const goBack = () => {
-  router.back();
-};
+  import { ArrowLeft, View, Hide } from '@element-plus/icons-vue';
+  
+  const router = useRouter(); 
+  
+  const goBack = () => {
+    router.back();
+  };
   
   const passwordForm = ref({
     newPassword: '',
@@ -69,26 +74,27 @@ const goBack = () => {
   </script>
   
   <style scoped>
-   .back-button {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #007bff;
-  font-weight: bold;
-  margin: 1% 0 0 1%;
-  font-family: 'Aptos Narrow', sans-serif;
-}
-
-.back-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 5px;
-  margin-right: 5px;
-}
-
-.back-button:hover {
-  color: #0056b3;
-}
+  .back-button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+    margin: 1% 0 0 1%;
+    font-family: 'Aptos Narrow', sans-serif;
+  }
+  
+  .back-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 5px;
+    margin-right: 5px;
+  }
+  
+  .back-button:hover {
+    color: #0056b3;
+  }
+  
   .profile-container {
     max-width: 600px;
     margin: 0 auto;
