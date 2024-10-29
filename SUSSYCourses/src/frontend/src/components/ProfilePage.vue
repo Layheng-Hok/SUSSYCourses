@@ -1,4 +1,7 @@
 <template>
+<div class="back-button" @click="goBack">
+      <ArrowLeft class="back-icon" /> Back
+    </div>
   <div class="profile-container">
     <!-- Profile Picture -->
     <div class="profile-picture-section">
@@ -16,7 +19,15 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { ArrowLeft } from '@element-plus/icons-vue';
 
+
+const router = useRouter(); 
+
+const goBack = () => {
+  router.back();
+};
 const user = ref({
   name: 'John Doe',
   email: 'john.doe@example.com',
@@ -26,6 +37,26 @@ const user = ref({
 </script>
 
 <style scoped>
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #007bff;
+  font-weight: bold;
+  margin: 1% 0 0 1%;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 5px;
+  margin-right: 5px;
+}
+
+.back-button:hover {
+  color: #0056b3;
+}
 .profile-container {
   max-width: 600px;
   margin: 0 auto;

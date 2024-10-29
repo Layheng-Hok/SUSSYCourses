@@ -3,7 +3,7 @@
       <ArrowLeft class="back-icon" /> Back
     </div>
     <div class="intro-section">
-      <h1>Notifications:</h1>
+      <h1>Help and Support:</h1>
     </div>
   
   

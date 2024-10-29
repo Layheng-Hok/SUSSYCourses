@@ -17,7 +17,7 @@
     </el-menu>
   
     <div class="intro-section">
-      <h1>404 PAGE NOT FOUNDDD</h1>
+      <h1>404 PAGE NOT FOUND</h1>
     </div>
   
   

@@ -25,7 +25,7 @@
           <router-link to="/teacherpage">Teach on SUSSY</router-link>
         </el-menu-item>
         <el-menu-item index="6">
-          <router-link to="/help">Help and Support</router-link>
+          <router-link to="/helpsupport">Help and Support</router-link>
         </el-menu-item>
         <el-menu-item index="7">
           <router-link to="/">Log Out</router-link>

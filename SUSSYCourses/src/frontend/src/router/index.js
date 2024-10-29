@@ -11,6 +11,7 @@ import CoursePage from "@/components/CoursePage.vue";
 import EditProfile from '@/components/EditProfile.vue';
 import AccountSecurity from '@/components/AccountSecurity.vue';
 import Notifications from '@/components/Notifications.vue';
+import HelpSupport from '@/components/HelpSupport.vue';
 
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
@@ -57,6 +58,11 @@ const routes = [
         path: '/notifications',
         name: 'Notifications',
         component: Notifications
+    },
+    {
+        path: '/helpsupport',
+        name: 'HelpSupport',
+        component: HelpSupport
     },
     {
         path: '/coursepage',
