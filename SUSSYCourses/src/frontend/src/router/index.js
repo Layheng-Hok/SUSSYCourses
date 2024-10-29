@@ -8,6 +8,9 @@ import AdminPage from "@/components/AdminPage.vue";
 
 import ProfilePage from "@/components/ProfilePage.vue";
 import CoursePage from "@/components/CoursePage.vue";
+import EditProfile from '@/components/EditProfile.vue';
+import AccountSecurity from '@/components/AccountSecurity.vue';
+import Notifications from '@/components/Notifications.vue';
 
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
@@ -39,6 +42,21 @@ const routes = [
         path: '/profilepage',
         name: 'ProfilePage',
         component: ProfilePage
+    },
+    {
+        path: '/editprofile',
+        name: 'EditProfile',
+        component: EditProfile
+    },
+    {
+        path: '/accountsecurity',
+        name: 'AccountSecurity',
+        component: AccountSecurity
+    },
+    {
+        path: '/notifications',
+        name: 'Notifications',
+        component: Notifications
     },
     {
         path: '/coursepage',

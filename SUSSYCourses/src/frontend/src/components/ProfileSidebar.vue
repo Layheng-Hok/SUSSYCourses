@@ -10,18 +10,24 @@
       <!-- Sidebar Links -->
       <el-menu class="sidebar-menu" :default-active="activeIndex" @select="handleMenuSelect">
         <el-menu-item index="1">
-          <router-link to="/profilepage">Edit Profile</router-link>
+          <router-link to="/profilepage">View Profile</router-link>
         </el-menu-item>
         <el-menu-item index="2">
-          <router-link to="/notifications">Notifications</router-link>
+          <router-link to="/editprofile">Edit Profile</router-link>
         </el-menu-item>
         <el-menu-item index="3">
-          <router-link to="/teacherpage">Teach on SUSSY</router-link>
+          <router-link to="/accountsecurity">Account Security</router-link>
         </el-menu-item>
         <el-menu-item index="4">
-          <router-link to="/help">Help and Support</router-link>
+          <router-link to="/notifications">Notifications</router-link>
         </el-menu-item>
         <el-menu-item index="5">
+          <router-link to="/teacherpage">Teach on SUSSY</router-link>
+        </el-menu-item>
+        <el-menu-item index="6">
+          <router-link to="/help">Help and Support</router-link>
+        </el-menu-item>
+        <el-menu-item index="7">
           <router-link to="/">Log Out</router-link>
         </el-menu-item>
       </el-menu>
