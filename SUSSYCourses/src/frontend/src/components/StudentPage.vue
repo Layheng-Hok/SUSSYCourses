@@ -1,16 +1,9 @@
 <template>
-  <el-menu
-      class="el-menu-demo"
-      mode="horizontal"
-      :ellipsis="false"
-      @select="handleSelect"
-  >
+  <!-- Top Navigation Menu -->
+  <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img
-            src="@/assets/logo.png"
-            alt="Element logo"
-        />
+        <img src="@/assets/logo.png" alt="Element logo" />
       </router-link>
     </el-menu-item>
     <el-menu-item index="1">
@@ -22,103 +15,74 @@
     <el-menu-item index="3">
       <router-link to="/signup-student">Sign up</router-link>
     </el-menu-item>
-    <!-- Sidebar Toggle Profile Picture -->
     <el-menu-item index="4" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture"/>
+      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture" />
     </el-menu-item>
   </el-menu>
 
   <div class="page-container">
-    <!-- Carousel Section -->
-    <!-- <div :class="['carousel-container', {'content-shifted': isSidebarVisible}]">
-      <el-carousel
-        motion-blur
-        :interval="5000"
-        arrow="never"
-        class="custom-carousel"
-      >
-        <el-carousel-item v-for="(img, index) in images" :key="index">
-          <img :src="img.src" :alt="img.alt" class="carousel-image" />
-        </el-carousel-item>
-      </el-carousel>
-    </div> -->
+    <!-- Overlay for Sidebar Toggle -->
+    <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
 
     <!-- Course Boxes Section -->
-    <div :class="['course-boxes', {'content-shifted': isSidebarVisible}]">
+    <div :class="['course-boxes', { 'content-shifted': isSidebarVisible }]">
       <div
-          v-for="(course, index) in courses"
-          :key="index"
-          class="course-box"
-          @click="goToCourse(course.link)"
+        v-for="(course, index) in courses"
+        :key="index"
+        class="course-box"
+        @click="goToCourse(course.link)"
       >
         <h3>{{ course.title }}</h3>
       </div>
     </div>
 
-    <!-- Right Sidebar -->
-    <el-aside class="right-sidebar" :class="{'visible': isSidebarVisible}">
-      <!-- Profile Section -->
-      <div class="profile-section">
-        <img class="profile-pic-large" :src="user.profilePic" alt="Profile Picture"/>
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.email }}</p>
-      </div>
-
-      <!-- Sidebar Links -->
-      <el-menu
-          class="sidebar-menu"
-          :default-active="activeIndex"
-          @select="handleMenuSelect"
-      >
-        <el-menu-item index="1">
-          <router-link to="/profilepage">User's Profile</router-link>
-        </el-menu-item>
-        <el-menu-item index="2">
-          <router-link to="/">Log Out</router-link>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <router-link to="/policy">View Policy</router-link>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <router-link to="/help">Help Center</router-link>
-        </el-menu-item>
-      </el-menu>
-    </el-aside>
+    <!-- Sidebar Component -->
+    <ProfileSidebar
+      :user="user"
+      :activeIndex="activeIndex"
+      :isVisible="isSidebarVisible"
+      @menuSelect="handleMenuSelect"
+    />
   </div>
 </template>
 
-
 <script setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'; 
+import ProfileSidebar from '@/components/ProfileSidebar.vue';
 
 const user = ref({
   name: 'John Doe',
   email: 'john.doe@example.com',
-  profilePic: require('@/assets/hutao.jpg'), // Replace with actual image path
+  profilePic: "/assets/Avatars/student.jpg",
 });
 
 const activeIndex = ref('1');
-
 const isSidebarVisible = ref(false);
+const router = useRouter();
 
+// Toggle Sidebar visibility
 const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
+// Array of courses with title and link
 const courses = ref([
-  {title: 'React Course', link: '/coursepage'},
-  {title: 'NA', link: '/course/2'}, //
-  {title: 'NA', link: '/course/3'}, //
-  {title: 'NA', link: '/course/4'}, //
+  { title: 'React Course', link: '/coursepage' },
+  { title: 'NA', link: '/course/2' },
+  { title: 'NA', link: '/course/3' },
+  { title: 'NA', link: '/course/4' },
 ]);
 
+// Navigate to the selected course using router.push()
 const goToCourse = (link) => {
-  window.location.href = link;
+  router.push(link);
 };
 
-//const images = [
-//{ src: require('@/assets/img.png'), alt: 'Image 1' },
-//];
+// Handle menu selection for active index
+const handleMenuSelect = (index) => {
+  activeIndex.value = index;
+};
 </script>
 
 <style scoped>
@@ -128,35 +92,6 @@ const goToCourse = (link) => {
   position: relative;
 }
 
-.carousel-container {
-  width: 100%;
-  margin-top: 75px;
-  transition: transform 0.3s ease;
-}
-
-.carousel-container.content-shifted {
-  transform: translateX(-250px); /* Move left when sidebar opens */
-}
-
-.custom-carousel {
-  width: 100%;
-  overflow: hidden;
-}
-
-.carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.el-carousel__item {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-}
-
 .course-boxes {
   display: flex;
   justify-content: space-around;
@@ -164,11 +99,11 @@ const goToCourse = (link) => {
   padding: 20px;
   gap: 20px;
   width: 100%;
-  transition: transform 0.3s ease; /* Add smooth transition */
+  transition: transform 0.3s ease;
 }
 
 .course-boxes.content-shifted {
-  transform: translateX(-250px); /* Shift boxes to the left */
+  transform: translateX(-250px);
 }
 
 .course-box {
@@ -187,46 +122,6 @@ const goToCourse = (link) => {
   background-color: #c0c0c0;
 }
 
-.right-sidebar {
-  width: 250px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-left: 1px solid #ddd;
-  position: fixed;
-  top: 75px;
-  right: -250px;
-  height: calc(100% - 75px);
-  transition: right 0.3s ease;
-}
-
-.right-sidebar.visible {
-  right: 0;
-}
-
-.profile-section {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.profile-pic-large {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-
-.profile-pic-small {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.sidebar-menu .el-menu-item {
-  padding: 10px 20px;
-}
-
 .el-menu-demo {
   background-color: white;
   position: fixed;
@@ -242,7 +137,6 @@ const goToCourse = (link) => {
 .el-menu-demo img {
   width: 60px;
   height: auto;
-  object-fit: contain;
 }
 
 .el-menu--horizontal > .el-menu-item:nth-child(1) {
@@ -260,16 +154,6 @@ const goToCourse = (link) => {
   color: purple !important;
 }
 
-.el-menu-item.is-active {
-  background-color: transparent !important;
-  border-bottom: none !important;
-}
-
-.el-menu-demo .el-menu-item a {
-  text-decoration: none !important;
-}
-
-/* Sidebar Toggle Icon Styling */
 .sidebar-toggle {
   margin-left: auto;
   cursor: pointer;
@@ -277,6 +161,21 @@ const goToCourse = (link) => {
   align-items: center;
 }
 
+.profile-pic-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
 </style>
-

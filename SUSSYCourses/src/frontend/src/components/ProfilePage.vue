@@ -70,7 +70,7 @@
   const user = ref({
     name: 'John Doe',
     email: 'john.doe@example.com',
-    profilePic: require('@/assets/hutao.jpg'), // Default avatar image
+    profilePic: "/assets/Avatars/student.jpg",
     birthday: '',
     gender: 'Male',
     password: 'password123',
@@ -92,7 +92,7 @@
   };
   
   const resetToAvatar = () => {
-    user.value.profilePic = require('@/assets/hutao.jpg'); // Reset to default avatar
+    user.value.profilePic = "/assets/Avatars/student.jpg"
   };
   
   const toggleShowPassword = () => {
