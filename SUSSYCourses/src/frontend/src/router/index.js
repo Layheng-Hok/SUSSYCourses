@@ -65,9 +65,10 @@ const routes = [
         component: HelpSupport
     },
     {
-        path: '/coursepage',
+        path: '/course/:courseId',
         name: 'CoursePage',
-        component: CoursePage
+        component: CoursePage,
+        props: true,
     },
     {
         path: '/signup-student',

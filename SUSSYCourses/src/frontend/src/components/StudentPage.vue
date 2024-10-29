@@ -23,25 +23,25 @@
   <div class="page-container">
     <!-- Overlay for Sidebar Toggle -->
     <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
-
+  
     <!-- Course Boxes Section -->
     <div :class="['course-boxes', { 'content-shifted': isSidebarVisible }]">
       <div
-        v-for="(course, index) in courses"
-        :key="index"
-        class="course-box"
-        @click="goToCourse(course.link)"
+      v-for="(course, index) in courses"
+      :key="index"
+      class="course-box"
+      @click="goToCourse(course.id)"
       >
-        <h3>{{ course.title }}</h3>
-      </div>
+      <h3>{{ course.title }}</h3>
     </div>
-
+    </div>
+    
     <!-- Sidebar Component -->
     <ProfileSidebar
-      :user="user"
-      :activeIndex="activeIndex"
-      :isVisible="isSidebarVisible"
-      @menuSelect="handleMenuSelect"
+    :user="user"
+    :activeIndex="activeIndex"
+    :isVisible="isSidebarVisible"
+    @menuSelect="handleMenuSelect"
     />
   </div>
 </template>
@@ -61,25 +61,21 @@ const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const router = useRouter();
 
-// Toggle Sidebar visibility
 const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
-// Array of courses with title and link
+// Updated course list with unique course IDs
 const courses = ref([
-  { title: 'React Course', link: '/coursepage' },
-  { title: 'NA', link: '/course/2' },
-  { title: 'NA', link: '/course/3' },
-  { title: 'NA', link: '/course/4' },
+  { id: 1, title: 'React Course' },
+  { id: 2, title: 'Vue Course' },
 ]);
 
-// Navigate to the selected course using router.push()
-const goToCourse = (link) => {
-  router.push(link);
+// Route to corresponding course page based on courseId
+const goToCourse = (courseId) => {
+  router.push({ name: 'CoursePage', params: { courseId } });
 };
 
-// Handle menu selection for active index
 const handleMenuSelect = (index) => {
   activeIndex.value = index;
 };
@@ -94,11 +90,11 @@ const handleMenuSelect = (index) => {
 
 .course-boxes {
   display: flex;
-  justify-content: space-around;
-  margin: 20px auto;
-  padding: 20px;
-  gap: 20px;
-  width: 100%;
+  justify-content: left;
+  margin-top: 50px;
+  padding: 10px;
+  gap: 10px;
+  width: 50%;
   transition: transform 0.3s ease;
 }
 
@@ -137,6 +133,7 @@ const handleMenuSelect = (index) => {
 .el-menu-demo img {
   width: 60px;
   height: auto;
+  object-fit: contain;
 }
 
 .el-menu--horizontal > .el-menu-item:nth-child(1) {
@@ -148,10 +145,66 @@ const handleMenuSelect = (index) => {
   color: black !important;
   background-color: transparent !important;
   transition: color 0.3s;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .el-menu-demo .el-menu-item:not(:first-child):hover {
-  color: purple !important;
+  color: #74B3E3 !important;
+}
+
+.el-menu-item.is-active {
+  background-color: transparent !important;
+  border-bottom: none !important;
+}
+
+.el-menu-demo .el-menu-item a {
+  text-decoration: none !important;
+}
+
+.el-menu-item:nth-child(3) a {
+  border: 1px solid black;
+  padding: 5px 16px;
+  color: black;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 550;
+  background-color: white;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.el-menu-item:nth-child(3) a:hover {
+  background-color: #74B3E3;
+  border: 1px solid #74B3E3;
+  color: white;
+}
+
+.el-menu-item:nth-child(4) a {
+  border: 1px solid #74B3E3;
+  background-color: #74B3E3;
+  color: white;
+  padding: 5px 10px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.el-menu-item:nth-child(4) a:hover {
+  background-color: #9DCAEB;
+  border: 1px solid #9DCAEB;
+  color: white;
+}
+
+.el-menu-item:nth-child(3) {
+  margin-right: -25px; 
+}
+
+.el-menu-item:nth-child(4) {
+  margin-left: 0; 
 }
 
 .sidebar-toggle {

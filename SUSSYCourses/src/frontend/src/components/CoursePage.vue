@@ -1,5 +1,5 @@
 <template>
-  <!-- Navigation Menu -->
+  <!-- Top Navigation Menu -->
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
@@ -11,14 +11,14 @@
     </el-menu-item>
   </el-menu>
 
-  <div class="course-page">
+  <div class="course-page" v-if="course">
     <!-- Course Description Section -->
     <el-card class="course-description" shadow="hover">
       <h2>Course Description</h2>
-      <img src="/assets/Courses/course.jpg" alt="Course Image" class="course-image" />
-      <p class="course-title"><strong>{{ courseName }}</strong></p>
-      <p class="description">{{ courseDescription }}</p>
-      
+      <img :src="course.image" alt="Course Image" class="course-image" />
+      <p class="course-title"><strong>{{ course.name }}</strong></p>
+      <p class="description">{{ course.description }}</p>
+
       <!-- Like Button and Total Likes -->
       <div class="like-section">
         <el-button type="primary" icon="el-icon-thumb" @click="likeCourse">
@@ -34,11 +34,11 @@
       <h2>Instructor Information</h2>
       <el-row>
         <el-col :span="4">
-          <img src="/assets/Avatars/instructor.jpg" alt="Instructor Image" class="instructor-image" />
+          <img :src="course.instructorImage" alt="Instructor Image" class="instructor-image" />
         </el-col>
         <el-col :span="20">
-          <p><strong>{{ instructorName }}</strong></p>
-          <p class="bio">{{ instructorBio }}</p>
+          <p><strong>{{ course.instructorName }}</strong></p>
+          <p class="bio">{{ course.instructorBio }}</p>
         </el-col>
       </el-row>
     </el-card>
@@ -47,18 +47,12 @@
    <el-card class="course-content" shadow="hover">
       <h2>Course Content</h2>
       <el-collapse>
-        <!-- Teaching Chapters -->
         <el-collapse-item title="Teaching Chapters" name="1">
-          <div v-for="chapter in teachingChapters" :key="chapter.name" class="chapter">
+          <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
               <el-list-item v-for="material in chapter.materials" :key="material.title">
                 <div v-if="material.type === 'mp4'" class="video-container">
-                  <div
-                    class="video-wrapper"><a :href="`/assets/Materials/${material.title}`" target="_blank">
-                    <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" /> 
-                    {{ material.title }}
-                  </a></div>
                   <video controls :src="`/assets/Materials/${material.title}`" width="50%"></video>
                 </div>
                 <div v-else>
@@ -72,9 +66,8 @@
           </div>
         </el-collapse-item>
 
-        <!-- Homework Chapters -->
         <el-collapse-item title="Homework Chapters" name="2">
-          <div v-for="chapter in homeworkChapters" :key="chapter.name" class="chapter">
+          <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
               <el-list-item v-for="material in chapter.materials" :key="material.title">
@@ -87,9 +80,8 @@
           </div>
         </el-collapse-item>
 
-        <!-- Project Chapters -->
         <el-collapse-item title="Project Chapters" name="3">
-          <div v-for="chapter in projectChapters" :key="chapter.name" class="chapter">
+          <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
               <el-list-item v-for="material in chapter.materials" :key="material.title">
@@ -123,47 +115,60 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { Document, DataBoard, VideoCamera, Files } from '@element-plus/icons-vue';
 
-const courseName = ref("The Web Developer Bootcamp");
-const courseDescription = ref(`Now with over 10 hours of React content. Just updated on May 15th, 2023.
-
-Massive new React "expansion pack" covers: React basics, JSX, props, state, Vite, MaterialUI, hooks, useEffect, React design patterns, and more.
-
-Hi! Welcome to the brand new version of The Web Developer Bootcamp, Udemy's most popular web development course. This course was just completely overhauled to prepare students for the 2023 job market, with over 60 hours of brand new content. This is the only course you need to learn web development. There are a lot of options for online developer training, but this course is without a doubt the most comprehensive and effective on the market.
- This is the only course you need to learn web development.`);
-
-const instructorName = ref("Dr. Angela Yu");
-const instructorBio = `
-Hi! I'm Angela Yu. I'm a developer with a serious love for teaching. I've spent the last few years teaching people to program at 2 different immersive bootcamps where I've helped hundreds of people become web developers and change their lives. My graduates work at companies like Google, Salesforce, and Square.
-Most recently, I led Galvanize's SF's 6 month immersive program as Lead Instructor and Curriculum Director. 
-Join me on this crazy adventure!
-`;
-
-const teachingChapters = ref([
-  { 
-    name: "Chapter 1", 
-    materials: [
-      { title: "Lecture 1.mp4", type: "mp4" },
-      { title: "Introduction.pdf", type: "pdf" },
-    ],
-  },
-]);
-
-const homeworkChapters = ref([{ name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] }]);
-const projectChapters = ref([{ name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] }]);
-
-const comments = ref([
-  { id: 1, text: "This course is amazing!", author: "Alice", timestamp: "2024-10-29 10:00 AM" },
-  { id: 2, text: "Looking forward to the next lesson!", author: "Bob", timestamp: "2024-10-29 11:00 AM" }
-]);
-
-const newComment = ref("");
+const route = useRoute();
+const course = ref(null);
 const likes = ref(0);
+const newComment = ref("");
+const comments = ref([]);
+const liked = ref(false);
+
+// Fetch actual data here 
+const coursesData = [
+  {
+    id: '1',
+    name: "React Crash Course",
+    description: "This is a comprehensive web development course.",
+    image: "/assets/Courses/course.jpg",
+    instructorName: "Dr. Angela Yu",
+    instructorImage: "/assets/Avatars/instructor.jpg",
+    instructorBio: "Developer with a love for teaching.",
+    teachingChapters: [
+      { name: "Chapter 1", materials: [{ title: "Lecture 1.mp4", type: "mp4" }, { title: "Introduction.pdf", type: "pdf" }] },
+    ],
+    homeworkChapters: [{ name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] }],
+    projectChapters: [{ name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] }],
+  },
+  {
+    id: '2',
+    name: "Vue Crash Course",
+    description: "This is a comprehensive web development course.",
+    image: "/assets/Courses/course2.jpg",
+    instructorName: "Mr. Jack Bruh",
+    instructorImage: "/assets/Avatars/student.jpg",
+    instructorBio: "Developer with a love for teaching.",
+    teachingChapters: [
+      { name: "Chapter 1", materials: [ { title: "Introduction.pdf", type: "pdf" }] },
+    ],
+    homeworkChapters: [{ name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] }],
+    projectChapters: [{ name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] }],
+  }
+];
+
+onMounted(() => {
+  const courseId = route.params.courseId;
+  course.value = coursesData.find(c => c.id === courseId);
+  if (!course.value) {
+    console.error("Course not found!");
+  }
+});
 
 const likeCourse = () => {
   likes.value += 1;
+  liked.value = true;
 };
 
 const materialIcon = (type) => {
@@ -187,7 +192,6 @@ const submitComment = () => {
   }
 };
 </script>
-
 <style scoped>
 .course-page {
   padding: 20px;
