@@ -47,7 +47,7 @@
   });
   
   // Default profile picture as fallback
-  const defaultProfilePic = "/assets/Avatars/student.jpg"; // Adjust the path as needed
+  const defaultProfilePic = "/assets/Avatars/student.jpg"; 
   
   // Emit event for menu selection handling
   const emit = defineEmits(['menuSelect']);

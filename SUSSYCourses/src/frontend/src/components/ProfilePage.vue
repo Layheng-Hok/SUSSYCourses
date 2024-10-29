@@ -13,6 +13,8 @@
       <p><strong>Username:</strong> {{ user.name }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Gender:</strong> {{ user.gender }}</p>
+      <p><strong>Your Role:</strong> {{ user.role }}</p>
+
     </div>
   </div>
 </template>
@@ -33,6 +35,8 @@ const user = ref({
   email: 'john.doe@example.com',
   profilePic: "/assets/Avatars/student.jpg",
   gender: 'Male',
+  role: 'Student',
+
 });
 </script>
 
