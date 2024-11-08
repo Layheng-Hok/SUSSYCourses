@@ -65,9 +65,9 @@
 
         <div class="terms-policy">
           <p>By signing up, you agree to our
-            <router-link to="/termsofuse" class="terms-link">Terms of Use</router-link>
+            <router-link to="/termsofuse" class="terms-link" target="_blank">Terms of Use</router-link>
             and
-            <router-link to="/privacypolicy" class="privacy-link">Privacy Policy</router-link>
+            <router-link to="/privacypolicy" class="privacy-link" target="_blank">Privacy Policy</router-link>
             .
           </p>
         </div>
