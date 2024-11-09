@@ -320,6 +320,7 @@ const handleClick = (tab, event) => {
 .main-picture h1 {
   font-family: 'Aptos Narrow', sans-serif;
   font-weight: bold;
+  color: black;
 }
 
 .main-picture p {
@@ -327,6 +328,7 @@ const handleClick = (tab, event) => {
   font-family: 'Aptos Narrow', sans-serif;
   margin-left: 5px;
   text-align: left;
+  color: black;
 }
 
 .intro-section {
