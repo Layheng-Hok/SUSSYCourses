@@ -1,25 +1,3 @@
-<script setup>
-import {onMounted, ref} from 'vue';
-import axios from 'axios';
-
-const users = ref([]); // Reactive variable to store the list of users
-
-// Configure axios to include credentials in cross-origin requests
-const fetchUsers = async () => {
-  try {
-    const response = await axios.get('http://localhost:8081/admin/users', {
-      withCredentials: true,
-    });
-    users.value = response.data;
-  } catch (error) {
-    console.error('Error fetching users:', error);
-  }
-};
-
-onMounted(fetchUsers);
-
-</script>
-
 <template>
   <div>
     <h2>List of Users</h2>
@@ -30,6 +8,27 @@ onMounted(fetchUsers);
     </ul>
   </div>
 </template>
+
+<!-- ListOfUsers.vue -->
+<script setup>
+import {onMounted, ref} from 'vue';
+import axiosInstance from '@/services/axiosInstance';
+
+const users = ref([]); // Reactive variable to store the list of users
+
+// Fetch users with axios instance
+const fetchUsers = async () => {
+  try {
+    const response = await axiosInstance.get('/admin/users');
+    users.value = response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
+};
+
+onMounted(fetchUsers);
+
+</script>
 
 <style scoped>
 /* Add any custom styling here */

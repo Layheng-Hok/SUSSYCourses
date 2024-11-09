@@ -19,6 +19,7 @@ import LogIn from "@/components/LogIn.vue";
 import VerifyEmail from "@/components/VerifyEmail.vue";
 import TermsOfUse from "@/components/TermsOfUse.vue";
 import PrivacyPolicy from "@/components/PrivacyPolicy.vue";
+import UserList from "@/components/UserList.vue";
 
 const routes = [
     {
@@ -101,6 +102,11 @@ const routes = [
         path: '/privacypolicy',
         name: 'PrivacyPolicy',
         component: PrivacyPolicy
+    },
+    {
+        path: '/admin/users',
+        name: 'UserList',
+        component: UserList
     },
 ];
 
