@@ -3,20 +3,11 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Element logo" />
+        <img src="@/assets/logo.png" alt="Element logo"/>
       </router-link>
     </el-menu-item>
-    <el-menu-item index="1">
-      <router-link to="/teacherpage">Teach on SUSSY</router-link>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/login">Log in</router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/signup-student">Sign up</router-link>
-    </el-menu-item>
-    <el-menu-item index="4" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture" />
+    <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
+      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
@@ -28,23 +19,23 @@
       <!-- Search and Filter Section -->
       <div class="search-filter-section">
         <el-input
-          placeholder="Search for courses..."
-          v-model="searchQuery"
-          @keyup.enter="filterCourses"
-          clearable
-          prefix-icon="el-icon-search"
+            placeholder="Search for courses..."
+            v-model="searchQuery"
+            @keyup.enter="filterCourses"
+            clearable
+            prefix-icon="el-icon-search"
         ></el-input>
         <el-select
-          v-model="selectedCategory"
-          placeholder="Select Category"
-          @change="filterCourses"
-          clearable
+            v-model="selectedCategory"
+            placeholder="Select Category"
+            @change="filterCourses"
+            clearable
         >
           <el-option
-            v-for="category in categories"
-            :key="category"
-            :label="category"
-            :value="category"
+              v-for="category in categories"
+              :key="category"
+              :label="category"
+              :value="category"
           />
         </el-select>
       </div>
@@ -53,12 +44,12 @@
       <h2 class="section-heading">Available Courses</h2>
       <div class="course-boxes">
         <div
-          v-for="(course, index) in filteredCourses"
-          :key="index"
-          class="course-box"
-          @click="goToCourse(course.id)"
+            v-for="(course, index) in filteredCourses"
+            :key="index"
+            class="course-box"
+            @click="goToCourse(course.id)"
         >
-          <img :src="course.image" alt="Course Image" class="course-image" />
+          <img :src="course.image" alt="Course Image" class="course-image"/>
           <h3>{{ course.title }}</h3>
           <p class="course-rating">⭐ {{ course.rating }} / 5</p>
         </div>
@@ -81,15 +72,15 @@
         <p>Subscribe to our newsletter for the latest updates on new courses and promotions.</p>
         <div class="subscription-form">
           <el-input
-            placeholder="Enter your email"
-            v-model="subscriberEmail"
-            prefix-icon="el-icon-mail"
+              placeholder="Enter your email"
+              v-model="subscriberEmail"
+              prefix-icon="el-icon-mail"
           ></el-input>
           <el-button type="primary" @click="subscribeNewsletter">Subscribe</el-button>
         </div>
       </div>
     </div>
-    
+
     <!-- Call to Action Section -->
     <div class="call-to-action">
       <h1>Become a student today</h1>
@@ -101,17 +92,17 @@
 
     <!-- Sidebar Component -->
     <ProfileSidebar
-      :user="user"
-      :activeIndex="activeIndex"
-      :isVisible="isSidebarVisible"
-      @menuSelect="handleMenuSelect"
+        :user="user"
+        :activeIndex="activeIndex"
+        :isVisible="isSidebarVisible"
+        @menuSelect="handleMenuSelect"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import {computed, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
 
 const user = ref({
@@ -129,10 +120,10 @@ const toggleSidebar = () => {
 };
 
 const courses = ref([
-  { id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5 },
-  { id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7 },
-  { id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3 },
-  { id: 4, title: 'Graphic Design', image: '/assets/courses/course4.png', rating: 4.6 },
+  {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5},
+  {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7},
+  {id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3},
+  {id: 4, title: 'Graphic Design', image: '/assets/courses/course4.png', rating: 4.6},
 ]);
 
 const categories = ref(['All', 'Web Development', 'Programming', 'Design']);
@@ -140,9 +131,9 @@ const searchQuery = ref('');
 const selectedCategory = ref('All');
 
 const testimonials = ref([
-  { text: "This platform transformed my learning experience!", author: "Alice Brown" },
-  { text: "The courses are well-structured and very informative.", author: "David Chen" },
-  { text: "I've gained so much knowledge in such a short time.", author: "Lily Evans" }
+  {text: "This platform transformed my learning experience!", author: "Alice Brown"},
+  {text: "The courses are well-structured and very informative.", author: "David Chen"},
+  {text: "I've gained so much knowledge in such a short time.", author: "Lily Evans"}
 ]);
 
 const subscriberEmail = ref('');
@@ -169,7 +160,7 @@ const filterCourses = () => {
 };
 
 const goToCourse = (courseId) => {
-  router.push({ name: 'CoursePage', params: { courseId } });
+  router.push({name: 'CoursePage', params: {courseId}});
 };
 
 const handleMenuSelect = (index) => {
@@ -410,11 +401,11 @@ const handleMenuSelect = (index) => {
 }
 
 .el-menu-item:nth-child(3) {
-  margin-right: -25px; 
+  margin-right: -25px;
 }
 
 .el-menu-item:nth-child(4) {
-  margin-left: 0; 
+  margin-left: 0;
 }
 
 .sidebar-toggle {

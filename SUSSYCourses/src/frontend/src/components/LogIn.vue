@@ -52,6 +52,7 @@ const handleLogin = async () => {
     const response = await axios.post('http://localhost:8081/login', payload);
     localStorage.setItem('usn', email.value);
     localStorage.setItem('pwd', password.value);
+    localStorage.setItem('isLoggedIn', 'true')
     alert(response.data);
   } catch (error) {
     if (error.response) {

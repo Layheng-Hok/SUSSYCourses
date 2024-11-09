@@ -132,8 +132,7 @@ public class WebAppUserService {
         List<WebAppUser> webAppUsers = webAppUserRepository.findAll();
         List<UserResponse> userResponses = webAppUsers.stream()
                 .map(user -> new UserResponse(user.getFullName(), user.getEmail()))
-                .toList(); // or collect(Collectors.toList()) in older versions
-
+                .toList();
         return userResponses;
     }
 }

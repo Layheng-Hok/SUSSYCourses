@@ -7,11 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ContentController {
-//    @GetMapping({"/", "/home"})
-//    public String showHomePage() {
-//        return "home";
-//    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/home")
     public ResponseEntity<String> showAdminHomePage() {
@@ -32,15 +27,5 @@ public class ContentController {
         String response = "instructor";
         return ResponseEntity.ok(response);
     }
-
-//    @GetMapping("/login")
-//    public String showLoginPage() {
-//        return "login";
-//    }
-//
-//    @GetMapping("/register")
-//    public String showRegisterPage() {
-//        return "register";
-//    }
 }
 
