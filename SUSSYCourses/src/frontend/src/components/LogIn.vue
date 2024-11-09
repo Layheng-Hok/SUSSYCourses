@@ -12,38 +12,18 @@
             alt="Element logo"
         /></router-link>
     </el-menu-item>
-    <el-menu-item index="1">
-      <router-link to="/studentpage">Study on SUSSY</router-link>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/teacherpage">Teach on SUSSY</router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/login">Log in</router-link>
-    </el-menu-item>
-    <el-menu-item index="4">
-      <router-link to="/signup-student">Sign up</router-link>
-    </el-menu-item>
   </el-menu>
 
   <div class="main-container">
     <div class="content-wrapper">
       <img src="@/assets/signup.gif" alt="signup Image" class="sign-up"/>
-      <div class="signup-content">
+      <div class="login-content">
         <h1>Log in to continue your learning journey</h1>
-        <div class="signup-form">
+        <div class="login-form">
           <input v-model="email" type="email" placeholder="Email"/>
           <input v-model="password" type="password" placeholder="Password"/>
         </div>
-        <div class="terms-policy">
-          <p>By signing up, you agree to our
-            <router-link to="/termsofuse" class="terms-link">Terms of Use</router-link>
-            and
-            <router-link to="/privacypolicy" class="privacy-link">Privacy Policy</router-link>
-            .
-          </p>
-        </div>
-        <button @click="handleSignup">Log in</button>
+        <button @click="handleLogin">Log in</button>
         <h3>Don't have an account?
           <router-link to="/signup-student" class="signup-link">Sign up</router-link>
         </h3>
@@ -54,22 +34,31 @@
 
 <script setup>
 import {ref} from 'vue';
+import axios from 'axios';
 
-const name = ref('');
 const email = ref('');
 const password = ref('');
-const confirmPassword = ref('');
+const errorMessage = ref('');
 
-const handleSignup = () => {
-  if (password.value !== confirmPassword.value) {
-    console.error("Passwords don't match.");
-    return;
+const handleLogin = async () => {
+  errorMessage.value = '';
+
+  const payload = {
+    email: email.value,
+    password: password.value,
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8081/login', payload);
+    alert(response.data);
+  } catch (error) {
+    if (error.response) {
+      errorMessage.value = error.response.data || 'Login failed';
+    } else {
+      console.log("Something went wrong");
+    }
   }
-
-  // Send signup request to backend with the role
-  console.log('Sign up with:', name.value, email.value, password.value);
 };
-
 </script>
 
 
@@ -153,7 +142,7 @@ const handleSignup = () => {
 
 .el-menu-item:nth-child(5) a:hover {
   background-color: #9DCAEB;
-  border: 1px solid #9DCAEB ;
+  border: 1px solid #9DCAEB;
   color: white;
 }
 
@@ -173,13 +162,13 @@ const handleSignup = () => {
   padding: 90px;
 }
 
-.signup-form {
+.login-form {
   background-color: transparent;
   max-width: 400px;
 }
 
 
-.signup-form input, .signup-form select {
+.login-form input, .login-form select {
   width: 100%;
   padding: 20px; /* Space inside inputs */
   margin-bottom: 10px; /* Space below each input */
@@ -190,7 +179,7 @@ const handleSignup = () => {
   position: relative;
 }
 
-.signup-form input::placeholder {
+.login-form input::placeholder {
   position: absolute;
   top: 50%;
   left: 20px;
@@ -202,15 +191,15 @@ const handleSignup = () => {
   font-family: 'Aptos Narrow', sans-serif;
 }
 
-.signup-form input:focus {
+.login-form input:focus {
   outline: none;
   padding-top: 25px;
   padding-bottom: 15px;
 }
 
 
-.signup-form input:focus::placeholder,
-.signup-form input:not(:placeholder-shown)::placeholder {
+.login-form input:focus::placeholder,
+.login-form input:not(:placeholder-shown)::placeholder {
   top: 5px;
   transform: translateY(0);
   font-size: 13px;
@@ -269,26 +258,7 @@ const handleSignup = () => {
 
 }
 
-
-.terms-link {
-  color: #74B3E3;
-  text-decoration: underline;
-  font-weight: bold;
-  margin-left: 2px;
-  font-family: 'Aptos Narrow', sans-serif;
-
-}
-
-
-.privacy-link {
-  color: #74B3E3;
-  text-decoration: underline;
-  font-weight: bold;
-  margin-left: 2px;
-  font-family: 'Aptos Narrow', sans-serif;
-}
-
-.signup-content {
+.login-content {
   margin-left: 50px;
   display: flex;
   flex-direction: column;
@@ -296,7 +266,7 @@ const handleSignup = () => {
   width: 100%;
 }
 
-.signup-content h1 {
+.login-content h1 {
   color: black;
   max-width: 480px;
   margin-bottom: 25px !important;
@@ -305,10 +275,11 @@ const handleSignup = () => {
   font-family: 'Aptos Narrow', sans-serif;
 }
 
-.signup-content h3 {
+.login-content h3 {
   color: black;
   margin-top: 25px !important;
   line-height: 1.2;
   font-family: 'Aptos Narrow', sans-serif;
 }
 </style>/
+

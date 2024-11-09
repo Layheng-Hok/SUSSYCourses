@@ -17,8 +17,6 @@ import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
 import LogIn from "@/components/LogIn.vue";
 import VerifyEmail from "@/components/VerifyEmail.vue";
-import TermsOfUse from "@/components/TermsOfUse.vue";
-import PrivacyPolicy from "@/components/PrivacyPolicy.vue";
 
 const routes = [
     {
@@ -102,9 +100,6 @@ const routes = [
         name: 'PrivacyPolicy',
         component: PrivacyPolicy
     },
-
-
-
 ];
 
 const router = createRouter({

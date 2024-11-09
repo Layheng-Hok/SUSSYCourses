@@ -1,7 +1,30 @@
 package com.sustech.cs309.project.sussycourses.domain;
 
-public enum Role {
-    ADMIN,
-    STUDENT,
-    INSTRUCTOR
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
+
+@Data
+@ToString
+@Entity
+@Table(name = "role")
+
+public class Role implements GrantedAuthority {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer roleId;
+
+    @Column(nullable = false, unique = true)
+    private String roleName;
+
+    @OneToMany(mappedBy = "role")
+    private List<WebAppUser> webAppUsers;
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_" + roleName;
+    }
 }

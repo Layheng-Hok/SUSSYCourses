@@ -216,7 +216,7 @@ const handleSignup = async () => {
     fullName: name.value,
     email: email.value,
     password: password.value,
-    role: 'STUDENT',
+    roleId: 2,
   };
 
   try {

@@ -1,8 +1,9 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
+import com.sustech.cs309.project.sussycourses.dto.LoginDto;
 import com.sustech.cs309.project.sussycourses.dto.RegistrationDto;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:8080")
 public class AuthController {
-    @Autowired
-    private WebAppUserService webAppUserService;
+
+    private final WebAppUserService webAppUserService;
 
     @PostMapping("/register/student")
     public ResponseEntity<String> createStudentUser(@RequestBody RegistrationDto registrationDto) {
@@ -39,8 +41,9 @@ public class AuthController {
         }
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginDto loginDto) {
-//        return webAppUserService.loginWebAppUser(loginDto);
-//    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/login")
+    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginDto loginDto) {
+        return webAppUserService.loginWebAppUser(loginDto);
+    }
 }

@@ -22,8 +22,8 @@ public class WebAppUser {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "roleId")
     private Role role;
 
     @Column(nullable = false)
