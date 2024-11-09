@@ -50,6 +50,8 @@ const handleLogin = async () => {
 
   try {
     const response = await axios.post('http://localhost:8081/login', payload);
+    localStorage.setItem('usn', email.value);
+    localStorage.setItem('pwd', password.value);
     alert(response.data);
   } catch (error) {
     if (error.response) {
@@ -282,4 +284,3 @@ const handleLogin = async () => {
   font-family: 'Aptos Narrow', sans-serif;
 }
 </style>/
-

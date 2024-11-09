@@ -1,16 +1,19 @@
+// axiosInstance.js
 import axios from 'axios';
-
-const email = 'fbringer99@gmail.com';
-const password = '1';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8081',
-    withCredentials: true, // Allows cookies to be sent with the request
+    withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(config => {
-    const auth = btoa(`${email}:${password}`);
-    config.headers.Authorization = `Basic ${auth}`;
+    // Retrieve username and password from localStorage
+    const usn = localStorage.getItem('usn');
+    const pwd = localStorage.getItem('pwd');
+    if (usn && pwd) {
+        const auth = btoa(`${usn}:${pwd}`);
+        config.headers.Authorization = `Basic ${auth}`;
+    }
     return config;
 });
 
