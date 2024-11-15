@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,6 +62,8 @@ public class WebAppUserService {
         webAppUser.setRole(roleRepository.findById(registrationDto.roleId()).orElse(null));
         webAppUser.setEnabled(false);
         webAppUser.setVerificationToken(UUID.randomUUID().toString());
+        webAppUser.setGender(registrationDto.gender());
+        webAppUser.setCreatedAt(LocalDateTime.now());
 
         webAppUserRepository.save(webAppUser);
 
@@ -116,13 +119,12 @@ public class WebAppUserService {
 
     public String validateVerificationToken(String verificationToken) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByVerificationToken(verificationToken);
-        if (webAppUserOptional.isEmpty()) {
+        if (webAppUserOptional.isEmpty() || webAppUserOptional.get().isEnabled()) {
             return "invalid";
         }
 
         WebAppUser webAppUser = webAppUserOptional.get();
         webAppUser.setEnabled(true);
-        webAppUser.setVerificationToken(null);
         webAppUserRepository.save(webAppUser);
 
         return "valid";

@@ -32,7 +32,7 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> verifyEmail(@RequestParam("verificationToken") String verificationToken) {
         String result = webAppUserService.validateVerificationToken(verificationToken);
         Map<String, String> response = new HashMap<>();
-        if ("valid".equals(result)) {
+        if (result.equals("valid")) {
             response.put("message", "Your account has been verified successfully, please return to the site for login");
             return ResponseEntity.ok(response);
         } else {

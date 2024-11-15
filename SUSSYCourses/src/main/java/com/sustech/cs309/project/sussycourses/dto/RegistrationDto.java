@@ -16,6 +16,9 @@ public record RegistrationDto(
         String password,
 
         @NotNull(message = "Role is required")
-        Integer roleId
+        Integer roleId,
+
+        @NotBlank(message = "Gender is required")
+        String gender
 ) {
 }

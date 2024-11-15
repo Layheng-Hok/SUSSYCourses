@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Data
 @ToString
 @Entity
@@ -29,5 +31,18 @@ public class WebAppUser {
     @Column(nullable = false)
     private boolean enabled;
 
+    @Column(length = 50, nullable = false)
     private String verificationToken;
+
+    @Column(length = 20, nullable = false)
+    private String gender;
+
+    @Column
+    private String profilePicture;
+
+    @Column
+    private int points = 0;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

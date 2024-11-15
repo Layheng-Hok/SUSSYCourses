@@ -26,8 +26,6 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private final WebAppUserDetailsService webAppUserDetailsService;
-
     private final UserDetailsService userDetailsService;
 
 
