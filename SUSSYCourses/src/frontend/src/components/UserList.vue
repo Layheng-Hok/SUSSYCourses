@@ -12,14 +12,14 @@
 <!-- ListOfUsers.vue -->
 <script setup>
 import {onMounted, ref} from 'vue';
-import axiosInstance from '@/services/axiosInstance';
+import axiosInstances from '@/services/axiosInstance';
 
 const users = ref([]); // Reactive variable to store the list of users
 
 // Fetch users with axios instance
 const fetchUsers = async () => {
   try {
-    const response = await axiosInstance.get('/admin/users');
+    const response = await axiosInstances.axiosInstance.get('/admin/users');
     users.value = response.data;
   } catch (error) {
     console.error('Error fetching users:', error);

@@ -18,13 +18,8 @@ public class AuthController {
 
     private final WebAppUserService webAppUserService;
 
-    @PostMapping("/register/student")
-    public ResponseEntity<String> createStudentUser(@RequestBody RegistrationDto registrationDto) {
-        return webAppUserService.createWebAppUser(registrationDto);
-    }
-
-    @PostMapping("/register/instructor")
-    public ResponseEntity<String> createInstructorUser(@RequestBody RegistrationDto registrationDto) {
+    @PostMapping("/register")
+    public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationDto registrationDto) {
         return webAppUserService.createWebAppUser(registrationDto);
     }
 

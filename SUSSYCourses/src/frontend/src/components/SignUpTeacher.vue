@@ -37,6 +37,16 @@
           <input v-model="name" type="text" placeholder="Full name" @input="clearError('nameError')"
                  @blur="capitalizeName"/>
           <span v-if="nameError" class="field-error">{{ nameError }}</span>
+
+          <!-- Gender Selector -->
+          <select v-model="gender" @change="clearError('genderError')" class="gender-selector">
+            <option disabled value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <span v-if="genderError" class="field-error">{{ genderError }}</span>
+
           <div class="email-input-wrapper">
             <input v-model="email" type="email" placeholder="Email"
                    @input="() => { clearError('emailError'); showSuggestions(); }"
@@ -82,9 +92,10 @@
 
 <script setup>
 import {ref} from 'vue';
-import axios from 'axios';
+import axiosInstances from '@/services/axiosInstance';
 
 const name = ref('');
+const gender = ref('');
 const email = ref('');
 const emailSuggestions = ref([]);
 const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'sustech.edu.cn'];
@@ -94,12 +105,14 @@ const confirmPassword = ref('');
 
 const nameError = ref('');
 const emailError = ref('');
+const genderError = ref('');
 const passwordError = ref('');
 const confirmPasswordError = ref('');
-const errorMessage = ref('');
+const serverErrorMessage = ref('');
 
 const clearError = (field) => {
   if (field === 'nameError') nameError.value = '';
+  if (field === 'genderError') genderError.value = '';
   if (field === 'emailError') emailError.value = '';
   if (field === 'passwordError') passwordError.value = '';
   if (field === 'confirmPasswordError') confirmPasswordError.value = '';
@@ -196,6 +209,9 @@ const handleSignup = async () => {
   if (!name.value) {
     nameError.value = 'Please enter your full name';
   }
+  if (!gender.value) {
+    genderError.value = 'Please select your gender';
+  }
   if (!email.value) {
     emailError.value = 'Please enter your email';
   }
@@ -216,17 +232,18 @@ const handleSignup = async () => {
 
   const payload = {
     fullName: name.value,
+    gender: gender.value,
     email: email.value,
     password: password.value,
     roleId: 3,
   };
 
   try {
-    const response = await axios.post('http://localhost:8081/register/instructor', payload);
+    const response = await axiosInstances.axiosInstance2.post('/register', payload);
     alert(response.data);
   } catch (error) {
     if (error.response) {
-      errorMessage.value = error.response.data || 'Registration failed';
+      serverErrorMessage.value = error.response.data || 'Registration failed';
     } else {
       console.log("Something went wrong");
     }
@@ -350,7 +367,8 @@ const handleSignup = async () => {
 .signup-form input, .signup-form select {
   width: 100%;
   padding: 20px; /* Space inside inputs */
-  margin-bottom: 10px; /* Space below each input */
+  margin-top: 5px;
+  margin-bottom: 5px; /* Space below each input */
   border: 1px solid #333;
   font-size: 16px;
   color: black !important;
@@ -388,7 +406,7 @@ const handleSignup = async () => {
 }
 
 .main-container button {
-  width: calc(100% - 100px); /* Adjust width to match input (border difference) */
+  width: calc(100% - 140px); /* Adjust width to match input (border difference) */
   padding: 15px;
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
@@ -397,6 +415,11 @@ const handleSignup = async () => {
   cursor: pointer; /* Pointer on hover */
   font-weight: bold;
   margin-top: 12px;
+}
+
+.main-container button:hover {
+  background-color: #9DCAEB;
+  border: 1px solid #9DCAEB;
 }
 
 .main-container h1 {

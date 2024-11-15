@@ -1,4 +1,3 @@
-// axiosInstance.js
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -7,7 +6,6 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(config => {
-    // Retrieve username and password from localStorage
     const usn = localStorage.getItem('usn');
     const pwd = localStorage.getItem('pwd');
     if (usn && pwd) {
@@ -17,4 +15,19 @@ axiosInstance.interceptors.request.use(config => {
     return config;
 });
 
-export default axiosInstance;
+const axiosInstance2 = axios.create({
+    baseURL: 'http://localhost:8081',
+    withCredentials: true,
+});
+
+axiosInstance2.interceptors.request.use(config => {
+    const usn = localStorage.getItem('public_usn');
+    const pwd = localStorage.getItem('public_pwd');
+    if (usn && pwd) {
+        const auth = btoa(`${usn}:${pwd}`);
+        config.headers.Authorization = `Basic ${auth}`;
+    }
+    return config;
+});
+
+export default {axiosInstance, axiosInstance2};

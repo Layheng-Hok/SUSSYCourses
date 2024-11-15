@@ -2,17 +2,25 @@
   <div class="verification-card">
     <h2>Verify Email</h2>
     <div v-if="message" :class="messageClass">{{ message }}</div>
+    <div v-if="message" class="login-link">
+      <a href="#" @click="goToLogin">Log In</a>
+    </div>
   </div>
 </template>
 
 <script setup>
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 
 const message = ref('');
 const messageClass = ref('');
 const route = useRoute();
+const router = useRouter();
+
+const goToLogin = () => {
+  router.push('/login');
+};
 
 onMounted(async () => {
   const token = route.query.verificationToken;
@@ -35,5 +43,18 @@ onMounted(async () => {
   background-color: white;
   text-align: center;
   margin-top: 20vh;
+}
+
+.login-link {
+  margin-top: 1rem;
+}
+
+.login-link a {
+  color: #74B3E3;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
 }
 </style>

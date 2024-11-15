@@ -28,7 +28,7 @@
 
   <div class="main-container">
     <div class="content-wrapper">
-      <img src="@/assets/signup.gif" alt="signup Image" class="sign-up"/>
+      <img src="@/assets/signup.gif" alt="signup image" class="sign-up"/>
       <div class="signup-content">
         <h1>Sign up and start learning</h1>
         <p>Join thousands of learners on their journey to success!</p>
@@ -36,6 +36,16 @@
           <input v-model="name" type="text" placeholder="Full name" @input="clearError('nameError')"
                  @blur="capitalizeName"/>
           <span v-if="nameError" class="field-error">{{ nameError }}</span>
+
+          <!-- Gender Selector -->
+          <select v-model="gender" @change="clearError('genderError')" class="gender-selector">
+            <option disabled value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <span v-if="genderError" class="field-error">{{ genderError }}</span>
+
           <div class="email-input-wrapper">
             <input v-model="email" type="email" placeholder="Email"
                    @input="() => { clearError('emailError'); showSuggestions(); }"
@@ -60,6 +70,8 @@
           <input v-model="confirmPassword" type="password" placeholder="Confirm password"
                  @input="clearError('confirmPasswordError')" @blur="emptyConfirmPassword()"/>
           <span v-if="confirmPasswordError" class="field-error">{{ confirmPasswordError }}</span>
+
+          <span v-if="serverErrorMessage" class="field-error">{{ serverErrorMessage }}</span>
         </div>
         <div class="terms-policy">
           <p>By signing up, you agree to our
@@ -69,7 +81,16 @@
             .
           </p>
         </div>
-        <button @click="handleSignup">Sign up</button>
+
+        <button @click="handleSignup" :disabled="loading">
+          Sign up
+        </button>
+
+        <!-- Spinning Circle (spinner) -->
+        <div v-if="loading" class="spinner-container">
+          <div class="spinner"></div>
+        </div>
+
         <h3>Already have an account?
           <router-link to="/login" class="login-link">Log in</router-link>
         </h3>
@@ -80,9 +101,13 @@
 
 <script setup>
 import {ref} from 'vue';
-import axios from 'axios';
+import axiosInstances from '@/services/axiosInstance';
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const name = ref('');
+const gender = ref('');
 const email = ref('');
 const emailSuggestions = ref([]);
 const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'sustech.edu.cn'];
@@ -91,16 +116,19 @@ const password = ref('');
 const confirmPassword = ref('');
 
 const nameError = ref('');
+const genderError = ref('');
 const emailError = ref('');
 const passwordError = ref('');
 const confirmPasswordError = ref('');
-const errorMessage = ref('');
+const serverErrorMessage = ref('');
 
 const clearError = (field) => {
   if (field === 'nameError') nameError.value = '';
+  if (field === 'genderError') genderError.value = '';
   if (field === 'emailError') emailError.value = '';
   if (field === 'passwordError') passwordError.value = '';
   if (field === 'confirmPasswordError') confirmPasswordError.value = '';
+  if (field === 'serverErrorMessage') serverErrorMessage.value = '';
 };
 
 const capitalizeName = () => {
@@ -184,6 +212,8 @@ const selectSuggestion = (suggestion) => {
   selectedIndex.value = -1; // Reset selected index
 };
 
+const loading = ref(false);
+
 const handleSignup = async () => {
   //errorMessage.value = '';
   nameError.value = '';
@@ -193,6 +223,9 @@ const handleSignup = async () => {
 
   if (!name.value) {
     nameError.value = 'Please enter your full name';
+  }
+  if (!gender.value) {
+    genderError.value = 'Please select your gender';
   }
   if (!email.value) {
     emailError.value = 'Please enter your email';
@@ -208,23 +241,30 @@ const handleSignup = async () => {
   }
 
   // If there are any errors, stop submission
-  if (nameError.value || emailError.value || passwordError.value || confirmPasswordError.value) {
+  if (nameError.value || emailError.value || passwordError.value || confirmPasswordError.value || serverErrorMessage.value) {
     return;
   }
 
   const payload = {
     fullName: name.value,
+    gender: gender.value,
     email: email.value,
     password: password.value,
     roleId: 2,
   };
 
+  loading.value = true;
+
   try {
-    const response = await axios.post('http://localhost:8081/register/student', payload);
+    const response = await axiosInstances.axiosInstance2.post('/register', payload);
     alert(response.data);
+    loading.value = false;
+    setTimeout(() => {
+      router.push('/login');
+    }, 1);
   } catch (error) {
     if (error.response) {
-      errorMessage.value = error.response.data || 'Registration failed';
+      serverErrorMessage.value = error.response.data || 'Registration failed';
     } else {
       console.log("Something went wrong");
     }
@@ -348,7 +388,8 @@ const handleSignup = async () => {
 .signup-form input, .signup-form select {
   width: 100%;
   padding: 20px; /* Space inside inputs */
-  margin-bottom: 10px; /* Space below each input */
+  margin-top: 5px;
+  margin-bottom: 5px; /* Space below each input */
   border: 1px solid #333;
   font-size: 16px;
   color: #333 !important;
@@ -393,6 +434,11 @@ const handleSignup = async () => {
   cursor: pointer; /* Pointer on hover */
   font-weight: bold;
   margin-top: 20px !important;
+}
+
+.main-container button:hover {
+  background-color: #9DCAEB;
+  border: 1px solid #9DCAEB;
 }
 
 .main-container h1 {
@@ -456,6 +502,15 @@ const handleSignup = async () => {
   width: 100%;
 }
 
+.signup-form select {
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 10px;
+  border: 1px solid #333;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
 .field-error {
   color: #D32F2F;
   font-size: 14px;
@@ -508,5 +563,30 @@ const handleSignup = async () => {
   color: #0066cc; /* Change text color on hover */
   font-weight: bold;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #74B3E3;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>/
