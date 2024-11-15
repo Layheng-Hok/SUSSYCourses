@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sinuous-canto-439509-r4",
+  "private_key_id": "65ef1d1712ed94d34d107783e145e65ed8a96f5b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCxXF+0Omi42EpF\nCX30E49Rb2Lk1AoNDd4r1oHt9p4Kr2Vu9Ul0hKa1CfEmTHUP5loQFbyz0DFyhFI8\nDk1rayyiBLFzoy5SrC97X7pPAvGlIkHEWRxzsoYgx+NadYIbvSAnz2o5y48Nb3QR\nd3ymj8PnEjD6XgAFQQQI9ZwRxFBcaopsUylWJp7CxtDijXxbSU/vU2Lxkk7a+Q4e\nPVzBWNCer/ilmXtO9gH+XRJhh4XoSVIyQAWJzD8cpILbhYvGDLZN18SRAjW3cYGK\nEGpmtIY4/mBl5TZVW1BEbrrSdo2g7/TfJ7bIU4N7bzWg8Dp+6TPHdzGcyJkAYKTK\njxIS43QbAgMBAAECggEAQoaJh0qZWSwXv4lt6w0jJsKG75nxIzBec0cEeUOVyCA+\nBb6PjNrsxN8zys/G4O3gPkRJAZFH2tJzHf+nXnFWznbAMMW2bGAVd0tS0KwkA3K0\nBHgASg1ebhFL3/RPlyP7WbNc/syxnbJ+cMbGxJsMOjICmQaFL3NRliK6JZfjJKZZ\n5QxOrIBPb+n4sA0CBsCtcaF3pxXNLvlykIaXERdvFww5zryQJhIY1fxfKHU012Jz\nG2aYBWDf744YVWRXssgfGttCSbNXeFldvo+osBPGRC5DKv56ef8aC8KKNlaDTDSD\nAUjdUoMmVhZ/t18sBSEN6c6Bw1L09beEtGzfeZbTQQKBgQDXeEB/AH09bb/HiNW3\nwK4YMaOcYnrygCD4fno5V4aXMMaWHTfFNXdAeTF1Q74nmc2ZDLyHjANXM6bXdnmJ\nnk/PkBZ5IpBzO6VnLtTX2qAFly/0epeU3sglG36/mMIDsqh+2HPVd+N6Rg6Dvkcx\nQBvPtIwbT4CWD/KdC4m9/xx4CwKBgQDSuQXRNmi1idVQL+XcLxq56g/ny4pfHe+K\nuIPYdLA1vNubx5IbYXmaF2nrgVeB9ViEs9tktMW/RQ0quR+eBaotjA4Y6bW1yBUa\n4LonTicj4mOkVG1WOgK+vWp4+ivoxm/K8fAxQm+m+DefpCU9xWIdVQsqxx56HISq\nilRqESuuMQKBgEnEdKhGXZo7Sa4hbbHEOJY14GK44IjHTwJkIqohCgYW/9YC2MYe\ngN5E36ba824RXO8qCh2J1Nb06wjXGdMArShNlzQPnk6lPAJwaRQhWCmx0gwsMFsa\nToFNwX4M6VdkwgTzS+zoZ6vD8lIuQadd4Gei01jCRi6Z9SDJA3ZVscRzAoGBAKFp\nmxwj+lc86opO9lsQNf+9XEupLSgpDSmMp2nyEFxJe0s7tx6ELxqq3rbIT9i7r/+O\nqfrdQjB+W1Sjk6V/H1leVBofQ9KoHgqFo/KhufeR3dOt3EbVju6+t0VOFL5s6oth\ngiSpiE81CZ6epOxJOxvO3gv5lM3i9HiSF5Fb78KxAoGAQlliAVCFJgg6ZKfAL6TN\n4bMMW5q25nEKgMIHFJksCJIJcYiqqFpE788fYDEiowmhtTcgWBU9jzu0AixCfa9S\nT4s7cIW1cXgakDYULErMu1w0RQWty7FcyH/4c7UeRWXWel72iqws0N9kGI4owW37\nq0hVqIv7qxXrgF8i9kJRKwM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "sussyadmin@sinuous-canto-439509-r4.iam.gserviceaccount.com",
+  "client_id": "102777957146192268674",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sussyadmin%40sinuous-canto-439509-r4.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

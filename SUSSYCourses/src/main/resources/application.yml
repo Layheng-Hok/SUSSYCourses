@@ -5,10 +5,14 @@ server:
     include-binding-errors: always
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
   datasource:
-    username: layhenghok
-    password:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     url: jdbc:postgresql://localhost:5432/cs309_project
+
   jpa:
     hibernate:
       ddl-auto: update

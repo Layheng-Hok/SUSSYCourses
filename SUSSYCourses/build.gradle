@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation platform('com.google.cloud:libraries-bom:26.48.0')
     implementation 'com.google.cloud:google-cloud-storage'
+    implementation 'me.paulschwarz:spring-dotenv:3.0.0'
     implementation 'org.json:json:20230227'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'

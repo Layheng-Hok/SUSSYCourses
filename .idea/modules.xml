@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SUSSYCourses.iml" filepath="$PROJECT_DIR$/.idea/SUSSYCourses.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SUSSYCourses.SUSSYCourses.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SUSSYCourses.SUSSYCourses.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SUSSYCourses.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SUSSYCourses.main.iml" />
     </modules>
   </component>
 </project>

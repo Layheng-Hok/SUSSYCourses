@@ -1,6 +1,7 @@
 package com.sustech.cs309.project.sussycourses.service;
 
 
+import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class CourseService  {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    CloudController storageController;
     public String approveCourse(Long id) {
         Optional<Course> courseOptional = courseRepository.findById(id);
 

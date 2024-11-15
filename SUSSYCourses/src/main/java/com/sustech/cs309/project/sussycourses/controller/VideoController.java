@@ -11,12 +11,13 @@ import java.io.IOException;
 @Controller
 public class VideoController {
     @Autowired
-    StorageController storageController;
+    CloudController storageController;
 
     @GetMapping("/video")
     public String displayVideo(Model model) throws IOException {
-        // Replace with your actual Google Cloud Storage video URL
-        String videoUrl = storageController.getStorageKey();
+        String fileName = "video6.png"; //Just an example
+        String videoUrl = storageController.getStorageKey(fileName);
+        System.out.println(videoUrl);
         model.addAttribute("videoUrl", videoUrl);
         return "video"; // This will resolve to video.html
     }
