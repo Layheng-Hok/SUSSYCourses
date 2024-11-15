@@ -21,9 +21,6 @@
     <el-menu-item index="3">
       <router-link to="/login">Log in</router-link>
     </el-menu-item>
-    <el-menu-item index="4">
-      <router-link to="/signup-teacher">Sign up</router-link>
-    </el-menu-item>
   </el-menu>
 
   <div class="main-container">
@@ -68,9 +65,12 @@
                  @blur="emptyPassword()"
           />
           <span v-if="passwordError" class="field-error">{{ passwordError }}</span>
+
           <input v-model="confirmPassword" type="password" placeholder="Confirm password"
                  @input="clearError('confirmPasswordError')" @blur="emptyConfirmPassword()"/>
           <span v-if="confirmPasswordError" class="field-error">{{ confirmPasswordError }}</span>
+
+          <span v-if="serverErrorMessage" class="field-error">{{ serverErrorMessage }}</span>
         </div>
 
         <div class="terms-policy">
@@ -81,7 +81,16 @@
             .
           </p>
         </div>
-        <button @click="handleSignup">Sign up</button>
+
+        <button @click="handleSignup" :disabled="loading">
+          Sign up
+        </button>
+
+        <!-- Spinning Circle (spinner) -->
+        <div v-if="loading" class="spinner-container">
+          <div class="spinner"></div>
+        </div>
+
         <h3>Already have an account?
           <router-link to="/login" class="login-link">Log in</router-link>
         </h3>
@@ -93,6 +102,9 @@
 <script setup>
 import {ref} from 'vue';
 import axiosInstances from '@/services/axiosInstance';
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const name = ref('');
 const gender = ref('');
@@ -116,6 +128,7 @@ const clearError = (field) => {
   if (field === 'emailError') emailError.value = '';
   if (field === 'passwordError') passwordError.value = '';
   if (field === 'confirmPasswordError') confirmPasswordError.value = '';
+  if (field === 'serverErrorMessage') serverErrorMessage.value = '';
 };
 
 const capitalizeName = () => {
@@ -199,8 +212,9 @@ const selectSuggestion = (suggestion) => {
   selectedIndex.value = -1; // Reset selected index
 };
 
+const loading = ref(false);
+
 const handleSignup = async () => {
-  //errorMessage.value = '';
   nameError.value = '';
   emailError.value = '';
   passwordError.value = '';
@@ -226,7 +240,7 @@ const handleSignup = async () => {
   }
 
   // If there are any errors, stop submission
-  if (nameError.value || emailError.value || passwordError.value || confirmPasswordError.value) {
+  if (nameError.value || emailError.value || passwordError.value || confirmPasswordError.value || serverErrorMessage.value) {
     return;
   }
 
@@ -238,15 +252,24 @@ const handleSignup = async () => {
     roleId: 3,
   };
 
+  loading.value = true;
+
   try {
     const response = await axiosInstances.axiosInstance2.post('/register', payload);
     alert(response.data);
+    loading.value = false;
+    setTimeout(() => {
+      router.push('/login');
+    }, 1);
   } catch (error) {
     if (error.response) {
       serverErrorMessage.value = error.response.data || 'Registration failed';
     } else {
       console.log("Something went wrong");
     }
+    loading.value = false;
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -536,5 +559,30 @@ const handleSignup = async () => {
   color: #0066cc; /* Change text color on hover */
   font-weight: bold;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #74B3E3;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>/

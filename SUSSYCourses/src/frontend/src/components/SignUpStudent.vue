@@ -21,9 +21,6 @@
     <el-menu-item index="3">
       <router-link to="/login">Log in</router-link>
     </el-menu-item>
-    <el-menu-item index="4">
-      <router-link to="/signup-student">Sign up</router-link>
-    </el-menu-item>
   </el-menu>
 
   <div class="main-container">
@@ -73,6 +70,7 @@
 
           <span v-if="serverErrorMessage" class="field-error">{{ serverErrorMessage }}</span>
         </div>
+
         <div class="terms-policy">
           <p>By signing up, you agree to our
             <router-link to="/termsofuse" class="terms-link" target="_blank">Terms of Use</router-link>
@@ -268,6 +266,9 @@ const handleSignup = async () => {
     } else {
       console.log("Something went wrong");
     }
+    loading.value = false;
+  } finally {
+    loading.value = false;
   }
 };
 </script>
