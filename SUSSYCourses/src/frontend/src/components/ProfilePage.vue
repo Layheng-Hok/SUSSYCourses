@@ -14,6 +14,11 @@
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Gender:</strong> {{ user.gender }}</p>
       <p><strong>Your Role:</strong> {{ user.role }}</p>
+      <p><strong>Points:</strong> {{ user.points }}</p>
+      <p><strong>Level:</strong> {{ user.points/100 }}</p>
+
+      <p><strong>Bio:</strong> {{ user.bio }}</p>
+      <p><strong>Courses Enrolled:</strong> {{ user.coursesEnrolled }}</p>
 
     </div>
   </div>
@@ -36,7 +41,9 @@ const user = ref({
   profilePic: "/assets/Avatars/student.jpg",
   gender: 'Male',
   role: 'Student',
-
+  points: 100,
+  bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac libero nec odio',
+  coursesEnrolled: 4,
 });
 </script>
 
@@ -85,7 +92,13 @@ const user = ref({
   object-fit: cover;
 }
 
-.profile-info p {
-  margin: 10px 0;
+.profile-info {
+  text-align: left;
+  margin-left: 10px;
 }
+
+.profile-info p {
+  margin-bottom: 8px;
+}
+
 </style>

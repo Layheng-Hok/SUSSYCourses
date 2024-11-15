@@ -30,6 +30,18 @@
             <el-radio label="Other">Other</el-radio>
           </el-radio-group>
         </el-form-item>
+
+        <el-form-item label="Bio">
+      <el-input
+      type = "textarea"
+        class="input"
+        v-model="user.bio"
+        placeholder="Enter your bio description"
+        maxlength="300"
+        show-word-limit
+        rows = "4"
+      ></el-input>
+    </el-form-item>
   
         <el-form-item>
           <el-button type="primary" @click="submitForm">Save Changes</el-button>
@@ -54,6 +66,7 @@ const goBack = () => {
     name: 'John Doe',
     profilePic: "/assets/Avatars/student.jpg",
     gender: 'Male',
+    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   });
   
   const avatars = [
@@ -73,6 +86,9 @@ const goBack = () => {
   </script>
   
   <style scoped>
+
+  .input {
+width: 100%;  }
   .back-button {
   display: flex;
   align-items: center;

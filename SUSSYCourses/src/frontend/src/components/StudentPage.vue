@@ -119,6 +119,7 @@ const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
+
 const courses = ref([
   {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5},
   {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7},
