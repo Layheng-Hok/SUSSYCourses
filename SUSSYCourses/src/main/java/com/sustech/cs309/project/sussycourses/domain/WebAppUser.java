@@ -40,6 +40,9 @@ public class WebAppUser {
     @Column
     private String profilePicture;
 
+    @Column(length = 300)
+    private String bio;
+
     @Column
     private int points = 0;
 

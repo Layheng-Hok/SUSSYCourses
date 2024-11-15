@@ -100,16 +100,16 @@ public class CloudService {
 
     public static String fixName(String fileType, String fileName){
         if(Objects.equals(fileType, "video/mp4")){
-            return "courseware/video/" + fileName;
+            return "Courseware/videos/" + fileName;
         }
         else if(Objects.equals(fileType, "application/pdf")){
-            return "courseware/pdf/" + fileName;
+            return "Courseware/pdf/" + fileName;
         }
         else if(Objects.equals(fileType, "image/jpeg") || Objects.equals(fileType, "image/png")){
-            return "courseware/images/" + fileName;
+            return "Courseware/images/" + fileName;
         }
         else if(Objects.equals(fileType, "text/markdown")){
-            return "courseware/markdown/" + fileName;
+            return "Courseware/md/" + fileName;
         }
         return "File Type Not Supported";
     }
