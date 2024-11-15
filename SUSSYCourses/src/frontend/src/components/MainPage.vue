@@ -8,14 +8,14 @@
     <el-menu-item index="0">
       <router-link to="/">
         <img
-            src="@/assets/logo.png"
+            src="@/assets/logo2.png"
             alt="Element logo"
         /></router-link>
     </el-menu-item>
     <el-menu-item index="1">
       <router-link to="/teacherpage">Teach on SUSSY</router-link>
     </el-menu-item>
-
+<!-- might be deleted-->
     <el-menu-item index="2">
       <router-link to="/studentpage">Study on SUSSY</router-link>
     </el-menu-item>
@@ -254,6 +254,10 @@
     </div>
 
   </div>
+  <div>
+  <router-link to="/teacherdashboard">Trial teacher-dashboard</router-link>
+</div>
+
 </template>
 
 <script setup>

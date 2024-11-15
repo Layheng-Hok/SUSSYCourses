@@ -8,7 +8,7 @@
     <el-menu-item index="0">
       <router-link to="/">
         <img
-            src="@/assets/logo.png"
+            src="@/assets/logo2.png"
             alt="Element logo"
         /></router-link>
     </el-menu-item>
