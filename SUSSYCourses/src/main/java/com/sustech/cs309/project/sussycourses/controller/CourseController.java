@@ -46,10 +46,10 @@ public class CourseController {
 
         for (Course course : courses) {
             JSONObject courseData = new JSONObject();
-            List<Courseware> courseware = coursewareRepository.findCoursewareForCourse(course.getCourse_id());
+            List<Courseware> courseware = coursewareRepository.findCoursewareForCourse(course.getCourseId());
 
             // Basic course information
-            courseData.put("id", course.getCourse_id());
+            courseData.put("id", course.getCourseId());
             courseData.put("name", course.getCourse_name());
             courseData.put("description", course.getDescription());
             courseData.put("image", cloudController.getStorageKey(course.getCover_image())); // Adjust as per your image source
@@ -66,10 +66,10 @@ public class CourseController {
 
             JSONArray homeworkChapters = new JSONArray();
             JSONArray projectChapters = new JSONArray();
-            for (Courseware c: courseware){
-                if (Objects.equals(c.getCategory(), "lecture")){
-                    if(teachingChapters.length() == c.getChapter()){
-                        JSONObject chapter = teachingChapters.getJSONObject(c.getChapter()-1); // Retrieve the chapter as a JSONObject
+            for (Courseware c : courseware) {
+                if (Objects.equals(c.getCategory(), "lecture")) {
+                    if (teachingChapters.length() == c.getChapter()) {
+                        JSONObject chapter = teachingChapters.getJSONObject(c.getChapter() - 1); // Retrieve the chapter as a JSONObject
                         JSONArray materials = chapter.getJSONArray("materials");            // Get the "materials" array
 
                         JSONObject material = new JSONObject();
@@ -88,10 +88,9 @@ public class CourseController {
                         teachingChapter.put("materials", materials);
                         teachingChapters.put(teachingChapter);
                     }
-                }
-                else if(Objects.equals(c.getCategory(), "assignment")){
-                    if(teachingChapters.length() == c.getChapter()){
-                        JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter()-1); // Retrieve the chapter as a JSONObject
+                } else if (Objects.equals(c.getCategory(), "assignment")) {
+                    if (teachingChapters.length() == c.getChapter()) {
+                        JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter() - 1); // Retrieve the chapter as a JSONObject
                         JSONArray materials = chapter.getJSONArray("materials");            // Get the "materials" array
 
                         JSONObject material = new JSONObject();
@@ -109,10 +108,9 @@ public class CourseController {
                         homeworkChapter.put("name", "Homework " + c.getChapter());
                         homeworkChapter.put("materials", materials);
                     }
-                }
-                else if(Objects.equals(c.getCategory(), "project")){
-                    if(projectChapters.length() == c.getChapter()){
-                        JSONObject chapter = projectChapters.getJSONObject(c.getChapter()-1); // Retrieve the chapter as a JSONObject
+                } else if (Objects.equals(c.getCategory(), "project")) {
+                    if (projectChapters.length() == c.getChapter()) {
+                        JSONObject chapter = projectChapters.getJSONObject(c.getChapter() - 1); // Retrieve the chapter as a JSONObject
                         JSONArray materials = chapter.getJSONArray("materials");            // Get the "materials" array
 
                         JSONObject material = new JSONObject();
@@ -141,6 +139,7 @@ public class CourseController {
 
         return data.toString();
     }
+
     //Teacher Functions
     @PostMapping("/create")
     public ResponseEntity<String> createCourse(@RequestBody Course newCourse) {

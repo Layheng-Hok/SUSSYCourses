@@ -1,19 +1,24 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 import com.sustech.cs309.project.sussycourses.domain.Comment;
+import com.sustech.cs309.project.sussycourses.dto.CommentResponse;
 import com.sustech.cs309.project.sussycourses.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sustech.cs309.project.sussycourses.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/comments")
 @CrossOrigin(origins = "http://localhost:8081", allowCredentials = "true")
 public class CommentsController {
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+
+    private final CommentService commentService;
     // Simulation data for get and post from frontend
 //    private final List<Comment> comments = new ArrayList<>(List.of(
 //        new Comment(1, 1, "This is a comment.", "2023-10-01T12:00:00Z", null, 1),
@@ -23,9 +28,9 @@ public class CommentsController {
     // Fetch all comments for a specific course
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/{courseId}")
-    public List<Comment> getCommentsByCourse(@PathVariable int courseId) {
-        System.out.println(commentRepository.findByCourse_CourseId(courseId));
-        return commentRepository.findByCourse_CourseId(courseId);
+    public List<CommentResponse> getCommentsByCourse(@PathVariable long courseId) {
+        Optional<List<CommentResponse>> commentResponses = Optional.ofNullable(commentService.findCommentsByCourseId(courseId));
+        return commentResponses.orElse(null);
     }
 
     // Post a new comment

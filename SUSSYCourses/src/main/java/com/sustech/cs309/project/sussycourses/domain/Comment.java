@@ -24,12 +24,12 @@ public class Comment {
     @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private Course course;
 
+    @Column(length = 300, nullable = false)
+    private String message;
+
     @Column(length = 300)
     private String reply;
 
-    @Column(length = 300)
-    private String message;
-
-    @Column
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
