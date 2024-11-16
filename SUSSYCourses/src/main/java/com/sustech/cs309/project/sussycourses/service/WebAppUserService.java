@@ -167,7 +167,7 @@ public class WebAppUserService {
 
         WebAppUser webAppUser = webAppUserOptional.get();
         List<CourseStudent> courses = courseStudentRepository.findEnrolledCourseStudentsByStudentId(userId);
-        List<StudentCourseDetailResponse> studentCourseDetailRespons = courses.stream()
+        List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
                 .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
@@ -185,8 +185,8 @@ public class WebAppUserService {
                 webAppUser.getPoints(),
                 webAppUser.getBio(),
                 webAppUser.getCreatedAt(),
-                studentCourseDetailRespons.size(),
-                studentCourseDetailRespons
+                studentCourseDetailResponses.size(),
+                studentCourseDetailResponses
         );
     }
 
