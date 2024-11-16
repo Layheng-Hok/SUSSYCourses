@@ -37,9 +37,15 @@ public class Course {
     @Column
     private String coverImage;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
     @OneToMany(mappedBy = "course")
     private List<Courseware> coursewares;
+
+    @Column(length = 50, nullable = false)
+    private String topic;
+
+    @OneToMany(mappedBy = "course")
+    private List<Rating> ratings;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

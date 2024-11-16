@@ -146,7 +146,7 @@ public class WebAppUserService {
         List<CourseStudent> courses = courseStudentRepository.findEnrolledCourseStudentsByStudentId(userId);
         List<CourseInfoResponse> courseInfoResponses = courses.stream()
                 .map(courseStudent -> new CourseInfoResponse(courseStudent.getCourse().getCourseId(),
-                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(),
+                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
                         courseStudent.getStatus(), courseStudent.isLiked()))

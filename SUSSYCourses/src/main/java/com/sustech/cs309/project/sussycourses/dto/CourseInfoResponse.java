@@ -4,6 +4,7 @@ public record CourseInfoResponse(
         Long courseId,
         String courseName,
         String description,
+        String topic,
         String coverImageUrl,
         Long teacherId,
         String teacherName,
