@@ -6,13 +6,10 @@
 
     <div class="content">
       <!-- Email Section -->
-      <div class="input-container">
+      <div class="input-container" @click="showEmailMessage">
         <p>Email:</p>
         <div class="input-box">
-          <input type="text" :value="user.email" disabled/>
-          <el-icon class="edit-icon" @click="showEmailMessage">
-            <edit/>
-          </el-icon>
+          <input type="text" :value="user.email" class="disabled-input" disabled/>
         </div>
       </div>
 
@@ -171,7 +168,7 @@ input {
 }
 
 .edit-icon:hover {
-  color: blue;
+  color: #74B3E3;
 }
 
 .submit-button {
@@ -222,6 +219,9 @@ input {
   text-align: left;
 }
 
+.disabled-input {
+  pointer-events: none;
+}
 </style>
 
 <style>

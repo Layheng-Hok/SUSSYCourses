@@ -38,7 +38,6 @@
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Role:</strong> {{ user.role }}</p>
         <p><strong>Gender:</strong> {{ user.gender }}</p>
-        <p><strong>Points:</strong> {{ user.points }}</p>
         <p><strong>Joined:</strong> {{ user.created }}</p>
       </div>
     </div>
@@ -69,7 +68,6 @@ const user = ref({
   email: 'JohnDoe@mgmail.com',
   gender: 'Male',
   role: 'Teacher',
-  points: '100',
   created: '15 Nov 2024',
   profilePic: null,
   bio: '',
