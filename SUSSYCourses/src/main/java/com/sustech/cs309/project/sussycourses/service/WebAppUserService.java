@@ -139,6 +139,26 @@ public class WebAppUserService {
                 .toList();
     }
 
+    public UserResponse findByEmail(String email) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByEmail(email);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()
+                || webAppUserOptional.get().getRole().getRoleId() == 4) {
+            return null;
+        }
+
+        WebAppUser webAppUser = webAppUserOptional.get();
+        return new UserResponse(
+                webAppUser.getUserId(),
+                webAppUser.getFullName(),
+                webAppUser.getEmail(),
+                webAppUser.getProfilePicture(),
+                webAppUser.getGender(),
+                webAppUser.getRole().getRoleName(),
+                webAppUser.getBio(),
+                webAppUser.getCreatedAt()
+        );
+    }
+
     public StudentDetailResponse getStudentById(long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {

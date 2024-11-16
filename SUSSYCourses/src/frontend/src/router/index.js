@@ -37,7 +37,7 @@ const routes = [
         component: TeacherPage
     },
     {
-        path: '/studentpage',
+        path: '/student-dashboard/:userId',
         name: 'StudentPage',
         component: StudentPage
     },
@@ -113,7 +113,7 @@ const routes = [
         component: UserList
     },
     {
-        path: '/teacherdashboard',
+        path: '/instructor-dashboard/:userId',
         name: 'TeacherDashboard',
         component: TeacherDashboard
     },

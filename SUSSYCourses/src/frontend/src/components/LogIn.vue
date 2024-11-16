@@ -55,6 +55,10 @@
 <script setup>
 import {ref} from 'vue';
 import axios from 'axios';
+import axiosInstances from "@/services/axiosInstance";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const email = ref('');
 const emailSuggestions = ref([]);
@@ -135,27 +139,42 @@ const selectSuggestion = (suggestion) => {
 };
 
 const handleLogin = async () => {
-  errorMessage.value = '';
+      errorMessage.value = '';
 
-  const payload = {
-    email: email.value,
-    password: password.value,
-  };
+      const payload = {
+        email: email.value,
+        password: password.value,
+      };
 
-  try {
-    const response = await axios.post('http://localhost:8081/login', payload);
-    localStorage.setItem('usn', email.value);
-    localStorage.setItem('pwd', password.value);
-    localStorage.setItem('isLoggedIn', 'true')
-    alert(response.data);
-  } catch (error) {
-    if (error.response) {
-      errorMessage.value = error.response.data || 'Login failed';
-    } else {
-      console.log("Something went wrong");
+      try {
+        await axios.post('http://localhost:8081/login', payload);
+        localStorage.setItem('usn', email.value);
+        localStorage.setItem('pwd', password.value);
+        localStorage.setItem('isLoggedIn', 'true')
+
+        const response2 = await axiosInstances.axiosInstance.get(`/users/${email.value}`);
+        let userId = response2.data.userId;
+        let userRole = response2.data.roleName;
+        localStorage.setItem('userId', userId);
+
+        if (userRole === 'ADMIN') {
+          await router.push(`admin-dashboard/${userId}`);
+        } else if (userRole === 'STUDENT') {
+          await router.push(`student-dashboard/${userId}`);
+        } else if (userRole === 'INSTRUCTOR') {
+          await router.push(`instructor-dashboard/${userId}`);
+        } else {
+          alert('Unknown user role');
+        }
+      } catch (error) {
+        if (error.response) {
+          errorMessage.value = error.response.data || 'Login failed';
+        } else {
+          console.log("Something went wrong");
+        }
+      }
     }
-  }
-};
+;
 </script>
 
 
