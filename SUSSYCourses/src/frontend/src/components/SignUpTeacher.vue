@@ -585,4 +585,14 @@ const handleSignup = async () => {
     transform: rotate(360deg);
   }
 }
+
+.signup-form select {
+  padding-left: 15px;
+  text-indent: 0;
+  line-height: normal;
+  width: 100%;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+  font-weight: bold;
+}
 </style>/

@@ -39,7 +39,7 @@
             <option disabled value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            <option value="Others">Others</option>
           </select>
           <span v-if="genderError" class="field-error">{{ genderError }}</span>
 
@@ -510,6 +510,9 @@ const handleSignup = async () => {
   border: 1px solid #333;
   font-size: 16px;
   box-sizing: border-box;
+  color: black !important;
+  font-weight: bold;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 
 .field-error {
@@ -589,5 +592,15 @@ const handleSignup = async () => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.signup-form select {
+  padding-left: 15px;
+  text-indent: 0;
+  line-height: normal;
+  width: 100%;
+  color: black;
+  font-family: 'Aptos Narrow', sans-serif;
+  font-weight: bold;
 }
 </style>/
