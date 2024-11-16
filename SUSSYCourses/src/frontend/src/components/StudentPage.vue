@@ -7,7 +7,7 @@
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src="user.profilePic" alt="Profile Picture"/>
+      <img class="profile-pic-small" :src="tempImg" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
@@ -17,6 +17,7 @@
     <!-- Main Content Section -->
     <div :class="['main-content', { 'content-shifted': isSidebarVisible }]">
       <!-- Search and Filter Section -->
+       <!-- <h1>{{ user.fullName }}</h1> -->
       <div class="search-filter-section">
       <el-input
         placeholder="Search for courses..."
@@ -105,16 +106,29 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import {computed, ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import CourseBreakdown from './CourseBreakdown.vue';
+import axiosInstances from '@/services/axiosInstance';
 
-const user = ref({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  profilePic: "/assets/Avatars/student.jpg",
-});
+const user = ref(null); 
+const userId = localStorage.getItem('userId'); 
+const tempImg = "/assets/Avatars/Instructor.jpg";
+
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    user.value = response.data;
+    console.log("User Full Name:", user.value.fullName);
+  } catch (error) {
+    console.log("Error Details:", error);
+  }
+};
+
+
+onMounted(fetchUserData);
+
 
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
@@ -124,12 +138,11 @@ const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
-
 const courses = ref([
   {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5, category: "Programming", progress :30},
   {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7, category: "Programming", progress :99.9},
   {id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3, category: "Programming", progress :0},
-  {id: 4, title: 'Graphic Design', image: '/assets/courses/course4.png', rating: 4.6, category: "Design", progress :6},
+  {id: 4, title: 'Graphic Design', image: '/assets/courses/course3.png', rating: 4.6, category: "Design", progress :6},
 ]);
 
 const categories = ref(['All', 'Web Development','Marketing', 'Programming','Finance','Leadership','Data Science', 'Design','Hardware','Economics']);
@@ -176,6 +189,8 @@ const goToCourse = (courseId) => {
 const handleMenuSelect = (index) => {
   activeIndex.value = index;
 };
+
+
 </script>
 
 <style scoped>
@@ -326,6 +341,9 @@ const handleMenuSelect = (index) => {
 .el-menu-item.is-active {
   background-color: transparent !important;
   border-bottom: none !important;
+}
+.el-menu-demo .el-menu-item a {
+  text-decoration: none !important;
 }
 
 .sidebar-toggle {
