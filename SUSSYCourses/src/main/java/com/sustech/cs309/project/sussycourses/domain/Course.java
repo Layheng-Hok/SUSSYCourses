@@ -16,7 +16,7 @@ import java.util.List;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long course_id;
+    private Long courseId;
 
     @Column(length = 100, nullable = false)
     private String course_name;
@@ -44,7 +44,7 @@ public class Course {
     private List<Courseware> coursewares;
 
     public void setCourse_id(Long course_id) {
-        this.course_id = course_id;
+        this.courseId = course_id;
     }
 
     public void setCourse_name(String course_name) {
@@ -76,7 +76,7 @@ public class Course {
     }
 
     public int getCourse_id() {
-        return Math.toIntExact(course_id);
+        return Math.toIntExact(courseId);
     }
 
     public String getCourse_name() {

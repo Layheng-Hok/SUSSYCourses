@@ -15,7 +15,7 @@ public class Courseware {
     private Long coursewareId;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
+    @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private Course course;
 
     @Column(name = "file_type", nullable = false)

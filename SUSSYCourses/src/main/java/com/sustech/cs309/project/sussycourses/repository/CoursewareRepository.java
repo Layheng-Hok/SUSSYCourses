@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface CoursewareRepository extends JpaRepository<Course, Long> {
     Optional<Course> findById(Long id);
 
-    @Query("SELECT cw FROM Courseware cw JOIN cw.course c WHERE c.course_id = :courseId")
+    @Query("SELECT cw FROM Courseware cw JOIN cw.course c WHERE c.courseId = :courseId")
     List<Courseware> findCoursewareForCourse(@Param("courseId") int courseId);
 
 

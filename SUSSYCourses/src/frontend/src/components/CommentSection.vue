@@ -64,6 +64,7 @@
 
 <script>
 import axios from "axios";
+import axiosInstances from "@/services/axiosInstance";
 axios.defaults.baseURL = "http://localhost:8081";
 
 export default {
@@ -96,71 +97,72 @@ export default {
     },
     async fetchComments() {
       try {
-        const response = await axios.get(`/api/comments/${this.courseId}`);
+        const response = await axiosInstances.axiosInstance.get(`/api/comments/${this.courseId}`);
         this.comments = response.data;
-        await this.fetchUsernames(); // Fetch usernames after loading comments
+        console.log("Hello", response.data)
+        // await this.fetchUsernames(); // Fetch usernames after loading comments
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     },
-    async fetchUsernames() {
-  try {
-    // Extract unique userIds from comments
-    const userIds = [...new Set(this.comments.map((comment) => comment.userId))];
+//     async fetchUsernames() {
+//   try {
+//     // Extract unique userIds from comments
+//     const userIds = [...new Set(this.comments.map((comment) => comment.userId))];
+//
+//     for (const userId of userIds) {
+//       if (!this.userMap[userId]) {
+//         const response = await axios.get(`/api/users/${userId}`);
+//         // Directly assign the username to userMap
+//         this.userMap[userId] = response.data.fullName; // Assuming fullName is the field in the response
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error fetching usernames:", error);
+//   }
+// },
 
-    for (const userId of userIds) {
-      if (!this.userMap[userId]) {
-        const response = await axios.get(`/api/users/${userId}`);
-        // Directly assign the username to userMap
-        this.userMap[userId] = response.data.fullName; // Assuming fullName is the field in the response
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching usernames:", error);
-  }
-},
-
-    async submitComment() {
-      try {
-        const newComment = {
-          userId: parseInt(this.studentId),
-          message: this.newCommentMessage,
-          timestamp: new Date().toISOString(),
-          replyId: null,
-          courseId: this.courseId,
-        };
-        const response = await axios.post("/api/comments", newComment);
-        this.comments.push(response.data);
-        await this.fetchUsernames(); // Update usernames after adding a comment
-        this.newCommentMessage = "";
-      } catch (error) {
-        console.error("Error posting comment:", error);
-      }
-    },
-    async submitReply() {
-      try {
-        const newReply = {
-          userId: parseInt(this.studentId),
-          message: this.newReplyMessage,
-          timestamp: new Date().toISOString(),
-          replyId: this.replyingTo.commentId, // Link the reply to the comment
-          courseId: this.courseId,
-        };
-        const response = await axios.post("/api/comments", newReply);
-        this.comments.push(response.data);
-        await this.fetchUsernames(); // Update usernames after adding a reply
-        this.replyingTo = null;
-        this.newReplyMessage = "";
-      } catch (error) {
-        console.error("Error posting reply:", error);
-      }
-    },
-    getCommentById(commentId) {
-      return this.comments.find((comment) => comment.commentId === commentId);
-    },
-    getUsername(userId) {
-      return this.userMap[userId] || "Loading..."; // Return "Loading..." if username isn't ready
-    },
+    // async submitComment() {
+    //   try {
+    //     const newComment = {
+    //       userId: parseInt(this.studentId),
+    //       message: this.newCommentMessage,
+    //       timestamp: new Date().toISOString(),
+    //       replyId: null,
+    //       courseId: this.courseId,
+    //     };
+    //     const response = await axios.post("/api/comments", newComment);
+    //     this.comments.push(response.data);
+    //     await this.fetchUsernames(); // Update usernames after adding a comment
+    //     this.newCommentMessage = "";
+    //   } catch (error) {
+    //     console.error("Error posting comment:", error);
+    //   }
+    // },
+    // async submitReply() {
+    //   try {
+    //     const newReply = {
+    //       userId: parseInt(this.studentId),
+    //       message: this.newReplyMessage,
+    //       timestamp: new Date().toISOString(),
+    //       replyId: this.replyingTo.commentId, // Link the reply to the comment
+    //       courseId: this.courseId,
+    //     };
+    //     const response = await axios.post("/api/comments", newReply);
+    //     this.comments.push(response.data);
+    //     await this.fetchUsernames(); // Update usernames after adding a reply
+    //     this.replyingTo = null;
+    //     this.newReplyMessage = "";
+    //   } catch (error) {
+    //     console.error("Error posting reply:", error);
+    //   }
+    // },
+    // getCommentById(commentId) {
+    //   return this.comments.find((comment) => comment.commentId === commentId);
+    // },
+    // getUsername(userId) {
+    //   return this.userMap[userId] || "Loading..."; // Return "Loading..." if username isn't ready
+    // },
   },
 };
 </script>
