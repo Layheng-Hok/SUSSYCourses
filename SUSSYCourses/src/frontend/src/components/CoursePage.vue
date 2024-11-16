@@ -3,7 +3,7 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Element logo" style="width: 60px;" />
+        < img src="@/assets/logo.png" alt="Element logo" style="width: 60px;" />
       </router-link>
     </el-menu-item>
     <el-menu-item index="1">
@@ -13,115 +13,146 @@
 
   <div class="course-page" v-if="course">
     <!-- Course Description Section -->
-    <!-- <el-card class="course-description" shadow="hover">
+    <el-card class="course-description" shadow="hover">
       <h2>Course Description</h2>
-      <img :src="course.image" alt="Course Image" class="course-image" />
+      < img :src=course.image alt="Course Image" class="course-image" />
       <p class="course-title"><strong>{{ course.name }}</strong></p>
-      <p class="description">{{ course.description }}</p> -->
+      <p class="description">{{ course.description }}</p>
 
       <!-- Like Button and Total Likes -->
-      <!-- <div class="like-section">
+      <div class="like-section">
         <el-button type="primary" icon="el-icon-thumb" @click="likeCourse">
           <span v-if="!liked">Like</span>
           <span v-else>Liked</span>
         </el-button>
         <span>Total Likes: {{ likes }}</span>
       </div>
-    </el-card> -->
+    </el-card>
 
     <!-- Instructor Info Section -->
     <el-card class="instructor-info" shadow="hover">
       <h2>Instructor Information</h2>
-      <!-- <el-row>
+      <el-row>
         <el-col :span="4">
-          <img :src="course.instructorImage" alt="Instructor Image" class="instructor-image" />
+          < img :src="course.instructorImage" alt="Instructor Image" class="instructor-image" />
         </el-col>
         <el-col :span="20">
           <p><strong>{{ course.instructorName }}</strong></p>
           <p class="bio">{{ course.instructorBio }}</p>
         </el-col>
-      </el-row> -->
+      </el-row>
+    </el-card>
+
+    <!-- Course Content Section with Interactive Media -->
+    <el-card class="course-content" shadow="hover">
+      <h2>Course Content</h2>
+      <el-collapse>
+        <el-collapse-item title="Teaching Chapters" name="1">
+          <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
+            <h3>{{ chapter.name }}</h3>
+            <el-list>
+              <el-list-item v-for="material in chapter.materials" :key="material.title">
+                <div v-if="material.type === 'mp4'" class="video-container">
+                  <video controls :src="`/assets/Materials/${material.title}`" width="50%"></video>
+                </div>
+                <div v-else>
+                  <a :href="`/assets/Materials/${material.title}`" target="_blank">
+                    <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
+                    {{ material.title }}
+                  </a>
+                </div>
+              </el-list-item>
+            </el-list>
+          </div>
+        </el-collapse-item>
+
+        <el-collapse-item title="Homework Chapters" name="2">
+          <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
+            <h3>{{ chapter.name }}</h3>
+            <el-list>
+              <el-list-item v-for="material in chapter.materials" :key="material.title">
+                <a :href="`/assets/Materials/${material.title}`" target="_blank">
+                  <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
+                  {{ material.title }}
+                </a>
+              </el-list-item>
+            </el-list>
+          </div>
+        </el-collapse-item>
+
+        <el-collapse-item title="Project Chapters" name="3">
+          <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
+            <h3>{{ chapter.name }}</h3>
+            <el-list>
+              <el-list-item v-for="material in chapter.materials" :key="material.title">
+                <a :href="`/assets/Materials/${material.title}`" target="_blank">
+                  <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
+                  {{ material.title }}
+                </a>
+              </el-list-item>
+            </el-list>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </el-card>
 
     <!-- Courseware Section -->
-    <Courseware :course-id="course[id]" />
+    <Courseware :course-id="course[id]"/>
 
     <!-- Comment Section -->
     <CommentSection :student-id="studentId"/>
   </div>
-
-  <div v-else>
-    <p>Loading course information...</p>
-  </div>
 </template>
 
 <script setup>
-// import { ref, onMounted } from 'vue';
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {DataBoard, Document, Files, VideoCamera} from '@element-plus/icons-vue';
+import axiosInstances from "@/services/axiosInstance";
+import CommentSection from "@/components/CommentSection.vue";
 
-// import { useRoute } from 'vue-router';
-import Courseware from './Courseware.vue';
-import CommentSection from './CommentSection.vue';
+const route = useRoute();
+const course = ref(null);
+const likes = ref(0);
+const liked = ref(false);
+const studentId = ref('1');
+// Fetch actual data here
 
-// Variables
-const studentId = ref('1'); // Example student ID
-// const courseId = ref(null);
-// const course = ref(null);
-// const likes = ref(0); // To be fetched
-// const liked = ref(false);
+onMounted(async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get('http://localhost:8081/course/coursePage');
+    const coursesData = response.data
+    const courseId = route.params.courseId;
+    console.log(coursesData)
+    course.value = coursesData.find(c => c.id === courseId);
+    console.log(course.value.image);
 
-// Route handling
-// const route = useRoute();
-// courseId.value = route.params.courseId;
+    if (!course.value) {
+      console.error("Course not found!");
+    }
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+  }
+});
 
-const course = {
-  id: '1',
-  name: 'Vue Crash Course',
-  description: 'Learn Vue.js from scratch in this comprehensive crash course.',
-  image: '/assets/Courses/vue-course.jpg',
-  instructorName: 'Jane Doe',
-  instructorImage: '/assets/Instructors/jane-doe.jpg',
-  instructorBio: 'A passionate Vue.js developer and instructor with over 5 years of experience.',
-  likes: 123,
+const likeCourse = () => {
+  likes.value += 1;
+  liked.value = true;
 };
 
-// Fetch course data
-// onMounted(async () => {
-//   if (!courseId.value) {
-//     console.error("No course ID provided!");
-//     return;
-//   }
-//   try {
-//     const response = await fetch(`/api/courses/${courseId.value}`);
-//     if (!response.ok) throw new Error("Failed to fetch course data.");
-//     course.value = await response.json();
-//     likes.value = course.value.likes || 0; // Assume the course object has a likes property
-//   } catch (error) {
-//     console.error("Error fetching course data:", error);
-//   }
-// });
-
-// Like course function
-// const likeCourse = async () => {
-//   if (!liked.value) {
-//     likes.value += 1;
-//     liked.value = true;
-//   }
-  // try {
-  //   const response = await fetch(`/api/courses/${courseId.value}/like`, { method: 'POST' });
-  //   if (response.ok) {
-  //     likes.value += 1;
-  //     liked.value = true;
-  //   } else {
-  //     console.error("Failed to like course");
-  //   }
-  // } catch (error) {
-  //   console.error("Error liking the course:", error);
-  // }
-// };
+const materialIcon = (type) => {
+  switch (type) {
+    case 'pdf':
+      return Document;
+    case 'pptx':
+      return DataBoard;
+    case 'mp4':
+      return VideoCamera;
+    default:
+      return Files;
+  }
+};
 </script>
-
-
 <style scoped>
 .course-page {
   padding: 20px;
@@ -136,7 +167,7 @@ const course = {
   margin-top: 10px;
 }
 
-.course-description, .instructor-info, .course-content {
+.course-description, .instructor-info, .course-content, .comment-section {
   margin-top: 40px;
 }
 
@@ -150,6 +181,27 @@ const course = {
 
 .chapter {
   margin-top: 10px;
+}
+
+.comments {
+  margin-top: 15px;
+}
+
+.comment-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.comment-input {
+  margin-bottom: 20px;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #888;
+  float: right;
 }
 
 .el-menu-demo img {
