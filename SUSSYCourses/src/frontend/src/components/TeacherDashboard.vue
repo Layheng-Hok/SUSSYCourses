@@ -5,36 +5,35 @@
       <el-menu
           class="left-sidebar"
           mode="vertical"
+          :class="{ expanded: isSidebarExpanded }"
           @mouseover="toggleSidebarExpansion(true)"
           @mouseleave="toggleSidebarExpansion(false)"
+          @click="toggleSidebarExpansion(false)"
       >
 
         <!-- Logo -->
         <el-menu-item index="0">
           <router-link to="/">
             <img :src="isSidebarExpanded ? require('@/assets/logo4.png') : require('@/assets/logo2.png')"
-                 alt="Element logo"/>
+                 alt="Element logo"
+                 :class="{ expanded: isSidebarExpanded, collapsed: !isSidebarExpanded }"
+            />
           </router-link>
         </el-menu-item>
 
         <!-- Courses -->
-        <el-menu-item index="1" @click="setActiveTab('courses')">
+        <el-menu-item index="1"
+                      @click="setActiveTab('courses')"
+                      :class="{ 'is-active': activeTab === 'courses' }"
+                      >
           <el-icon>
             <Notebook/>
           </el-icon>
           <span v-if="isSidebarExpanded">Courses</span>
         </el-menu-item>
 
-        <!-- Communication -->
-        <el-menu-item index="2">
-          <el-icon>
-            <ChatSquare/>
-          </el-icon>
-          <span v-if="isSidebarExpanded">Communication</span>
-        </el-menu-item>
-
         <!-- Notifications -->
-        <el-menu-item index="3" @click="setActiveTab('notifications')">
+        <el-menu-item index="2" @click="setActiveTab('notifications')">
           <el-icon>
             <Notification/>
           </el-icon>
@@ -42,7 +41,7 @@
         </el-menu-item>
 
         <!-- Help and Support -->
-        <el-menu-item index="4" @click="setActiveTab('help')">
+        <el-menu-item index="3" @click="setActiveTab('help')">
           <el-icon>
             <Help/>
           </el-icon>
@@ -126,7 +125,7 @@
 
 <script setup>
 import {ref, computed} from 'vue';
-import {ChatSquare, Help, Notebook, Notification} from "@element-plus/icons-vue";
+import {Help, Notebook, Notification} from "@element-plus/icons-vue";
 import TeacherCourses from "@/components/TeacherCourses.vue";
 import HelpSupport from "@/components/HelpSupport.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
@@ -139,7 +138,7 @@ const showCourseDetails = ref(false); // Controls whether to show TeacherCourses
 
 const setActiveTab = (tab) => {
   activeTab.value = tab;
-  console.log("Current activeTab:", activeTab.value);
+  console.log("Active tab:", activeTab.value);
 };
 
 const user = ref({
@@ -169,6 +168,8 @@ const isSidebarExpanded = ref(false);
 const toggleSidebarExpansion = (expand) => {
   isSidebarExpanded.value = expand;
 };
+
+
 
 // Callback to switch to CourseDetails after form submission
 const navigateToCourseDetails = () => {
@@ -282,13 +283,11 @@ const navigateToCourseDetails = () => {
   z-index: 1000;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
   padding: 20px;
 }
 
-/* Sidebar Menu Items */
 .sidebar .el-menu-item {
   font-size: 16px;
   display: flex;
@@ -301,8 +300,6 @@ const navigateToCourseDetails = () => {
   font-size: 20px;
 }
 
-
-/* Left Sidebar Styling */
 .left-sidebar {
   position: fixed;
   top: 0;
@@ -316,8 +313,22 @@ const navigateToCourseDetails = () => {
   padding-top: 20px;
 }
 
-.left-sidebar:hover {
+.left-sidebar.expanded {
   width: 230px;
+}
+
+.left-sidebar img {
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.left-sidebar img.expanded {
+  width: 190px;
+  height: auto;
+}
+
+.left-sidebar img.collapsed {
+  width: 43px;
+  height: auto;
 }
 
 .left-sidebar .el-menu-item {
@@ -344,16 +355,10 @@ const navigateToCourseDetails = () => {
 .left-sidebar .el-menu-item {
   color: white !important;
   margin-bottom: 20px;
-
 }
 
 .left-sidebar .el-menu-item:hover {
   color: #74B3E3 !important;
-}
-
-.left-sidebar:hover img {
-  width: 190px;
-  margin-left: -12px;
 }
 
 .el-menu-item a {
@@ -363,7 +368,6 @@ const navigateToCourseDetails = () => {
 
 .el-menu-item {
   color: black;
-
 }
 
 .el-menu-item a:hover {
@@ -382,4 +386,19 @@ const navigateToCourseDetails = () => {
 .el-menu-item.is-active:hover {
   color: #74B3E3 !important;
 }
+
+.left-sidebar .el-menu-item.is-active {
+  position: relative;
+}
+
+.left-sidebar .el-menu-item.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 125%;
+  width: 4px;
+  background-color: #74B3E3;
+}
+
 </style>
