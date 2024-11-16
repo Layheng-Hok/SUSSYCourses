@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/course")
+@CrossOrigin(origins = "http://localhost:8081", allowCredentials = "true")
 public class CourseController {
 
     @Autowired
@@ -38,7 +40,7 @@ public class CourseController {
         return courseRepository.findAll();
     }
 
-
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/coursePage")
     public String coursePage() throws IOException {
         List<JSONObject> data = new ArrayList<>();
@@ -49,10 +51,10 @@ public class CourseController {
             List<Courseware> courseware = coursewareRepository.findCoursewareForCourse(course.getCourseId());
 
             // Basic course information
-            courseData.put("id", course.getCourseId());
+            courseData.put("id", course.getCourseId().toString());
             courseData.put("name", course.getCourseName());
             courseData.put("description", course.getDescription());
-            courseData.put("image", cloudController.getStorageKey(course.getCoverImage())); // Adjust as per your image source
+            courseData.put("image", cloudController.getStorageKey("Courses/" + course.getCourseName() + "/" + course.getCoverImage())); // Adjust as per your image source
 
             // Instructor info
             if (course.getTeacher() != null) {
