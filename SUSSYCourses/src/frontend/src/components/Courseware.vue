@@ -56,7 +56,7 @@
   <script>
   import { ref, onMounted } from 'vue';
   import { Document, DataBoard, VideoCamera, Files } from '@element-plus/icons-vue';
-  
+  import axiosInstances from "@/services/axiosInstance";
   export default {
     name: "CourseContent",
     props: {
@@ -69,53 +69,53 @@
       const course = ref(null);
   
       // Simulated course data
-      const coursesData = [
-        {
-          id: '1',
-          name: "React Crash Course",
-          description: "This is a comprehensive web development course.",
-          image: "/assets/Courses/course.jpg",
-          instructorName: "Dr. Angela Yu",
-          instructorImage: "/assets/Avatars/instructor.jpg",
-          instructorBio: "Developer with a love for teaching.",
-          teachingChapters: [
-            {
-              name: "Chapter 1",
-              materials: [
-                { title: "Lecture 1.mp4", type: "mp4" },
-                { title: "Introduction.pdf", type: "pdf" },
-              ],
-            },
-          ],
-          homeworkChapters: [
-            { name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] },
-          ],
-          projectChapters: [
-            { name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] },
-          ],
-        },
-        {
-          id: '2',
-          name: "Vue Crash Course",
-          description: "This is a comprehensive web development course.",
-          image: "/assets/Courses/course2.jpg",
-          instructorName: "Mr. Jack Bruh",
-          instructorImage: "/assets/Avatars/student.jpg",
-          instructorBio: "Developer with a love for teaching.",
-          teachingChapters: [
-            {
-              name: "Chapter 1",
-              materials: [{ title: "Introduction.pdf", type: "pdf" }],
-            },
-          ],
-          homeworkChapters: [
-            { name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] },
-          ],
-          projectChapters: [
-            { name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] },
-          ],
-        },
-      ];
+      // const coursesData = [
+      //   {
+      //     id: '1',
+      //     name: "React Crash Course",
+      //     description: "This is a comprehensive web development course.",
+      //     image: "/assets/Courses/course.jpg",
+      //     instructorName: "Dr. Angela Yu",
+      //     instructorImage: "/assets/Avatars/instructor.jpg",
+      //     instructorBio: "Developer with a love for teaching.",
+      //     teachingChapters: [
+      //       {
+      //         name: "Chapter 1",
+      //         materials: [
+      //           { title: "Lecture 1.mp4", type: "mp4" },
+      //           { title: "Introduction.pdf", type: "pdf" },
+      //         ],
+      //       },
+      //     ],
+      //     homeworkChapters: [
+      //       { name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] },
+      //     ],
+      //     projectChapters: [
+      //       { name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] },
+      //     ],
+      //   },
+      //   {
+      //     id: '2',
+      //     name: "Vue Crash Course",
+      //     description: "This is a comprehensive web development course.",
+      //     image: "/assets/Courses/course2.jpg",
+      //     instructorName: "Mr. Jack Bruh",
+      //     instructorImage: "/assets/Avatars/student.jpg",
+      //     instructorBio: "Developer with a love for teaching.",
+      //     teachingChapters: [
+      //       {
+      //         name: "Chapter 1",
+      //         materials: [{ title: "Introduction.pdf", type: "pdf" }],
+      //       },
+      //     ],
+      //     homeworkChapters: [
+      //       { name: "Homework 1", materials: [{ title: "Assignment 1.pdf", type: "pdf" }] },
+      //     ],
+      //     projectChapters: [
+      //       { name: "Project 1", materials: [{ title: "Project Plan.pptx", type: "pptx" }] },
+      //     ],
+      //   },
+      // ];
   
       const materialIcon = (type) => {
         switch (type) {
@@ -130,10 +130,26 @@
         }
       };
   
-      onMounted(() => {
-        course.value = coursesData.find((c) => c.id === props.courseId);
-        if (!course.value) {
-          console.error("Course not found!");
+      // onMounted(() => {
+      //   course.value = coursesData.find((c) => c.id === props.courseId);
+      //   if (!course.value) {
+      //     console.error("Course not found!");
+      //   }
+      // });
+
+      onMounted(async () => {
+        try {
+          const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
+          const coursesData = response.data
+          console.log(coursesData)
+          console.log(coursesData.find((c) => c.id === props.courseId));
+          course.value = coursesData.find((c) => c.id === props.courseId);
+
+          if (!course.value) {
+            console.error("Course not found!");
+          }
+        } catch (error) {
+          console.error('Error fetching courses:', error);
         }
       });
   

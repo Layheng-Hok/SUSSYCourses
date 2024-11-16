@@ -9,6 +9,7 @@ public record CommentResponse(
         String fullName,
         String message,
         String reply,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String repliedTo
 ) {
 }
