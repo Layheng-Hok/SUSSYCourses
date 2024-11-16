@@ -1,6 +1,5 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.dto.InstructorDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.UserResponse;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
@@ -29,11 +28,5 @@ public class UserController {
     @GetMapping("/student/profile/{userId}")
     public StudentDetailResponse getStudentById(@PathVariable long userId) {
         return webAppUserService.getStudentById(userId);
-    }
-
-    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @GetMapping("/instructor/profile/{userId}")
-    public InstructorDetailResponse getInstructorById(@PathVariable long userId) {
-        return null;
     }
 }
