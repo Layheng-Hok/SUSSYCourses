@@ -320,6 +320,7 @@ export default {
   font-weight: bolder;
   font-size: 20px;
   border: none;
+  border-radius: 0;
   display: flex;
   align-items: center;
   height: 50px;
@@ -327,8 +328,8 @@ export default {
 
 .search-button:hover {
   background-color: #444;
+  color: white;
 }
-
 
 .search-input ::v-deep .el-input__inner::placeholder {
   color: inherit !important;
@@ -587,5 +588,10 @@ export default {
 .final-text button:hover {
   background-color: #9DCAEB;
   border: 1px solid #9DCAEB;
+}
+
+.search-bar ::v-deep(.el-input__wrapper) {
+  border: none !important;
+  box-shadow: none !important;
 }
 </style>
