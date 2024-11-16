@@ -20,6 +20,10 @@ import VerifyEmail from "@/components/VerifyEmail.vue";
 import TermsOfUse from "@/components/TermsOfUse.vue";
 import PrivacyPolicy from "@/components/PrivacyPolicy.vue";
 import UserList from "@/components/UserList.vue";
+import TeacherDashboard from "@/components/TeacherDashboard.vue";
+import TeacherProfile from "@/components/TeacherProfile.vue";
+import Guideline from "@/components/Guideline.vue";
+import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 
 const routes = [
     {
@@ -107,6 +111,26 @@ const routes = [
         path: '/admin/users',
         name: 'UserList',
         component: UserList
+    },
+    {
+        path: '/teacherdashboard',
+        name: 'TeacherDashboard',
+        component: TeacherDashboard
+    },
+    {
+        path: '/teacherprofile',
+        name: 'TeacherProfile',
+        component: TeacherProfile
+    },
+    {
+        path: '/guideline',
+        name: 'Guideline',
+        component: Guideline
+    },
+    {
+        path: '/teacher-courses-details',
+        name: 'TeacherCoursesDetails',
+        component: TeacherCoursesDetails
     },
 ];
 

@@ -1,0 +1,385 @@
+<template>
+  <div class="container">
+    <!-- Top Menu with Profile Avatar -->
+    <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
+      <el-menu
+          class="left-sidebar"
+          mode="vertical"
+          @mouseover="toggleSidebarExpansion(true)"
+          @mouseleave="toggleSidebarExpansion(false)"
+      >
+
+        <!-- Logo -->
+        <el-menu-item index="0">
+          <router-link to="/">
+            <img :src="isSidebarExpanded ? require('@/assets/logo4.png') : require('@/assets/logo2.png')"
+                 alt="Element logo"/>
+          </router-link>
+        </el-menu-item>
+
+        <!-- Courses -->
+        <el-menu-item index="1" @click="setActiveTab('courses')">
+          <el-icon>
+            <Notebook/>
+          </el-icon>
+          <span v-if="isSidebarExpanded">Courses</span>
+        </el-menu-item>
+
+        <!-- Communication -->
+        <el-menu-item index="2">
+          <el-icon>
+            <ChatSquare/>
+          </el-icon>
+          <span v-if="isSidebarExpanded">Communication</span>
+        </el-menu-item>
+
+        <!-- Notifications -->
+        <el-menu-item index="3" @click="setActiveTab('notifications')">
+          <el-icon>
+            <Notification/>
+          </el-icon>
+          <span v-if="isSidebarExpanded">Notifications</span>
+        </el-menu-item>
+
+        <!-- Help and Support -->
+        <el-menu-item index="4" @click="setActiveTab('help')">
+          <el-icon>
+            <Help/>
+          </el-icon>
+          <span v-if="isSidebarExpanded">Help and Support</span>
+        </el-menu-item>
+      </el-menu>
+
+      <!-- Profile Avatar -->
+      <el-menu-item index="0" @click="toggleSidebar">
+        <el-avatar :size="50" shape="circle">
+          <template v-if="user.profilePic">
+            <img :src="user.profilePic" alt="Profile Picture"/>
+          </template>
+          <template v-else>
+            {{ user.initials }}
+          </template>
+        </el-avatar>
+      </el-menu-item>
+    </el-menu>
+
+    <!-- Overlay for Shadow Effect -->
+    <div v-if="showSidebar" class="overlay" @click="hideSidebar"></div>
+
+    <!-- Sidebar (slide-in effect) -->
+    <el-menu :class="['sidebar', { 'sidebar-open': showSidebar }]" mode="vertical" :default-active="activeIndex"
+             @select="handleSelect">
+      <!-- Profile Header Section -->
+      <div class="profile-header">
+        <el-avatar :size="70" shape="circle">
+          <template v-if="user.profilePic">
+            <img :src="user.profilePic" alt="Profile Picture"/>
+          </template>
+          <template v-else>
+            {{ user.initials }}
+          </template>
+        </el-avatar>
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.email }}</p>
+      </div>
+
+      <!-- Sidebar Menu Items -->
+      <el-menu-item index="1" @click="setActiveTab('profile')">
+        <i class="el-icon-user"></i>
+        <span>Profile</span>
+      </el-menu-item>
+
+      <el-menu-item index="2">
+        <i class="el-icon-folder"></i>
+        <span>My Courses</span>
+      </el-menu-item>
+
+      <el-menu-item index="3" @click="setActiveTab('security')">
+        <i class="el-icon-setting"></i>
+        <span>Account Security</span>
+      </el-menu-item>
+      <el-menu-item index="4">
+        <i class="el-icon-document"></i>
+        <router-link to="/">
+          <span>Main Study Page</span>
+        </router-link>
+      </el-menu-item>
+      <el-menu-item index="5">
+        <i class="el-icon-close"></i>
+        <span>Log Out</span>
+      </el-menu-item>
+    </el-menu>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <TeacherCourses v-if="activeTab === 'courses' && !showCourseDetails"
+                      @course-submitted="navigateToCourseDetails"/>
+      <TeacherCoursesDetails v-if="activeTab === 'courses' && showCourseDetails"
+      />
+      <HelpSupport v-if="activeTab === 'help'"/>
+      <TeacherProfile v-if="activeTab === 'profile'"/>
+      <Security v-if="activeTab === 'security'"/>
+      <TeacherNotifications v-if="activeTab === 'notifications' "/>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import {ref, computed} from 'vue';
+import {ChatSquare, Help, Notebook, Notification} from "@element-plus/icons-vue";
+import TeacherCourses from "@/components/TeacherCourses.vue";
+import HelpSupport from "@/components/HelpSupport.vue";
+import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
+import TeacherProfile from "@/components/TeacherProfile.vue";
+import Security from "@/components/Security.vue";
+import TeacherNotifications from "@/components/TeacherNotifications.vue";
+
+const activeTab = ref('courses'); // Default to 'courses'
+const showCourseDetails = ref(false); // Controls whether to show TeacherCourses or CourseDetails
+
+const setActiveTab = (tab) => {
+  activeTab.value = tab;
+  console.log("Current activeTab:", activeTab.value);
+};
+
+const user = ref({
+  name: 'John Doe',
+  email: 'JohnDoe@mgmail.com',
+  profilePic: null,
+  initials: computed(() => user.value.name.charAt(0).toUpperCase()),
+});
+
+const activeIndex = ref('1');
+const showSidebar = ref(false);
+
+const toggleSidebar = () => {
+  showSidebar.value = !showSidebar.value;
+};
+
+const hideSidebar = () => {
+  showSidebar.value = false;
+};
+
+const handleSelect = (index) => {
+  console.log("Selected menu item:", index);
+  showSidebar.value = false;
+};
+
+const isSidebarExpanded = ref(false);
+const toggleSidebarExpansion = (expand) => {
+  isSidebarExpanded.value = expand;
+};
+
+// Callback to switch to CourseDetails after form submission
+const navigateToCourseDetails = () => {
+  showCourseDetails.value = true;
+};
+</script>
+
+
+<style scoped>
+.el-menu-demo {
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 75px;
+  padding: 0 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.el-menu-demo img {
+  width: 43px;
+  height: auto;
+  margin-left: -10px;
+  object-fit: contain;
+}
+
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
+
+.el-menu-demo .el-menu-item:last-child {
+  margin-left: auto;
+}
+
+.el-menu-item.is-active {
+  background-color: transparent !important;
+  border-bottom: none !important;
+}
+
+.el-menu-demo .el-menu-item a {
+  text-decoration: none !important;
+}
+
+.el-menu-demo .el-menu-item {
+  font-size: 18px;
+  color: black !important;
+  background-color: transparent !important;
+  transition: color 0.3s;
+  font-family: 'Aptos Narrow', sans-serif;
+}
+
+.el-avatar {
+  background-color: #333 !important;
+  color: white;
+  font-size: 20px;
+}
+
+.el-avatar:hover {
+  background-color: #444 !important;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: white;
+  padding-top: 80px;
+  z-index: 1100;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.profile-header h3 {
+  margin: 10px 0 5px 0;
+  font-size: 18px;
+  color: black;
+}
+
+.profile-header p {
+  color: black;
+  font-size: 14px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Sidebar Menu Items */
+.sidebar .el-menu-item {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.sidebar .el-menu-item i {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+
+/* Left Sidebar Styling */
+.left-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 65px;
+  height: 100vh;
+  background-color: #222;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 1100;
+  padding-top: 20px;
+}
+
+.left-sidebar:hover {
+  width: 230px;
+}
+
+.left-sidebar .el-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: white;
+}
+
+.left-sidebar .el-menu-item i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.left-sidebar .el-menu-item span {
+  display: none;
+  white-space: nowrap;
+}
+
+.left-sidebar:hover .el-menu-item span {
+  display: inline;
+}
+
+.left-sidebar .el-menu-item {
+  color: white !important;
+  margin-bottom: 20px;
+
+}
+
+.left-sidebar .el-menu-item:hover {
+  color: #74B3E3 !important;
+}
+
+.left-sidebar:hover img {
+  width: 190px;
+  margin-left: -12px;
+}
+
+.el-menu-item a {
+  color: black;
+  text-decoration: none;
+}
+
+.el-menu-item {
+  color: black;
+
+}
+
+.el-menu-item a:hover {
+  color: #74B3E3;
+}
+
+.el-menu-item:hover {
+  color: #74B3E3;
+  background-color: transparent;
+}
+
+.sidebar .el-menu-item.is-active {
+  color: black !important;
+}
+
+.el-menu-item.is-active:hover {
+  color: #74B3E3 !important;
+}
+</style>
