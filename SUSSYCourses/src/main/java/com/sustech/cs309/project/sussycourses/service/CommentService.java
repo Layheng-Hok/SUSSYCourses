@@ -18,7 +18,7 @@ public class CommentService {
     public List<CommentResponse> findCommentsByCourseId(long courseId) {
         List<Comment> comments = commentRepository.findByCourse_CourseId(courseId);
         return comments.stream()
-                .map(comment -> new CommentResponse(comment.getCommentId(), comment.getUser().getFullName(), comment.getMessage(), comment.getReply(), comment.getCreatedAt()))
+                .map(comment -> new CommentResponse(comment.getCommentId(), comment.getReplyId(), comment.getReply(), comment.getUser().getFullName(), comment.getMessage(), comment.getReply(), comment.getCreatedAt()))
                 .toList();
     }
 }

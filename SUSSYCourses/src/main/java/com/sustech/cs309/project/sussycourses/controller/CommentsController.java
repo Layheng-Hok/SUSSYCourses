@@ -1,13 +1,21 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 import com.sustech.cs309.project.sussycourses.domain.Comment;
+import com.sustech.cs309.project.sussycourses.domain.Course;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.dto.CommentRequest;
 import com.sustech.cs309.project.sussycourses.dto.CommentResponse;
+import com.sustech.cs309.project.sussycourses.dto.ReplyRequest;
 import com.sustech.cs309.project.sussycourses.repository.CommentRepository;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +25,10 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:8081", allowCredentials = "true")
 public class CommentsController {
     private final CommentRepository commentRepository;
+
+    private final CourseRepository courseRepository;
+
+    private final WebAppUserRepository webAppUserRepository;
 
     private final CommentService commentService;
     // Simulation data for get and post from frontend
@@ -34,8 +46,41 @@ public class CommentsController {
     }
 
     // Post a new comment
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @PostMapping
-    public void addComment(@RequestBody Comment newComment) {
-        commentRepository.save(newComment);
+    public void addComment(@RequestBody CommentRequest commentRequest) {
+        String message = commentRequest.message();
+        long courseId = commentRequest.courseId();
+        long userId = commentRequest.userId();
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+        WebAppUser user = webAppUserRepository.findById(userId).orElse(null);
+        Comment comment = new Comment();
+        comment.setCourse(course);
+        comment.setUser(user);
+        comment.setMessage(message);
+        comment.setCreatedAt(LocalDateTime.now());
+        commentRepository.save(comment);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PostMapping("/reply")
+    public void addReply(@RequestBody ReplyRequest replyRequest) {
+        String message = replyRequest.message();
+        long courseId = replyRequest.courseId();
+        long userId = replyRequest.userId();
+        long commentId = replyRequest.commentId();
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+        WebAppUser user = webAppUserRepository.findById(userId).orElse(null);
+        String commentToReply = commentRepository.findById((int) commentId).orElse(null).getMessage();
+        Comment comment = new Comment();
+        comment.setCourse(course);
+        comment.setUser(user);
+        comment.setMessage(message);
+        comment.setReply(commentToReply);
+        comment.setReplyId(commentId);
+        comment.setCreatedAt(LocalDateTime.now());
+        commentRepository.save(comment);
     }
 }

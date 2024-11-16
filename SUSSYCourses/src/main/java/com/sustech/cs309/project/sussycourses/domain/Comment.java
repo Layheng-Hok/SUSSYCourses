@@ -30,6 +30,10 @@ public class Comment {
     @Column(length = 300)
     private String reply;
 
+    @Column()
+    private Long replyId;
+
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
