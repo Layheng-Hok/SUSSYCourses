@@ -1,8 +1,10 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RoleRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
@@ -31,6 +33,7 @@ public class WebAppUserService {
     private final AuthenticationProvider authenticationProvider;
     private final WebAppUserRepository webAppUserRepository;
     private final RoleRepository roleRepository;
+    private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
 
     private final EmailService emailService;
@@ -137,15 +140,15 @@ public class WebAppUserService {
     }
 
     public StudentDetailResponse getStudentById(long userId) {
-        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findById(userId);
-        if (webAppUserOptional.isEmpty()) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
         }
 
         WebAppUser webAppUser = webAppUserOptional.get();
         List<CourseStudent> courses = courseStudentRepository.findEnrolledCourseStudentsByStudentId(userId);
-        List<CourseInfoResponse> courseInfoResponses = courses.stream()
-                .map(courseStudent -> new CourseInfoResponse(courseStudent.getCourse().getCourseId(),
+        List<StudentCourseDetailResponse> studentCourseDetailRespons = courses.stream()
+                .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
@@ -160,6 +163,35 @@ public class WebAppUserService {
                 webAppUser.getGender(),
                 webAppUser.getRole().getRoleName(),
                 webAppUser.getPoints(),
+                webAppUser.getBio(),
+                webAppUser.getCreatedAt(),
+                studentCourseDetailRespons.size(),
+                studentCourseDetailRespons
+        );
+    }
+
+    public InstructorDetailResponse getInstructorById(long userId) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 3);
+
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return null;
+        }
+
+        WebAppUser webAppUser = webAppUserOptional.get();
+        List<Course> courses = courseRepository.findByTeacher_UserId(userId);
+        List<InstructorCourseDetailResponse> courseInfoResponses = courses.stream()
+                .map(course -> new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
+                        course.getDescription(), course.getTopic(), course.getCoverImage(),
+                        course.getType(), course.getStatus()))
+                .toList();
+
+        return new InstructorDetailResponse(
+                userId,
+                webAppUser.getFullName(),
+                webAppUser.getEmail(),
+                webAppUser.getProfilePicture(),
+                webAppUser.getGender(),
+                webAppUser.getRole().getRoleName(),
                 webAppUser.getBio(),
                 webAppUser.getCreatedAt(),
                 courseInfoResponses.size(),

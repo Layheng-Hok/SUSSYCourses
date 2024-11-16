@@ -1,6 +1,7 @@
 package com.sustech.cs309.project.sussycourses.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record InstructorDetailResponse(
         Long userId,
@@ -9,9 +10,9 @@ public record InstructorDetailResponse(
         String profileImageUrl,
         String gender,
         String roleName,
-        Integer points,
         String bio,
-        Integer numCoursesEnrolled,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        Integer numCourses,
+        List<InstructorCourseDetailResponse> courses
 ) {
 }

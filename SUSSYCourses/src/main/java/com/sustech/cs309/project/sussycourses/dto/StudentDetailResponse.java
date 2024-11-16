@@ -14,6 +14,6 @@ public record StudentDetailResponse(
         String bio,
         LocalDateTime createdAt,
         Integer numCoursesEnrolled,
-        List<CourseInfoResponse> coursesEnrolled
+        List<StudentCourseDetailResponse> coursesEnrolled
 ) {
 }

@@ -10,5 +10,7 @@ public interface WebAppUserRepository extends JpaRepository<WebAppUser, Long> {
 
     Optional<WebAppUser> findByUserId(long userId);
 
+    Optional<WebAppUser> findByUserIdAndRoleRoleId(long userId, int roleId);
+
     Optional<WebAppUser> findByVerificationToken(String verificationToken);
 }
