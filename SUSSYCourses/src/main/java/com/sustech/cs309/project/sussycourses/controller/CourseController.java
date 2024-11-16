@@ -50,9 +50,9 @@ public class CourseController {
 
             // Basic course information
             courseData.put("id", course.getCourseId());
-            courseData.put("name", course.getCourse_name());
+            courseData.put("name", course.getCourseName());
             courseData.put("description", course.getDescription());
-            courseData.put("image", cloudController.getStorageKey(course.getCover_image())); // Adjust as per your image source
+            courseData.put("image", cloudController.getStorageKey(course.getCoverImage())); // Adjust as per your image source
 
             // Instructor info
             if (course.getTeacher() != null) {

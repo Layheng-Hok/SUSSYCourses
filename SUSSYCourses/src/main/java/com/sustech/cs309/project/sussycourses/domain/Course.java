@@ -19,9 +19,9 @@ public class Course {
     private Long courseId;
 
     @Column(length = 100, nullable = false)
-    private String course_name;
+    private String courseName;
 
-    @Column
+    @Column(length = 300)
     private String description;
 
     @ManyToOne
@@ -35,10 +35,10 @@ public class Course {
     private String status;
 
     @Column
-    private String cover_image;
+    private String coverImage;
 
-    @Column
-    private LocalDateTime create_time = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "course")
     private List<Courseware> coursewares;

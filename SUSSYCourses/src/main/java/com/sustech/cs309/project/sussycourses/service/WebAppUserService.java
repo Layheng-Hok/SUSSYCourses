@@ -1,9 +1,8 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
-import com.sustech.cs309.project.sussycourses.dto.LoginDto;
-import com.sustech.cs309.project.sussycourses.dto.RegistrationDto;
-import com.sustech.cs309.project.sussycourses.dto.WebAppUserResponse;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RoleRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
@@ -130,23 +129,30 @@ public class WebAppUserService {
         return "valid";
     }
 
-    public List<WebAppUserResponse> findAllUser() {
+    public List<UserResponse> findAllUser() {
         List<WebAppUser> webAppUsers = webAppUserRepository.findAll();
         return webAppUsers.stream()
-                .map(webAppUser -> new WebAppUserResponse(webAppUser.getUserId(), webAppUser.getFullName(), webAppUser.getEmail(), webAppUser.getProfilePicture(), webAppUser.getGender(), webAppUser.getRole().getRoleName(), webAppUser.getPoints(), webAppUser.getBio(), -1))
+                .map(webAppUser -> new UserResponse(webAppUser.getUserId(), webAppUser.getFullName(), webAppUser.getEmail(), webAppUser.getProfilePicture(), webAppUser.getGender(), webAppUser.getRole().getRoleName(), webAppUser.getBio(), webAppUser.getCreatedAt()))
                 .toList();
     }
 
-    public WebAppUserResponse getStudentById(long userId) {
+    public StudentDetailResponse getStudentById(long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findById(userId);
         if (webAppUserOptional.isEmpty()) {
             return null;
         }
 
         WebAppUser webAppUser = webAppUserOptional.get();
-        int numCoursesEnrolled = courseStudentRepository.countEnrolledCoursesByStudentId(userId);
+        List<CourseStudent> courses = courseStudentRepository.findEnrolledCourseStudentsByStudentId(userId);
+        List<CourseInfoResponse> courseInfoResponses = courses.stream()
+                .map(courseStudent -> new CourseInfoResponse(courseStudent.getCourse().getCourseId(),
+                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(),
+                        courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
+                        courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
+                        courseStudent.getStatus(), courseStudent.isLiked()))
+                .toList();
 
-        return new WebAppUserResponse(
+        return new StudentDetailResponse(
                 userId,
                 webAppUser.getFullName(),
                 webAppUser.getEmail(),
@@ -155,7 +161,9 @@ public class WebAppUserService {
                 webAppUser.getRole().getRoleName(),
                 webAppUser.getPoints(),
                 webAppUser.getBio(),
-                numCoursesEnrolled
+                webAppUser.getCreatedAt(),
+                courseInfoResponses.size(),
+                courseInfoResponses
         );
     }
 }
