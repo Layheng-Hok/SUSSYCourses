@@ -31,7 +31,7 @@ public class WebAppUser {
     @Column(nullable = false)
     private boolean enabled;
 
-    @Column(length = 50, nullable = false)
+    @Column(nullable = false)
     private String verificationToken;
 
     @Column(length = 20, nullable = false)

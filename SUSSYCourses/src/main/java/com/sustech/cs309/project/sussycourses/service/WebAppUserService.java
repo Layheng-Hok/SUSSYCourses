@@ -3,10 +3,10 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.LoginDto;
 import com.sustech.cs309.project.sussycourses.dto.RegistrationDto;
-import com.sustech.cs309.project.sussycourses.dto.UserResponse;
+import com.sustech.cs309.project.sussycourses.dto.WebAppUserResponse;
+import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RoleRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
-import com.sustech.cs309.project.sussycourses.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,12 +28,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class WebAppUserService {
-    private final WebAppUserRepository webAppUserRepository;
-    private final RoleRepository roleRepository;
-    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationProvider authenticationProvider;
-    private final UserDetails userDetails = new CustomUserDetails();
+    private final WebAppUserRepository webAppUserRepository;
+    private final RoleRepository roleRepository;
+    private final CourseStudentRepository courseStudentRepository;
+
+    private final EmailService emailService;
 
     public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationDto registrationDto) {
         if (webAppUserRepository.findByEmail(registrationDto.email()).isPresent()) {
@@ -130,10 +130,32 @@ public class WebAppUserService {
         return "valid";
     }
 
-    public List<UserResponse> findAllUser() {
+    public List<WebAppUserResponse> findAllUser() {
         List<WebAppUser> webAppUsers = webAppUserRepository.findAll();
         return webAppUsers.stream()
-                .map(user -> new UserResponse(user.getFullName(), user.getEmail()))
+                .map(webAppUser -> new WebAppUserResponse(webAppUser.getUserId(), webAppUser.getFullName(), webAppUser.getEmail(), webAppUser.getProfilePicture(), webAppUser.getGender(), webAppUser.getRole().getRoleName(), webAppUser.getPoints(), webAppUser.getBio(), -1))
                 .toList();
+    }
+
+    public WebAppUserResponse getStudentById(long userId) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findById(userId);
+        if (webAppUserOptional.isEmpty()) {
+            return null;
+        }
+
+        WebAppUser webAppUser = webAppUserOptional.get();
+        int numCoursesEnrolled = courseStudentRepository.countEnrolledCoursesByStudentId(userId);
+
+        return new WebAppUserResponse(
+                userId,
+                webAppUser.getFullName(),
+                webAppUser.getEmail(),
+                webAppUser.getProfilePicture(),
+                webAppUser.getGender(),
+                webAppUser.getRole().getRoleName(),
+                webAppUser.getPoints(),
+                webAppUser.getBio(),
+                numCoursesEnrolled
+        );
     }
 }
