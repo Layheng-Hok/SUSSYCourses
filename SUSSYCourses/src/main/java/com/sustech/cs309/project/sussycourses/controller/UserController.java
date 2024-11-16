@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8081", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class UserController {
     private final WebAppUserService webAppUserService;
 
@@ -23,6 +23,12 @@ public class UserController {
     @GetMapping("/admin/users")
     public List<UserResponse> findAll() {
         return webAppUserService.findAllUser();
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
+    @GetMapping("/users/{email}")
+    public UserResponse findByEmail(@PathVariable String email) {
+        return webAppUserService.findByEmail(email);
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -36,4 +42,6 @@ public class UserController {
     public InstructorDetailResponse getInstructorById(@PathVariable long userId) {
         return webAppUserService.getInstructorById(userId);
     }
+
+
 }
