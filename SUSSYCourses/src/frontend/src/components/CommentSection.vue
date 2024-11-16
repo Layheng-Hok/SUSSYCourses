@@ -28,7 +28,7 @@
           />
         </div>
         <div v-if="comment.replyId" class="reply">
-          <p><strong>Reply to @{{ comment.userId === comment.replyId ? comment.fullName: comment.replyId }}:</strong></p>
+          <p><strong>Reply to @{{ comment.userId === comment.replyId ? comment.fullName: comment.repliedTo}}:</strong></p>
           <p>{{ getCommentById(comment.replyId)?.message || "Unknown" }}</p>
         </div>
       </div>
@@ -98,27 +98,27 @@ export default {
         const response = await axiosInstances.axiosInstance.get(`http://localhost:8081/api/comments/${this.courseId}`);
         this.comments = response.data;
         console.log("Hello", response.data)
-        await this.fetchUsernames(); // Fetch usernames after loading comments
+        // await this.fetchUsernames(); // Fetch usernames after loading comments
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     },
-    async fetchUsernames() {
-      try {
-        // Extract unique userIds from comments
-        const userIds = [...new Set(this.comments.map((comment) => comment.userId))];
-
-        for (const userId of userIds) {
-          if (!this.userMap[userId]) {
-            const response = await axiosInstances.axiosInstance.get(`http://localhost:8081/api/users/${userId}`);
-            // Directly assign the username to userMap
-            this.userMap[userId] = response.data.fullName; // Assuming fullName is the field in the response
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching usernames:", error);
-      }
-    },
+    // async fetchUsernames() {
+    //   try {
+    //     // Extract unique userIds from comments
+    //     const userIds = [...new Set(this.comments.map((comment) => comment.userId))];
+    //
+    //     for (const userId of userIds) {
+    //       if (!this.userMap[userId]) {
+    //         const response = await axiosInstances.axiosInstance.get(`http://localhost:8081/api/users/${userId}`);
+    //         // Directly assign the username to userMap
+    //         this.userMap[userId] = response.data.fullName; // Assuming fullName is the field in the response
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching usernames:", error);
+    //   }
+    // },
 
     async submitComment() {
       try {

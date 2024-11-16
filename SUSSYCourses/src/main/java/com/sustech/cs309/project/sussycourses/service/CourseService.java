@@ -3,20 +3,25 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
+import com.sustech.cs309.project.sussycourses.domain.Courseware;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
+import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class CourseService  {
     @Autowired
     CourseRepository courseRepository;
 
+
     @Autowired
-    CloudController storageController;
+    CloudController cloudController;
     public String approveCourse(Long id) {
         Optional<Course> courseOptional = courseRepository.findById(id);
 
