@@ -73,7 +73,7 @@
 <div>
   <p><strong>{{ course.instructorName }}</strong></p>
   <p class="bio">{{ course.instructorBio }}</p>
-</div>           
+</div>
         </el-card>
       </div>
     </div>

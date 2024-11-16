@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public record CommentResponse(
         Long commentId,
+        Long replyId,
+        String replyMessage,
         String fullName,
         String message,
         String reply,
