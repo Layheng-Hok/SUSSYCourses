@@ -99,8 +99,8 @@
       </el-menu-item>
       <el-menu-item index="4">
         <i class="el-icon-document"></i>
-        <router-link to="/">
-          <span>Main Study Page</span>
+        <router-link to="/teacherpage">
+          <span>Main Teacher Page</span>
         </router-link>
       </el-menu-item>
       <el-menu-item index="5">
@@ -400,5 +400,4 @@ const navigateToCourseDetails = () => {
   width: 4px;
   background-color: #74B3E3;
 }
-
 </style>

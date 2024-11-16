@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <img src="@/assets/password4.gif" alt="Password Gif" class="gif"/>
+    <img src="@/assets/password5.gif" alt="Password Gif" class="gif"/>
 
     <div class="modal">
       <!-- Modal for Changing Password -->
@@ -211,10 +211,10 @@ input {
 }
 
 .gif {
-  margin-top: 50px;
-  max-width: 350px;
+  margin-top: 20px;
+  max-width: 410px;
   height: auto;
-  margin-right: 200px;
+  margin-right: 180px;
   align-self: flex-start;
 }
 

@@ -91,10 +91,6 @@
       Create Your Course
     </button>
   </div>
-
-  <router-link to="/teacher-courses-details">
-    check check
-  </router-link>
 </template>
 
 <script>
