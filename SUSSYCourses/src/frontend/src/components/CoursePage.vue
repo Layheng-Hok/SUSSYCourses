@@ -3,7 +3,7 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Element logo" style="width: 60px;" />
+        <img src="@/assets/logo2.png" alt="Element logo" style="width: 60px;" />
       </router-link>
     </el-menu-item>
     <el-menu-item index="1">
@@ -11,60 +11,89 @@
     </el-menu-item>
   </el-menu>
 
-  <div class="course-page" v-if="course">
-    <!-- Course Description Section -->
-    <!-- <el-card class="course-description" shadow="hover">
-      <h2>Course Description</h2>
-      <img :src="course.image" alt="Course Image" class="course-image" />
-      <p class="course-title"><strong>{{ course.name }}</strong></p>
-      <p class="description">{{ course.description }}</p> -->
+  <div class="page-container">
+    <div v-if="course" class="content-container">
+      <!-- Left Side: Courseware, Ratings, Reviews, and Comments -->
+      <div class="left-section">
+        <!-- Courseware Section -->
+        <div class="courseware-section">
+          <h2>Courseware</h2>
+          <Courseware :course-id="course.id" />
+        </div>
 
-      <!-- Like Button and Total Likes -->
-      <!-- <div class="like-section">
-        <el-button type="primary" icon="el-icon-thumb" @click="likeCourse">
-          <span v-if="!liked">Like</span>
-          <span v-else>Liked</span>
-        </el-button>
-        <span>Total Likes: {{ likes }}</span>
+        <div class="learning-progress-section">
+          <h2>Learning Progress</h2>
+          <!-- Slot for the chart -->
+          <slot name="learning-progress">
+            <DoughnutChart/>
+          </slot>
+        </div>
+
+        <!-- Rating and Review Section -->
+        <div class="ratings-section">
+          <h2>Rate and Review</h2>
+          <el-rate v-model="userRating" allow-half></el-rate>
+          <el-input
+            type="textarea"
+            class ="review-input"
+            v-model="userReview"
+            placeholder="Write your review here..."
+            rows="4"
+          ></el-input>
+          <el-button type="primary" class ="submit-button" @click="submitReview">Submit</el-button>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="comments-section">
+          <h2>Comments</h2>
+          <CommentSection :student-id="studentId" />
+        </div>
       </div>
-    </el-card> -->
 
-    <!-- Instructor Info Section -->
-    <el-card class="instructor-info" shadow="hover">
-      <h2>Instructor Information</h2>
-      <!-- <el-row>
-        <el-col :span="4">
-          <img :src="course.instructorImage" alt="Instructor Image" class="instructor-image" />
-        </el-col>
-        <el-col :span="20">
-          <p><strong>{{ course.instructorName }}</strong></p>
-          <p class="bio">{{ course.instructorBio }}</p>
-        </el-col>
-      </el-row> -->
-    </el-card>
+      <!-- Right Side: Course Details and Instructor Information -->
+      <div class="right-section">
+        <!-- Course Details -->
+        <el-card class="course-details" shadow="hover">
+          <h2>Course Details</h2>
+          <img :src="course.image" alt="Course Image" class="course-image" />
+          <p><strong>{{ course.name }}</strong></p>
+          <p class="description">{{ course.description }}</p>
+          <p><strong>Category:</strong> {{ course.category }}</p>
+          <p><strong>Rating:</strong> ⭐ {{ course.rating }}</p>
+        </el-card>
 
-    <!-- Courseware Section -->
-    <Courseware :course-id="course[id]" />
+        <!-- Instructor Information -->
+        <el-card class="instructor-info" shadow="hover">
+          <h2>Instructor Information</h2>
+          <div>  <img
+                :src="course.instructorImage"
+                alt="Instructor Image"
+                class="instructor-image">
+              </div>
+<div>
+  <p><strong>{{ course.instructorName }}</strong></p>
+  <p class="bio">{{ course.instructorBio }}</p>
+</div>           
+        </el-card>
+      </div>
+    </div>
 
-    <!-- Comment Section -->
-    <CommentSection :student-id="studentId"/>
-  </div>
-
-  <div v-else>
-    <p>Loading course information...</p>
+    <div v-else>
+      <p>Loading course information...</p>
+    </div>
   </div>
 </template>
 
 <script setup>
-// import { ref, onMounted } from 'vue';
-import { ref } from 'vue';
 
-// import { useRoute } from 'vue-router';
+import { ref } from 'vue';
 import Courseware from './Courseware.vue';
 import CommentSection from './CommentSection.vue';
+import DoughnutChart from './DoughnutChart.vue';
 
-// Variables
 const studentId = ref('1'); // Example student ID
+const userRating = ref(0);
+const userReview = ref("");
 // const courseId = ref(null);
 // const course = ref(null);
 // const likes = ref(0); // To be fetched
@@ -78,11 +107,25 @@ const course = {
   id: '1',
   name: 'Vue Crash Course',
   description: 'Learn Vue.js from scratch in this comprehensive crash course.',
-  image: '/assets/Courses/vue-course.jpg',
+  image: '/assets/Courses/course.jpg',
   instructorName: 'Jane Doe',
-  instructorImage: '/assets/Instructors/jane-doe.jpg',
+  instructorImage: '/assets/Avatars/instructor.jpg',
   instructorBio: 'A passionate Vue.js developer and instructor with over 5 years of experience.',
   likes: 123,
+  rating: 4.5,
+  category: 'Web Development',
+};
+
+const submitReview = () => {
+  if (userRating.value && userReview.value.trim()) {
+    alert(
+      `Thank you for your review! Rating: ${userRating.value}, Review: "${userReview.value}"`
+    );
+    userRating.value = 0;
+    userReview.value = "";
+  } else {
+    alert("Please provide a rating and review before submitting.");
+  }
 };
 
 // Fetch course data
@@ -123,32 +166,98 @@ const course = {
 
 
 <style scoped>
-.course-page {
+.page-container {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
-  margin: 20px auto;
-  max-width: 1200px;
+  margin: 80px 0 20px 20px;
 }
 
-.course-title {
+.content-container {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.left-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: 20px;
+}
+
+.courseware-section,
+.ratings-section,
+.comments-section,
+.learning-progress-section {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding:20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-details,
+.instructor-info {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-image{
+  width: 300px;
+  height: 160px;
+  border-radius: 8px;
+}
+
+.instructor-image {
+  width: 150ox;
+  height: 150px;
+  border-radius: 8px;
+}
+
+.comments-section h2,
+.ratings-section h2,
+.courseware-section h2,
+.course-details h2,
+.instructor-info h2,
+.learning-progress-section h2 {
+  margin-bottom: 10px;
   font-size: 24px;
   font-weight: bold;
-  color: #333;
-  margin-top: 10px;
+  color: black !important;
 }
 
-.course-description, .instructor-info, .course-content {
-  margin-top: 40px;
+.ratings-section .el-rate {
+  margin-bottom: 10px;
 }
 
-.like-section {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
+.review-input {
+  width: 800px;
+  font-size: 16px;
 }
 
-.chapter {
+.submit-button{
+  background: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 16px;
+  width: 100px;
+  height: auto;
   margin-top: 10px;
 }
 

@@ -26,7 +26,7 @@
       <p>If you need further help, feel free to reach out to us:</p>
       <ul>
         <li><strong>Phone:</strong> +86 1511 123456</li>
-        <li><strong>Email:</strong> 12212027@example.com</li>
+        <li><strong>Email:</strong> sussycourses@gmail.com</li>
       </ul>
     </div>
   </template>
@@ -45,7 +45,7 @@
   const activeFaqs = ref([]);
   const faqs = ref([
     { question: "How do I reset my password?", answer: "Go to the Account Security page and follow the instructions to reset your password." },
-    { question: "How can I contact support?", answer: "You can reach support via email at 12212027@example.com or by phone at +86 1511 123456." },
+    { question: "How can I contact support?", answer: "You can reach support via email at sussycourses@gmail.com or by phone at +86 1511 123456." },
     { question: "Can I change my profile picture?", answer: "Yes, you can change your profile picture by editing your profile." },
     { question: "Can I change my email address?", answer: "No, you cannot change your email address." },
   ]);
@@ -76,6 +76,7 @@
     text-align: center;
     margin: 40px auto;
     max-width: 800px;
+    color: black;
   }
   
   .intro-section h1 {
@@ -92,6 +93,8 @@
   .faq-section {
     max-width: 800px;
     margin: 20px auto;
+    color: black;
+
   }
   
   .faq-section h2 {
@@ -102,6 +105,8 @@
   .contact-section {
     max-width: 800px;
     margin: 20px auto;
+    color: black;
+
   }
   
   .contact-section h2 {
@@ -120,6 +125,7 @@
   }
   
   .contact-section li strong {
+    font-size: 16px;
     color: #333;
   }
   </style>

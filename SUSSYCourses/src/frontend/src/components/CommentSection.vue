@@ -2,7 +2,6 @@
   <div class="comment-section">
     <!-- Total Comments -->
     <h2>Total Comments: {{ comments.length }}</h2>
-
     <!-- Comments Box -->
     <div class="comments-box">
       <div
@@ -33,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <!-- Reply Form -->
     <div v-if="replyingTo" class="reply-form">
       <h3>Replying to @{{ getUsername(replyingTo.userId) }}</h3>
@@ -46,7 +44,6 @@
         <button class="cancel-button" @click="cancelReply">Cancel</button>
       </div>
     </div>
-
     <!-- New Comment Section -->
     <div class="new-comment-form" v-else>
       <h3>Leave a Comment</h3>
@@ -61,12 +58,10 @@
   </div>
 </template>
 
-
 <script>
 import axios from "axios";
 import axiosInstances from "@/services/axiosInstance";
 axios.defaults.baseURL = "http://localhost:8081";
-
 export default {
   props: {
     studentId: {
@@ -166,12 +161,10 @@ export default {
   },
 };
 </script>
-
-
 <style scoped>
 .comment-section {
   
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   background: #f9f9f9;
   padding: 20px;
@@ -179,12 +172,10 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
-
 h2 {
   margin-bottom: 20px;
   color: #333;
 }
-
 .comments-box {
   border: 1px solid #ddd;
   padding: 15px;
@@ -193,42 +184,35 @@ h2 {
   overflow-y: auto;
   background: #fff;
 }
-
 .comment {
   padding: 10px;
   border-bottom: 1px solid #eee;
 }
-
 .comment-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .comment-actions {
   margin-top: 8px;
 }
-
 .reply-button {
   cursor: pointer;
   width: 24px;
   height: 24px;
 }
-
 .reply {
   margin-left: 20px;
   padding: 8px;
   background: #f1f1f1;
   border-radius: 4px;
 }
-
 .reply-form,
 .new-comment-form {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
 }
-
 textarea {
   width: 100%;
   height: 80px;
@@ -238,7 +222,6 @@ textarea {
   padding: 8px;
   font-size: 14px;
 }
-
 .submit-button, .cancel-button {
   background: #007bff;
   color: #fff;
@@ -258,7 +241,6 @@ textarea {
   border: 1px solid #f5c6cb;
   color: #721c24;
 }
-
 .submit-button:hover {
   background: #0056b3;
 }

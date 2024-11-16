@@ -3,7 +3,7 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Element logo"/>
+        <img src="@/assets/logo2.png" alt="Element logo"/>
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
@@ -18,30 +18,49 @@
     <div :class="['main-content', { 'content-shifted': isSidebarVisible }]">
       <!-- Search and Filter Section -->
       <div class="search-filter-section">
-        <el-input
-            placeholder="Search for courses..."
-            v-model="searchQuery"
-            @keyup.enter="filterCourses"
-            clearable
-            prefix-icon="el-icon-search"
-        ></el-input>
-        <el-select
-            v-model="selectedCategory"
-            placeholder="Select Category"
-            @change="filterCourses"
-            clearable
-        >
-          <el-option
-              v-for="category in categories"
-              :key="category"
-              :label="category"
-              :value="category"
-          />
-        </el-select>
-      </div>
+      <el-input
+        placeholder="Search for courses..."
+        v-model="searchQuery"
+        @keyup.enter="filterCourses"
+        clearable
+        prefix-icon="el-icon-search"
+      ></el-input>
+
+      <el-select
+        v-model="selectedCategory"
+        placeholder="Select Category"
+        @change="filterCourses"
+        clearable
+      >
+        <el-option
+          v-for="category in categories"
+          :key="category"
+          :label="category"
+          :value="category"
+        />
+      </el-select>
+
+      <!-- Sorting Dropdown -->
+      <el-select
+        v-model="sortBy"
+        placeholder="Sort By"
+        @change="sortCourses"
+        clearable
+      >
+        <el-option label="Alphabetical (A to Z)" value="alphabetical-1" />
+        <el-option label="Alphabetical (Z to A)" value="alphabetical-2" />
+
+        <el-option label="By Ratings (from Low to High)" value="rating-1" />
+        <el-option label="By Ratings (from High to Low)" value="rating-2" />
+
+        <el-option label="By Progress (from Low to High)" value="progress-1" />
+        <el-option label="By Progress (from High to Low)" value="progress-2" />
+
+      </el-select>
+    </div>
 
       <!-- Course Boxes Section -->
-      <h2 class="section-heading">Available Courses</h2>
+      <h2 class="section-heading">Courses that you are enrolled in:</h2>
       <div class="course-boxes">
         <div
             v-for="(course, index) in filteredCourses"
@@ -51,7 +70,11 @@
         >
           <img :src="course.image" alt="Course Image" class="course-image"/>
           <h3>{{ course.title }}</h3>
+          <p class="course-instructor"> Intrusctor: Jane (example)</p>
+          <p class="course-category">{{ course.category }}</p>
+          
           <p class="course-rating">⭐ {{ course.rating }} / 5</p>
+          <p class="course-progress"> Learning progress: {{ course.progress }}%</p>
         </div>
       </div>
 
@@ -83,10 +106,10 @@
 
     <!-- Call to Action Section -->
     <div class="call-to-action">
-      <h1>Become a student today</h1>
-      <p>Join one of the world's largest online learning marketplaces.</p>
-      <router-link to="/signup-student">
-        <button class="cta-button">Get started</button>
+      <h1>Explore for more courses</h1>
+      <p>We have courses over the categories of web development, programming and etc.</p>
+      <router-link to="/">
+        <button class="cta-button">Go explore</button>
       </router-link>
     </div>
 
@@ -104,6 +127,7 @@
 import {computed, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
+// import { sort } from 'core-js/core/array';
 
 const user = ref({
   name: 'John Doe',
@@ -121,15 +145,16 @@ const toggleSidebar = () => {
 
 
 const courses = ref([
-  {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5},
-  {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7},
-  {id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3},
-  {id: 4, title: 'Graphic Design', image: '/assets/courses/course4.png', rating: 4.6},
+  {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5, category: "Programming", progress :30},
+  {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7, category: "Programming", progress :99.9},
+  {id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3, category: "Programming", progress :0},
+  {id: 4, title: 'Graphic Design', image: '/assets/courses/course4.png', rating: 4.6, category: "Design", progress :6},
 ]);
 
-const categories = ref(['All', 'Web Development', 'Programming', 'Design']);
+const categories = ref(['All', 'Web Development','Marketing', 'Programming','Finance','Leadership','Data Science', 'Design','Hardware','Economics']);
 const searchQuery = ref('');
 const selectedCategory = ref('All');
+const sortBy = ref('Default');
 
 const testimonials = ref([
   {text: "This platform transformed my learning experience!", author: "Alice Brown"},
@@ -149,15 +174,35 @@ const subscribeNewsletter = () => {
 };
 
 const filteredCourses = computed(() => {
-  return courses.value.filter(course => {
+  let filtered = courses.value.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesCategory = selectedCategory.value === 'All' || course.category === selectedCategory.value;
     return matchesSearch && matchesCategory;
   });
+
+  if (sortBy.value === 'alphabetical-1') {
+    filtered.sort((a, b) => a.title.localeCompare(b.title)); // A to Z
+  } else if (sortBy.value === 'alphabetical-2') {
+    filtered.sort((a, b) => b.title.localeCompare(a.title)); // Z to A
+  } else if (sortBy.value === 'rating-1') {
+    filtered.sort((a, b) => a.rating - b.rating); // Low to High
+  } else if (sortBy.value === 'rating-2') {
+    filtered.sort((a, b) => b.rating - a.rating); // High to Low
+  } else if (sortBy.value === 'progress-1') {
+    filtered.sort((a, b) => a.progress - b.progress); // Low to High
+  } else if (sortBy.value === 'progress-2') {
+    filtered.sort((a, b) => b.progress - a.progress); // High to Low
+  }
+
+  return filtered;
 });
 
+const sortCourses = () => {
+  // Computed property will automatically re-run
+};
+
 const filterCourses = () => {
-  // The computed property 'filteredCourses' will automatically update
+  // console.log("Filtering courses...");
 };
 
 const goToCourse = (courseId) => {
@@ -182,33 +227,41 @@ const handleMenuSelect = (index) => {
 
 .search-filter-section {
   display: flex;
+  align-items: center;
+  justify-content: left;
+
   gap: 20px;
-  margin-top: 50px;
-  padding: 20px;
-  margin-left: 200px;
-  width: 30%;
+  margin: 20px 0;
+  margin-left: 130px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.el-input,
+.el-select {
+  width: 250px;
 }
 
 .section-heading {
   font-size: 36px;
   font-weight: bold;
   color: #333;
-  margin: 30px 0;
+  margin: 35px 0;
   text-align: center;
-
   font-family: 'Aptos Narrow', sans-serif;
 }
 
 .course-boxes {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 30px;
-  margin: 0 200px;
+  flex-wrap: wrap; 
+  justify-content: center;
+  gap: 20px; 
+  padding: 20px; 
+  margin: 0px auto; 
 }
 
 .course-box {
-  width: 250px;
+  flex: 1 1 calc(25% - 40px); 
+  max-width: 250px; 
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 12px;
@@ -217,6 +270,7 @@ const handleMenuSelect = (index) => {
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 .course-box:hover {
   background-color: #e0e0e0;
@@ -227,14 +281,24 @@ const handleMenuSelect = (index) => {
   margin: 15px 0 10px 0;
 }
 
+.course-box p.course-instructor {
+  font-size: 16px;
+  color: #555;
+}
 .course-box p.course-rating {
   font-size: 16px;
   color: #555;
 }
 
+.course-box p.course-progress {
+  font-size: 13.5px;
+  color: #555;
+  opacity: 0.8;
+}
+
 .course-image {
   width: 100%;
-  height: auto;
+  height: 135px;
   border-radius: 8px;
 }
 
