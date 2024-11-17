@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
@@ -36,8 +37,9 @@ public class WebAppUserService {
     private final RoleRepository roleRepository;
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
-
     private final EmailService emailService;
+    private final CloudService cloudService;
+    private final CloudController cloudController;
 
     public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationRequest registrationRequest) {
         if (webAppUserRepository.findByEmail(registrationRequest.email()).isPresent()) {
@@ -220,7 +222,7 @@ public class WebAppUserService {
         );
     }
 
-    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) {
+    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) throws Exception {
         if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
         }
@@ -237,11 +239,18 @@ public class WebAppUserService {
             user.setBio(updateUserRequest.bio());
         }
         if (updateUserRequest.profilePicture() != null && !updateUserRequest.profilePicture().equals(user.getProfilePicture())) {
+            String deleteProfilePicture = user.getProfilePicture();
+            String fixUrl = fixUrl(userId, deleteProfilePicture);
+            cloudController.deleteBlob(fixUrl);
             user.setProfilePicture(updateUserRequest.profilePicture());
         }
 
         if (webAppUserRepository.existsById(userId)) {
             webAppUserRepository.save(user);
         }
+    }
+
+    public String fixUrl(long userId, String url) {
+        return "Users/" + userId + "/" + url;
     }
 }

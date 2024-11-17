@@ -44,7 +44,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR', 'ROLE_STUDENT')")
     @PutMapping("/users/update/{userId}")
-    public void updateInstructorProfile(@PathVariable long userId, @RequestBody UpdateUserRequest updateUserRequest) {
+    public void updateInstructorProfile(@PathVariable long userId, @RequestBody UpdateUserRequest updateUserRequest) throws Exception {
         webAppUserService.updateInstructorProfile(userId, updateUserRequest);
     }
 

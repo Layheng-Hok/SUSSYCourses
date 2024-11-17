@@ -2,10 +2,7 @@ package com.sustech.cs309.project.sussycourses.controller;
 
 import com.sustech.cs309.project.sussycourses.service.CloudService;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -34,5 +31,11 @@ public class CloudController {
         }
         String projectId = CloudService.readStorageKey(dotenv.get("STORAGE_KEY"));
         return CloudService.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
+    }
+
+    @DeleteMapping("/delete")
+    public String deleteBlob( @RequestParam("fileLocation") String fileLocation) throws Exception {
+        String projectId = CloudService.readStorageKey(dotenv.get("STORAGE_KEY"));
+        return CloudService.deleteObject(projectId, "sussycourses", fileLocation);
     }
 }
