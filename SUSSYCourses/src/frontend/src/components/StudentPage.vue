@@ -3,7 +3,7 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo2.png" alt="Element logo"/>
+        <img class="nav-logo" src="@/assets/Banner/banner2.png" alt="Element logo"/>
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
@@ -11,14 +11,26 @@
     </el-menu-item>
   </el-menu>
 
+  <!-- Hero Banner Section -->
+  <div class="hero-banner">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>Welcome back, {{ user?.fullName || 'Student' }}!</h1>
+      <p>Discover your next adventure in learning!</p>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="@/assets/Banner/whale.png" alt="Whale Image" class="whale-image" />
+  </div>
+</div>
+
+
   <div class="page-container">
     <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
 
     <!-- Main Content Section -->
-    <div :class="['main-content', { 'content-shifted': isSidebarVisible }]">
+    <div class="main-content">
       <!-- Search and Filter Section -->
-      <h3>{{ user?.fullName || 'Loading...' }}</h3>
-
       <div class="search-filter-section">
       <el-input
         placeholder="Search for courses..."
@@ -35,10 +47,10 @@
         clearable
       >
         <el-option
-          v-for="category in categories"
-          :key="category"
-          :label="category"
-          :value="category"
+          v-for="topic in categories"
+          :key="topic"
+          :label="topic"
+          :value="topic"
         />
       </el-select>
 
@@ -68,22 +80,22 @@
             v-for="(course, index) in filteredCourses"
             :key="index"
             class="course-box"
-            @click="goToCourse(course.id)"
+            @click="goToCourse(course.courseId)"
         >
           <img :src="course.image" alt="Course Image" class="course-image"/>
-          <h3>{{ course.title }}</h3>
-          <p class="course-instructor"> Intrusctor: </p>
-          <p class="course-category"> Category: {{ course.category }}</p>
+          <h3>{{ course.courseName }}</h3>
+          <p class="course-instructor"> Intrusctor: {{ course.teacherName }} </p>
+          <p class="course-topic"> Category: {{ course.topic }}</p>
           
           <p class="course-rating">⭐ {{ course.rating }} / 5</p>
-          <p class="course-progress"> Learning progress: {{ course.progress }}%</p>
+          <p class="course-progress"> Learning progress: NA %</p>
         </div>
       </div>
     </div>
         <!-- Course Breakdown Section -->
         <div class="course-breakdown-container">
       <h2>Course Enrollment Breakdown</h2>
-      <p>Visualize your enrolled courses by category:</p>
+      <p>Visualize your enrolled courses by topic:</p>
       <CourseBreakdown />
     </div>
 
@@ -114,52 +126,51 @@ import CourseBreakdown from './CourseBreakdown.vue';
 import axiosInstances from '@/services/axiosInstance';
 
 const user = ref(null); 
-const userId = localStorage.getItem('userId'); 
+const courses = ref([]);
+const userId = localStorage.getItem('userId');
+
 const defaultProfilePic = "/assets/Avatars/student.jpg";
-
-const fetchUserData = async () => {
-  try {
-    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
-    user.value = response.data;
-  } catch (error) {
-    console.log("Error Details:", error);
-  }
-};
-
-onMounted(fetchUserData);
-
-
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const router = useRouter();
-
-const toggleSidebar = () => {
-  isSidebarVisible.value = !isSidebarVisible.value;
-};
-
-const courses = ref([
-  {id: 1, title: 'React Course', image: "/assets/Courses/course.jpg", rating: 4.5, category: "Programming", progress :30},
-  {id: 2, title: 'Vue Course', image: '/assets/Courses/course2.jpg', rating: 4.7, category: "Programming", progress :99.9},
-  {id: 3, title: 'Python Basics', image: '/assets/courses/course3.png', rating: 4.3, category: "Programming", progress :0},
-  {id: 4, title: 'Graphic Design', image: '/assets/courses/course3.png', rating: 4.6, category: "Design", progress :6},
-]);
 
 const categories = ref(['All', 'Web Development','Marketing', 'Programming','Finance','Leadership','Data Science', 'Design','Hardware','Economics']);
 const searchQuery = ref('');
 const selectedCategory = ref('All');
 const sortBy = ref('Default');
 
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    user.value = response.data;
+    courses.value = user.value.coursesEnrolled;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
+
+const toggleSidebar = () => {
+  isSidebarVisible.value = !isSidebarVisible.value;
+};
+
 const filteredCourses = computed(() => {
   let filtered = courses.value.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesCategory = selectedCategory.value === 'All' || course.category === selectedCategory.value;
+    console.log(course);
+    const matchesSearch = course.courseName.toLowerCase().includes(searchQuery.value.toLowerCase());
+    const matchesCategory = selectedCategory.value === 'All' || course.topic === selectedCategory.value;
     return matchesSearch && matchesCategory;
   });
-
+  
   if (sortBy.value === 'alphabetical-1') {
-    filtered.sort((a, b) => a.title.localeCompare(b.title)); // A to Z
+    filtered.sort((a, b) => a.courseName.localeCompare(b.courseName)); // A to Z
   } else if (sortBy.value === 'alphabetical-2') {
-    filtered.sort((a, b) => b.title.localeCompare(a.title)); // Z to A
+    filtered.sort((a, b) => b.courseName.localeCompare(a.courseName)); // Z to A
   } else if (sortBy.value === 'rating-1') {
     filtered.sort((a, b) => a.rating - b.rating); // Low to High
   } else if (sortBy.value === 'rating-2') {
@@ -169,7 +180,7 @@ const filteredCourses = computed(() => {
   } else if (sortBy.value === 'progress-2') {
     filtered.sort((a, b) => b.progress - a.progress); // High to Low
   }
-
+  
   return filtered;
 });
 
@@ -188,17 +199,123 @@ const goToCourse = (courseId) => {
 const handleMenuSelect = (index) => {
   activeIndex.value = index;
 };
+
+onMounted(fetchUserData);
 </script>
 
 <style scoped>
+.el-menu-demo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.nav-logo {
+  width: 240px;
+  height: 90px;
+}
+
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
+
+.el-menu-demo .el-menu-item:hover {
+  box-shadow: none !important; 
+  background-color: transparent !important;
+}
+
+.sidebar-toggle {
+  margin-left: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic-small {
+  width: 65spx;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; 
+  cursor: pointer;
+}
+
+.hero-banner {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 400px;
+  background: linear-gradient(to bottom right, #f3e5f5, #e1f5fe); 
+  color: #003366; 
+  text-align: left;
+  border-radius: 10px; 
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); 
+  margin: 10px auto;
+  margin-bottom: 40px;
+  padding: 20px;
+  gap: -100px !important;
+}
+
+.hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 10px;
+  margin-left: 200px;
+  margin-top: 30px;
+  /* margin-right: -200px; */
+}
+.hero-text h1 {
+  font-size: 40px;
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 600;
+  margin: 0;
+  color: #4a148c; 
+}
+
+.hero-text p {
+  font-size: 24px;
+  font-family: 'Roboto', sans-serif; 
+  margin-top: 10px;
+  color: #00695c; 
+}
+
+.hero-image {
+  margin-top: 38px;
+  flex: 1;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-left: -100px;
+}
+
+.whale-image {
+  max-width: 100%;
+  height: auto;
+  max-height: 340px; 
+}
+
 .main-content {
   flex: 1;
   margin-left: 20px;
   transition: transform 0.3s ease;
-}
-
-.main-content.content-shifted {
-  transform: translateX(-250px);
 }
 
 .search-filter-section {
@@ -313,61 +430,6 @@ const handleMenuSelect = (index) => {
   background-color: #444;
 }
 
-.el-menu-demo img {
-  width: 60px;
-  height: auto;
-  object-fit: contain;
-}
-
-.el-menu--horizontal > .el-menu-item:nth-child(1) {
-  margin-right: auto;
-}
-
-.el-menu-demo .el-menu-item {
-  font-size: 18px;
-  color: black !important;
-  background-color: transparent !important;
-  transition: color 0.3s;
-  font-family: 'Aptos Narrow', sans-serif;
-}
-
-.el-menu-demo .el-menu-item:not(:first-child):hover {
-  color: #74B3E3 !important;
-}
-
-.el-menu-item.is-active {
-  background-color: transparent !important;
-  border-bottom: none !important;
-}
-.el-menu-demo .el-menu-item a {
-  text-decoration: none !important;
-}
-
-.sidebar-toggle {
-  margin-left: auto;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.profile-pic-small {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  overflow: hidden;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
 .course-breakdown-container {
   margin: 40px auto;
   padding: 20px;
@@ -376,17 +438,18 @@ const handleMenuSelect = (index) => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   max-width: 1000px; /* Optional: Adjust the width as needed */
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .course-breakdown-container h2 {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 }
 
 .course-breakdown-container p {
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
   margin-bottom: 20px;
 }

@@ -64,6 +64,13 @@
           >
             Approve
           </el-button>
+          <el-button
+          type="danger"
+          size="small"
+          @click="rejectCourse(course.courseId)"
+        >
+          Reject
+        </el-button>
         </div>
       </div>
     </div>
@@ -116,7 +123,6 @@ const filteredCourses = computed(() => {
   } else if (sortBy.value === 'createdAt-2') {
     filtered.sort((a, b) => b.createdAt - a.createdAt); // High to Low
   } 
-
   return filtered;
 });
 
@@ -128,6 +134,16 @@ try {
 } catch (error) {
   console.error('Error approving course:', error);
 }
+};
+
+const rejectCourse = async (courseId) => {
+  try {
+    await axiosInstances.axiosInstance.put(`courses/reject/${courseId}`);
+    courses.value = courses.value.filter((course) => course.courseId !== courseId);
+    console.log(`Course ${courseId} rejected.`);
+  } catch (error) {
+    console.error("Error rejecting course:", error);
+  }
 };
 
 const logout = () => {

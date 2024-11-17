@@ -33,7 +33,7 @@
           <router-link to="/helpsupport">Help and Support</router-link>
         </el-menu-item>
         <el-menu-item index="7">
-          <router-link to="/">Log Out</router-link>
+          <router-link to="/" @click.prevent="logout">Log Out</router-link>
         </el-menu-item>
       </el-menu>
   
@@ -43,21 +43,31 @@
   
   <script setup>
   import { defineProps, defineEmits } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   const route = useRoute();  
+  const router = useRouter();
   const userId = route.params.userId;
+  const defaultProfilePic = "/assets/Avatars/student.jpg";
+
   defineProps({
     user: Object,
     activeIndex: String,
     isVisible: Boolean,
   });
-  const defaultProfilePic = "/assets/Avatars/student.jpg";
   
   // Emit event for menu selection handling
   const emit = defineEmits(['menuSelect']);
   const handleMenuSelect = (index) => {
     emit('menuSelect', index);
   };
+
+  const logout = () => {
+  localStorage.setItem('usn',''); 
+  localStorage.setItem('pwd',''); 
+  localStorage.setItem('userId', ''); 
+  alert("You have successfully logged out");
+  router.push('/login');
+};
   </script>
   
   <style scoped>

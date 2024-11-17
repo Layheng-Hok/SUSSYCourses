@@ -3,15 +3,20 @@
   <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">
       <router-link to="/">
-        <img src="@/assets/logo2.png" alt="Element logo" style="width: 60px;" />
+        <img class="nav-logo" src="@/assets/Banner/banner2.png" alt="Element logo"/>
       </router-link>
     </el-menu-item>
-    <el-menu-item index="1">
-      <router-link to="/">Log Out</router-link>
+    <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
+      <img class="profile-pic-small" :src=" user?.profilePic || defaultProfilePic" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
   <div class="page-container">
+    <div 
+      v-if="isSidebarVisible" 
+      class="overlay"
+      @click="toggleSidebar">
+    </div>
     <div v-if="course" class="content-container">
       <!-- Left Side: Courseware, Ratings, Reviews, and Comments -->
       <div class="left-section">
@@ -70,10 +75,10 @@
                 alt="Instructor Image"
                 class="instructor-image">
               </div>
-<div>
-  <p><strong>{{ course.instructorName }}</strong></p>
-  <p class="bio">{{ course.instructorBio }}</p>
-</div>
+        <div>
+           <p><strong>{{ course.instructorName }}</strong></p>
+            <p class="bio">{{ course.instructorBio }}</p>
+        </div>
         </el-card>
       </div>
     </div>
@@ -81,27 +86,36 @@
     <div v-else>
       <p>Loading course information...</p>
     </div>
+    
+    <!-- Sidebar Component -->
+    <ProfileSidebar
+        :user="user"
+        :activeIndex="activeIndex"
+        :isVisible="isSidebarVisible"
+        @menuSelect="handleMenuSelect"
+    />
   </div>
 </template>
 
 <script setup>
-
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import Courseware from './Courseware.vue';
 import CommentSection from './CommentSection.vue';
 import DoughnutChart from './DoughnutChart.vue';
+import ProfileSidebar from './ProfileSidebar.vue';
+import axiosInstances from '@/services/axiosInstance';
 
-const studentId = ref('1'); // Example student ID
+const router = useRouter();
+const user = ref(null); 
+const userId = localStorage.getItem('userId');
 const userRating = ref(0);
 const userReview = ref("");
-// const courseId = ref(null);
-// const course = ref(null);
 // const likes = ref(0); // To be fetched
 // const liked = ref(false);
-
-// Route handling
-// const route = useRoute();
-// courseId.value = route.params.courseId;
+const defaultProfilePic = "/assets/Avatars/student.jpg";
+const activeIndex = ref('1');
+const isSidebarVisible = ref(false);
 
 const course = {
   id: '1',
@@ -116,6 +130,21 @@ const course = {
   category: 'Web Development',
 };
 
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
+
 const submitReview = () => {
   if (userRating.value && userReview.value.trim()) {
     alert(
@@ -128,44 +157,65 @@ const submitReview = () => {
   }
 };
 
-// Fetch course data
-// onMounted(async () => {
-//   if (!courseId.value) {
-//     console.error("No course ID provided!");
-//     return;
-//   }
-//   try {
-//     const response = await fetch(`/api/courses/${courseId.value}`);
-//     if (!response.ok) throw new Error("Failed to fetch course data.");
-//     course.value = await response.json();
-//     likes.value = course.value.likes || 0; // Assume the course object has a likes property
-//   } catch (error) {
-//     console.error("Error fetching course data:", error);
-//   }
-// });
+const toggleSidebar = () => {
+  isSidebarVisible.value = !isSidebarVisible.value;
+};
 
-// Like course function
-// const likeCourse = async () => {
-//   if (!liked.value) {
-//     likes.value += 1;
-//     liked.value = true;
-//   }
-  // try {
-  //   const response = await fetch(`/api/courses/${courseId.value}/like`, { method: 'POST' });
-  //   if (response.ok) {
-  //     likes.value += 1;
-  //     liked.value = true;
-  //   } else {
-  //     console.error("Failed to like course");
-  //   }
-  // } catch (error) {
-  //   console.error("Error liking the course:", error);
-  // }
-// };
+onMounted(fetchUserData);
 </script>
 
 
 <style scoped>
+.el-menu-demo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.nav-logo {
+  width: 240px;
+  height: 90px;
+}
+
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
+
+.el-menu-demo .el-menu-item:hover {
+  box-shadow: none !important; 
+  background-color: transparent !important;
+}
+
+.sidebar-toggle {
+  margin-left: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic-small {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 999; 
+  cursor: pointer;
+}
+
 .page-container {
   display: flex;
   flex-direction: column;
@@ -259,35 +309,6 @@ const submitReview = () => {
   width: 100px;
   height: auto;
   margin-top: 10px;
-}
-
-.el-menu-demo img {
-  width: 60px;
-  height: auto;
-}
-
-.el-menu--horizontal > .el-menu-item:nth-child(1) {
-  margin-right: auto;
-}
-
-.el-menu-demo .el-menu-item {
-  font-size: 18px;
-  color: black;
-  background-color: transparent;
-  transition: color 0.3s;
-  font-family: 'Aptos Narrow', sans-serif;
-}
-
-.el-menu-demo {
-  background-color: white;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  height: 75px;
-  padding: 0 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .description, .bio {
