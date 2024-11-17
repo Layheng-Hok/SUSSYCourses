@@ -172,7 +172,7 @@ public class WebAppUserService {
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.isLiked()))
+                        courseStudent.getStatus(), courseStudent.isLiked(), courseStudent.getCourse().getCreatedAt()))
                 .toList();
 
         return new StudentDetailResponse(
@@ -202,7 +202,7 @@ public class WebAppUserService {
         List<InstructorCourseDetailResponse> courseInfoResponses = courses.stream()
                 .map(course -> new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
                         course.getDescription(), course.getTopic(), course.getCoverImage(),
-                        course.getType(), course.getStatus()))
+                        course.getType(), course.getStatus(), course.getCreatedAt()))
                 .toList();
 
         return new InstructorDetailResponse(
@@ -217,5 +217,30 @@ public class WebAppUserService {
                 courseInfoResponses.size(),
                 courseInfoResponses
         );
+    }
+
+    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) {
+        if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty.");
+        }
+        WebAppUser user = webAppUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        if (!updateUserRequest.fullName().equals(user.getFullName())) {
+            user.setFullName(updateUserRequest.fullName());
+        }
+        if (updateUserRequest.gender() != null && !updateUserRequest.gender().equals(user.getGender())) {
+            user.setGender(updateUserRequest.gender());
+        }
+        if (updateUserRequest.bio() != null && !updateUserRequest.bio().equals(user.getBio())) {
+            user.setBio(updateUserRequest.bio());
+        }
+        if (updateUserRequest.profilePicture() != null && !updateUserRequest.profilePicture().equals(user.getProfilePicture())) {
+            user.setProfilePicture(updateUserRequest.profilePicture());
+        }
+
+        if (webAppUserRepository.existsById(userId)) {
+            webAppUserRepository.save(user);
+        }
     }
 }

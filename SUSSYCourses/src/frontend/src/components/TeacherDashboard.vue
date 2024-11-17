@@ -25,7 +25,7 @@
         <el-menu-item index="1"
                       @click="setActiveTab('courses')"
                       :class="{ 'is-active': activeTab === 'courses' }"
-                      >
+        >
           <el-icon>
             <Notebook/>
           </el-icon>
@@ -127,7 +127,8 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue';
+import {ref, computed, watch, onMounted} from 'vue';
+import {defineProps} from 'vue';
 import {Help, Notebook, Notification} from "@element-plus/icons-vue";
 import TeacherCourses from "@/components/TeacherCourses.vue";
 import HelpSupport from "@/components/HelpSupport.vue";
@@ -135,18 +136,36 @@ import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 import TeacherProfile from "@/components/TeacherProfile.vue";
 import Security from "@/components/Security.vue";
 import TeacherNotifications from "@/components/TeacherNotifications.vue";
+import axiosInstances from "@/services/axiosInstance";
+
+const props = defineProps({
+  initialTab: String,
+});
 
 const activeTab = ref('courses'); // Default to 'courses'
-const showCourseDetails = ref(false); // Controls whether to show TeacherCourses or CourseDetails
+onMounted(() => {
+  if (props.initialTab) {
+    activeTab.value = props.initialTab;
+  }
+});
 
+const showCourseDetails = ref(false); // Controls whether to show TeacherCourses or CourseDetails
+watch(
+    () => props.initialTab,
+    (newTab) => {
+      if (newTab) {
+        activeTab.value = newTab;
+      }
+    }
+);
 const setActiveTab = (tab) => {
   activeTab.value = tab;
   console.log("Active tab:", activeTab.value);
 };
 
 const user = ref({
-  name: 'John Doe',
-  email: 'JohnDoe@mgmail.com',
+  name: 'Loading...',
+  email: 'Fetching...',
   profilePic: null,
   initials: computed(() => user.value.name.charAt(0).toUpperCase()),
 });
@@ -172,12 +191,29 @@ const toggleSidebarExpansion = (expand) => {
   isSidebarExpanded.value = expand;
 };
 
-
-
 // Callback to switch to CourseDetails after form submission
 const navigateToCourseDetails = () => {
   showCourseDetails.value = true;
 };
+
+onMounted(async () => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No userId found in localStorage!");
+      return;
+    }
+
+    const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
+    const userData = response.data;
+
+    user.value.name = userData.fullName || "No Name";
+    user.value.email = userData.email || "No Email";
+    user.value.profilePic = userData.profileImageUrl || null;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+});
 </script>
 
 

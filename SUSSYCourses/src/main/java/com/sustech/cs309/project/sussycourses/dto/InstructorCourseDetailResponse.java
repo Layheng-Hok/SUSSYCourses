@@ -1,5 +1,7 @@
 package com.sustech.cs309.project.sussycourses.dto;
 
+import java.time.LocalDateTime;
+
 public record InstructorCourseDetailResponse(
         Long courseId,
         String courseName,
@@ -7,6 +9,7 @@ public record InstructorCourseDetailResponse(
         String topic,
         String coverImageUrl,
         String type,
-        String approvalStatus
+        String approvalStatus,
+        LocalDateTime createdAt
 ) {
 }
