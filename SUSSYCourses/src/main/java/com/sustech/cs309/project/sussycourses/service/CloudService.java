@@ -1,12 +1,9 @@
 package com.sustech.cs309.project.sussycourses.service;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageException;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -19,7 +16,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-import com.google.cloud.storage.HttpMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -100,6 +96,18 @@ public class CloudService {
 
 
         return "Successful upload";
+    }
+
+
+    public static String deleteObject(String projectId, String bucketName, String objectName) throws IOException {
+        ServiceAccountCredentials credentials = ServiceAccountCredentials
+                .fromStream(new FileInputStream(dotenv.get("STORAGE_KEY")));
+
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId(projectId).build().getService();
+        Bucket bucket = storage.get(bucketName);
+        Blob blob =bucket.get(objectName);
+        blob.delete();
+        return "Successful delete";
     }
 }
 
