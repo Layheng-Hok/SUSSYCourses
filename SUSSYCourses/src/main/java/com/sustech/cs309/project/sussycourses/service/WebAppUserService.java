@@ -1,14 +1,10 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
-import com.sustech.cs309.project.sussycourses.repository.RoleRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,9 +32,9 @@ public class WebAppUserService {
     private final RoleRepository roleRepository;
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
+    private final RatingRepository ratingRepository;
+
     private final EmailService emailService;
-    private final CloudService cloudService;
-    private final CloudController cloudController;
 
     public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationRequest registrationRequest) {
         if (webAppUserRepository.findByEmail(registrationRequest.email()).isPresent()) {
@@ -175,7 +170,9 @@ public class WebAppUserService {
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.isLiked(), courseStudent.getCourse().getCreatedAt()))
+                        courseStudent.getStatus(), courseStudent.isLiked(),
+                        ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId())
+                        , courseStudent.getCourse().getCreatedAt()))
                 .toList();
 
         return new StudentDetailResponse(
@@ -222,7 +219,7 @@ public class WebAppUserService {
         );
     }
 
-    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) throws Exception {
+    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) {
         if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
         }
@@ -239,18 +236,11 @@ public class WebAppUserService {
             user.setBio(updateUserRequest.bio());
         }
         if (updateUserRequest.profilePicture() != null && !updateUserRequest.profilePicture().equals(user.getProfilePicture())) {
-            String deleteProfilePicture = user.getProfilePicture();
-            String fixUrl = fixUrl(userId, deleteProfilePicture);
-            cloudController.deleteBlob(fixUrl);
             user.setProfilePicture(updateUserRequest.profilePicture());
         }
 
         if (webAppUserRepository.existsById(userId)) {
             webAppUserRepository.save(user);
         }
-    }
-
-    public String fixUrl(long userId, String url) {
-        return "Users/" + userId + "/" + url;
     }
 }

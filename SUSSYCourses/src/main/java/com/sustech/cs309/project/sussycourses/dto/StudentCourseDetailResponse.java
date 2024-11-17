@@ -13,6 +13,7 @@ public record StudentCourseDetailResponse(
         String type,
         String enrollmentStatus,
         Boolean liked,
+        Float averageRating,
         LocalDateTime createdAt
 ) {
 }
