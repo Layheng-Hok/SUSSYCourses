@@ -22,33 +22,33 @@
           </div>
         </el-collapse-item>
 
-        <!-- <el-collapse-item title="Homework Chapters" name="2">
+        <el-collapse-item title="Homework Chapters" name="2">
           <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.title">
-                <a :href="`/assets/Materials/${material.title}`" target="_blank">
+              <el-list-item v-for="material in chapter.materials" :key="material.url">
+                <a :href="`/assets/Materials/${material.url}`" target="_blank">
                   <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
                   {{ material.title }}
                 </a>
               </el-list-item>
             </el-list>
           </div>
-        </el-collapse-item> -->
+        </el-collapse-item>
 
-        <!-- <el-collapse-item title="Project Chapters" name="3">
+        <el-collapse-item title="Project Chapters" name="3">
           <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.title">
-                <a :href="`/assets/Materials/${material.title}`" target="_blank">
+              <el-list-item v-for="material in chapter.materials" :key="material.url">
+                <a :href="`/assets/Materials/${material.url}`" target="_blank">
                   <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
                   {{ material.title }}
                 </a>
               </el-list-item>
             </el-list>
           </div>
-        </el-collapse-item> -->
+        </el-collapse-item>
       </el-collapse>
     </el-card>
   </template>
