@@ -1,7 +1,6 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 
-import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
@@ -30,6 +29,7 @@ public class CourseController {
         return courseService.getCoursesByStatus("pending");
     }
 
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/course/create")
     public ResponseEntity<String> createCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
         return courseService.uploadCourse(newCourse);
@@ -39,5 +39,11 @@ public class CourseController {
     @PutMapping("/approve/{courseId}")
     public ResponseEntity<String> approveCourse(@PathVariable Long courseId) {
         return courseService.approveCourse(courseId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/reject/{courseId}")
+    public ResponseEntity<String> rejectCourse(@PathVariable Long courseId) {
+        return courseService.rejectCourse(courseId);
     }
 }
