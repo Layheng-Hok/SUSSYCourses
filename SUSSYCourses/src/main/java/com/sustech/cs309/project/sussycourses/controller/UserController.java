@@ -4,12 +4,10 @@ import com.sustech.cs309.project.sussycourses.dto.InstructorDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.UserResponse;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
+import com.sustech.cs309.project.sussycourses.dto.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,5 +41,10 @@ public class UserController {
         return webAppUserService.getInstructorById(userId);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR', 'ROLE_STUDENT')")
+    @PutMapping("/users/update/{userId}")
+    public void updateInstructorProfile(@PathVariable long userId, @RequestBody UpdateUserRequest updateUserRequest) {
+        webAppUserService.updateInstructorProfile(userId, updateUserRequest);
+    }
 
 }

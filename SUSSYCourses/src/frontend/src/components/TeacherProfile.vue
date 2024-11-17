@@ -34,7 +34,18 @@
 
       <!-- Basic Info -->
       <div class="basic-info">
-        <h2>{{ user.name }}</h2>
+        <h2>
+    <span v-if="!isEditingName" @click="enableNameEdit">
+      {{ user.name }}
+      <el-icon class="edit-icon"><edit/></el-icon>
+    </span>
+          <el-input
+              v-else
+              v-model="user.name"
+              placeholder="Enter your name"
+              @blur="disableNameEdit"
+          />
+        </h2>
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Role:</strong> {{ user.role }}</p>
         <p><strong>Gender:</strong> {{ user.gender }}</p>
@@ -55,20 +66,33 @@
     </div>
   </div>
   <el-button @click="cancelChanges" class="cancel-button">Cancel</el-button>
-  <el-button type="primary" @click="saveChanges" class="save-button">Save</el-button>
+  <el-button type="primary" :loading="isSaving" @click="saveChanges" class="save-button">Save</el-button>
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
-import {PictureFilled} from "@element-plus/icons-vue";
+import {computed, ref, onMounted} from 'vue';
+import {PictureFilled, Edit} from "@element-plus/icons-vue";
 import {ElMessage} from 'element-plus';
+import axiosInstances from "@/services/axiosInstance";
+import {useRouter} from 'vue-router';
+
+const router = useRouter();
+
+const isEditingName = ref(false);
+const enableNameEdit = () => {
+  isEditingName.value = true;
+};
+
+const disableNameEdit = () => {
+  isEditingName.value = false;
+};
 
 const user = ref({
-  name: 'John Doe',
-  email: 'JohnDoe@mgmail.com',
-  gender: 'Male',
-  role: 'Teacher',
-  created: '15 Nov 2024',
+  name: 'Loading...',
+  email: 'Fetching...',
+  gender: 'Loading...',
+  role: 'Loading...',
+  created: 'Loading...',
   profilePic: null,
   bio: '',
   initials: computed(() => user.value.name.charAt(0).toUpperCase()),
@@ -77,16 +101,79 @@ const user = ref({
 // edit profile logic
 const backupUser = ref({...user.value});
 const cancelChanges = () => {
-  user.value = {...backupUser.value};
+  user.value = JSON.parse(JSON.stringify(backupUser.value));
   newProfilePic.value = null;
   isModalVisible.value = false;
   ElMessage.info('Changes canceled');
+
+  const userId = localStorage.getItem("userId");
+  console.log('Redirecting to TeacherDashboard with userId:', userId);
+
+  router.push({name: 'TeacherDashboard', params: {userId: userId}, query: {tab: 'courses', _r: Date.now()}});
+
 };
 
-const saveChanges = () => {
-  backupUser.value = {...user.value};
-  isModalVisible.value = false;
-  ElMessage.success('Changes saved!');
+const isSaving = ref(false);
+
+const saveChanges = async () => {
+  try {
+    isSaving.value = true;
+
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      ElMessage.error("User ID is missing. Cannot save changes.");
+      return;
+    }
+
+    if (!user.value.name || user.value.name.trim() === "") {
+      ElMessage.error("Name cannot be empty. Please provide a valid name.");
+      return;
+    }
+
+    const updatedData = {};
+    let hasChanges = false;
+
+    if (user.value.bio !== backupUser.value.bio) {
+      updatedData.bio = user.value.bio;
+      hasChanges = true;
+    }
+
+    if (user.value.gender !== backupUser.value.gender) {
+      updatedData.gender = user.value.gender;
+      hasChanges = true;
+    }
+
+    if (user.value.name !== backupUser.value.name) {
+      updatedData.fullName = user.value.name;
+      hasChanges = true;
+    } else {
+      updatedData.fullName = backupUser.value.name;
+    }
+
+    if (newProfilePic.value) {
+      updatedData.profileImageUrl = newProfilePic.value;
+      hasChanges = true;
+    }
+
+    if (!hasChanges) {
+      ElMessage.info("No changes to save.");
+      return;
+    }
+
+    await axiosInstances.axiosInstance.put(`/users/update/${userId}`, updatedData);
+
+    backupUser.value = JSON.parse(JSON.stringify(user.value));
+    newProfilePic.value = null;
+    ElMessage.success("Profile updated successfully!");
+
+    // Redirect to dashboard/courses
+    router.push({name: 'TeacherDashboard', params: {userId: userId}, query: {tab: 'courses', _r: Date.now()}});
+
+  } catch (error) {
+    ElMessage.error("Failed to save changes. Please try again.");
+  } finally {
+    isSaving.value = false;
+  }
 };
 
 const isModalVisible = ref(false);
@@ -95,7 +182,7 @@ const newProfilePic = ref(null);
 const previewImage = (event) => {
   const file = event.target.files[0];
   if (file) {
-    newProfilePic.value = URL.createObjectURL(file);
+    newProfilePic.value = URL.createObjectURL(file); // Show preview
   }
 };
 
@@ -106,11 +193,37 @@ const cancelUpload = () => {
 
 const saveProfilePicture = () => {
   if (newProfilePic.value) {
-    user.value.profilePic = newProfilePic.value;
-    isModalVisible.value = false;
-    ElMessage.success('Profile picture updated!');
+    user.value.profilePic = newProfilePic.value; // Temporarily update profile picture
+    isModalVisible.value = false; // Close modal
+    ElMessage.success("Profile picture updated locally!");
   }
 };
+
+onMounted(async () => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No userId found in localStorage!");
+      return;
+    }
+
+    const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
+    const userData = response.data;
+
+    user.value.name = userData.fullName || "No Name";
+    user.value.email = userData.email || "No Email";
+    user.value.gender = userData.gender || "Not specified";
+    user.value.role = userData.roleName || "Not specified";
+    user.value.created = userData.createdAt || "Not available";
+    user.value.profilePic = userData.profileImageUrl || null;
+    user.value.bio = userData.bio || null;
+
+    backupUser.value = JSON.parse(JSON.stringify(user.value));
+
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+});
 </script>
 
 <style scoped>
@@ -231,5 +344,23 @@ const saveProfilePicture = () => {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
+}
+
+.basic-info h2 .edit-icon {
+  font-size: 21px;
+  margin-left: 2px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.basic-info h2 .edit-icon:hover {
+  color: #74b3e3;
+}
+
+.basic-info h2 .el-input {
+  font-size: 1.2rem;
+  color: #333;
+  width: 300px;
 }
 </style>
