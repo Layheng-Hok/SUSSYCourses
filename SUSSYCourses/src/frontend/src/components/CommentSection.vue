@@ -12,6 +12,7 @@
       >
         <div class="comment-header">
           <p>
+            <img :src="`/assets/Courses/course.jpg`" class="head-shot" />
             <strong>{{ comment.fullName || "Loading..." }}:</strong>
             {{ comment.message }}
           </p>
@@ -222,6 +223,15 @@ h2 {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
+}
+
+.head-shot{
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  padding-right: 5px;
 }
 
 textarea {

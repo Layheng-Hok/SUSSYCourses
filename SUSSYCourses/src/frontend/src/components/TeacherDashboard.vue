@@ -164,6 +164,7 @@ const user = ref({
   name: 'Loading...',
   email: 'Fetching...',
   profilePic: null,
+  numCourses: 0,
   initials: computed(() => user.value.name.charAt(0).toUpperCase()),
 });
 
@@ -207,6 +208,15 @@ onMounted(async () => {
     user.value.name = userData.fullName || "No Name";
     user.value.email = userData.email || "No Email";
     user.value.profilePic = userData.profileImageUrl || null;
+    user.value.numCourses = userData.numCourses;
+
+    if (user.value.numCourses === 0) {
+      activeTab.value = 'courses';
+      showCourseDetails.value = false;
+    } else {
+      activeTab.value = 'courses';
+      showCourseDetails.value = true;
+    }
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
