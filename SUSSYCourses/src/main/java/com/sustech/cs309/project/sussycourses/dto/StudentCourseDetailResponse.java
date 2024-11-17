@@ -12,7 +12,7 @@ public record StudentCourseDetailResponse(
         String teacherName,
         String type,
         String enrollmentStatus,
-        boolean liked,
+        Boolean liked,
         LocalDateTime createdAt
 ) {
 }

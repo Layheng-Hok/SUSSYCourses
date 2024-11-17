@@ -3,12 +3,14 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
 import org.checkerframework.checker.units.qual.A;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +47,16 @@ public class CoursewareService {
         return "filenotfound404.jpg";
     }
 
-    public String uploadCourseware(long courseId, String fileType, String category, boolean downloadable, int chapter, int order, MultipartFile file) throws Exception {
+    public ResponseEntity<String> uploadCourseware(CoursewareRequest coursewareRequest) throws Exception {
+        long courseId = coursewareRequest.courseId();
+        String fileType = coursewareRequest.fileType();
+        String category = coursewareRequest.category();
+        boolean downloadable = coursewareRequest.downloadable();
+        int chapter = coursewareRequest.chapter();
+        int order = coursewareRequest.order();
+        MultipartFile file = coursewareRequest.file();
+
+
         Courseware courseware = new Courseware();
         Course course = courseRepository.findById(courseId).orElse(null);
         courseware.setCourse(course);
@@ -58,7 +69,7 @@ public class CoursewareService {
         String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), fileType);
         cloudController.putStorageKey(file, fileType, url);
         coursewareRepository.save(courseware);
-        return "e";
+        return ResponseEntity.ok().body("Courseware uploaded");
     }
 
     public String retrieveCoursewareData() throws IOException {

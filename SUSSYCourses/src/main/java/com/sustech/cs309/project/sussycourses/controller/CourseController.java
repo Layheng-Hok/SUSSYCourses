@@ -30,9 +30,16 @@ public class CourseController {
         return courseService.getCoursesByStatus("pending");
     }
 
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/course/create")
     public ResponseEntity<String> createCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
         return courseService.uploadCourse(newCourse);
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @PostMapping("/course/update")
+    public ResponseEntity<String> updateCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
+        return courseService.updateCourse(newCourse);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

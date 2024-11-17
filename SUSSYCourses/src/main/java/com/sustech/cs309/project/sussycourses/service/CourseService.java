@@ -94,4 +94,18 @@ public class CourseService {
         courseRepository.save(course);
         return ResponseEntity.ok("Course created successfully");
     }
+
+    public ResponseEntity<String> updateCourse(CourseCreationRequest courseCreationRequest) throws Exception {
+        String courseName = courseCreationRequest.courseName();
+        long teacherId = courseCreationRequest.teacherId();
+        String description = courseCreationRequest.description();
+        String type = courseCreationRequest.type();
+        String status = courseCreationRequest.status();
+        String topic = courseCreationRequest.topic();
+        MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
+        String fileType = courseCreationRequest.fileType();
+        String coverImageName = courseCreationRequest.coverImageName();
+
+        return ResponseEntity.ok("Course updated successfully");
+    }
 }
