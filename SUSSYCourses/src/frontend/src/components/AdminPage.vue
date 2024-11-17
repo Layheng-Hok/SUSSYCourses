@@ -8,25 +8,20 @@
       <el-menu-item index="0">
         <router-link to="/">
           <img
-              src="@/assets/logo.png"
+              src="@/assets/logo2.png"
               alt="Element logo"
           /> </router-link>
       </el-menu-item>
-      <!-- <el-menu-item index="1"><router-link to="teacherpage">Teach on SUSSY</router-link></el-menu-item> -->
-      <!-- <el-menu-item index="3"><router-link to="/signupteacher">Sign up</router-link></el-menu-item> -->
     </el-menu>
   
     <div class="intro-section">
       <h1>404 PAGE NOT FOUND</h1>
     </div>
   
-  
   </template>
   
   <script setup>
-//   const images = [
-//     {src: require('@/assets/img.png'), alt: 'Image 1'},
-//   ];
+
   </script>
   
   
@@ -73,15 +68,14 @@
     border-bottom: none !important;
   }
   
-  /* Remove underline from all router links inside the menu */
   .el-menu-demo .el-menu-item a {
     text-decoration: none !important;
   }
   
   .intro-section {
     text-align: center;
-    margin: 100px auto 50px auto; /* Adjust spacing top right bottom left*/
-    max-width: 800px; /* Optional: limit the text width */
+    margin: 100px auto 50px auto; 
+    max-width: 800px;
   }
   
   .intro-section h1 {
@@ -89,7 +83,6 @@
     font-weight: bold;
     margin-bottom: 5px !important;
   }
-  
   
   </style>/
   

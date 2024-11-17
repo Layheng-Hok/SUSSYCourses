@@ -47,6 +47,7 @@
     router.back();
   };
   
+  // to be replaced with data from backend
   const notifications = ref([
     { title: "Welcome!", message: "Thank you for signing up.", time: "2 hours ago", read: false },
     { title: "Assignment Due", message: "Your assignment is due tomorrow.", time: "1 day ago", read: false },

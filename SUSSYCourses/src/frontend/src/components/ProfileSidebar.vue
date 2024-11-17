@@ -2,24 +2,29 @@
     <el-aside class="profile-sidebar" :class="{ visible: isVisible }">
       <!-- Profile Section -->
       <div class="profile-section">
-        <img class="profile-pic-large" :src="user.profilePic || defaultProfilePic" alt="Profile Picture" />
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.email }}</p>
+        <img class="profile-pic-large" :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" />
+        <h3>{{ user?.fullName }}</h3>
+        <p>{{ user?.email }}</p>
       </div>
   
       <!-- Sidebar Links -->
       <el-menu class="sidebar-menu" :default-active="activeIndex" @select="handleMenuSelect">
         <el-menu-item index="1">
-          <router-link to="/profilepage">View Profile</router-link>
-        </el-menu-item>
+  <router-link :to="{ path: `/student-dashboard/${userId}/profilepage`}">
+    View Profile
+  </router-link>
+  </el-menu-item>
         <el-menu-item index="2">
-          <router-link to="/editprofile">Edit Profile</router-link>
+          <router-link :to="{ path: `/student-dashboard/${userId}/editprofile`}">
+            Edit Profile</router-link>
         </el-menu-item>
         <el-menu-item index="3">
-          <router-link to="/accountsecurity">Account Security</router-link>
+          <router-link :to="{ path: `/student-dashboard/${userId}/accountsecurity`}">
+            Account Security</router-link>
         </el-menu-item>
         <el-menu-item index="4">
-          <router-link to="/notifications">Notifications</router-link>
+          <router-link :to="{ path: `/student-dashboard/${userId}/notifications`}">
+            Notifications</router-link>
         </el-menu-item>
         <el-menu-item index="5">
           <router-link to="/teacherpage">Teach on SUSSY</router-link>
@@ -32,21 +37,20 @@
         </el-menu-item>
       </el-menu>
   
-      <!-- Version Display -->
       <div class="version">v1.0.0</div>
     </el-aside>
   </template>
   
   <script setup>
   import { defineProps, defineEmits } from 'vue';
-  
+  import { useRoute } from 'vue-router';
+  const route = useRoute();  
+  const userId = route.params.userId;
   defineProps({
     user: Object,
     activeIndex: String,
     isVisible: Boolean,
   });
-  
-  // Default profile picture as fallback
   const defaultProfilePic = "/assets/Avatars/student.jpg"; 
   
   // Emit event for menu selection handling
