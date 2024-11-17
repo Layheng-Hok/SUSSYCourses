@@ -14,7 +14,7 @@
 <!--  <source th:src="${videoUrl}" type="video/mp4" >-->
 <!--  Your browser does not support the video tag.-->
 <!--</video>-->
-<img th:src="${videoUrl}" alt="ff">
+<video th:src="${videoUrl}" alt="ff">
 <p>
 <form id="uploadForm" action="/my-handling-form-page" method="post" enctype="multipart/form-data">
   <p>
@@ -26,7 +26,7 @@
   </p>
 </form>
 <a href="/">Back to Home</a>
-</p>
+</video>
 
 <script>
   function handleFileUpload() {

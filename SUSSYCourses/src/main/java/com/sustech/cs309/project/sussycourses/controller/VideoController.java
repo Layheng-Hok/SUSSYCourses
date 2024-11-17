@@ -15,7 +15,7 @@ public class VideoController {
 
     @GetMapping("/video")
     public String displayVideo(Model model) throws IOException {
-        String fileName = "video6.png"; //Just an example
+        String fileName = "Courses/Course1/courseware/videos/chapter1"; //Just an example
         String videoUrl = cloudController.getStorageKey(fileName);
         System.out.println(videoUrl);
         model.addAttribute("videoUrl", videoUrl);

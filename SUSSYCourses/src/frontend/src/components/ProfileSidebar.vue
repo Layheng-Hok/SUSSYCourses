@@ -2,9 +2,9 @@
     <el-aside class="profile-sidebar" :class="{ visible: isVisible }">
       <!-- Profile Section -->
       <div class="profile-section">
-        <img class="profile-pic-large" :src="user.profilePic || defaultProfilePic" alt="Profile Picture" />
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.email }}</p>
+        <img class="profile-pic-large" :src="defaultProfilePic" alt="Profile Picture" />
+        <h3>fill in name here</h3>
+        <p>fill in email here}</p>
       </div>
   
       <!-- Sidebar Links -->
@@ -47,7 +47,7 @@
   });
   
   // Default profile picture as fallback
-  const defaultProfilePic = "/assets/Avatars/student.jpg"; 
+  const defaultProfilePic = "/assets/Avatars/student.jpg";
   
   // Emit event for menu selection handling
   const emit = defineEmits(['menuSelect']);

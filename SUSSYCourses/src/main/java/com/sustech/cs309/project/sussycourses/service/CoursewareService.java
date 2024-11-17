@@ -60,15 +60,12 @@ public class CoursewareService {
             courseData.put("description", course.getDescription());
             courseData.put("image", cloudController.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
             // Instructor info
-            if (course.getTeacher() != null) {
-                courseData.put("instructorName", course.getTeacher().getFullName());
-                courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
-                courseData.put("instructorBio", course.getTeacher().getBio());
-            }
+            courseData.put("instructorName", course.getTeacher().getFullName());
+            courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
+            courseData.put("instructorBio", course.getTeacher().getBio());
 
             // Teaching chapters (mock data, adjust as per your real structure)
             JSONArray teachingChapters = new JSONArray();
-
             JSONArray homeworkChapters = new JSONArray();
             JSONArray projectChapters = new JSONArray();
             for (Courseware c : courseware) {
@@ -81,7 +78,9 @@ public class CoursewareService {
 
                         JSONObject material = new JSONObject();
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         materials.put(material);
                     } else if (teachingChapters.length() < c.getChapter()) {
                         JSONObject teachingChapter = new JSONObject();
@@ -89,7 +88,9 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
 
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         teachingChapter.put("name", "Chapter " + c.getChapter());
                         materials.put(material);
                         teachingChapter.put("materials", materials);
@@ -102,7 +103,9 @@ public class CoursewareService {
 
                         JSONObject material = new JSONObject();
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         materials.put(material);
                     } else if (homeworkChapters.length() < c.getChapter()) {
                         JSONObject homeworkChapter = new JSONObject();
@@ -110,7 +113,9 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
 
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         materials.put(material);
                         homeworkChapter.put("name", "Homework " + c.getChapter());
                         homeworkChapter.put("materials", materials);
@@ -122,7 +127,9 @@ public class CoursewareService {
 
                         JSONObject material = new JSONObject();
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         materials.put(material);
                     } else if (projectChapters.length() < c.getChapter()) {
                         JSONObject projectChapter = new JSONObject();
@@ -130,7 +137,9 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
 
                         String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
-                        material.put("title", getMaterial);
+                        material.put("title", c.getUrl());
+                        material.put("url", getMaterial);
+                        material.put("type", c.getFileType());
                         materials.put(material);
                         projectChapter.put("name", "Project " + c.getChapter());
                         projectChapter.put("materials", materials);
@@ -143,7 +152,6 @@ public class CoursewareService {
             courseData.put("projectChapters", projectChapters);
             data.add(courseData);
         }
-
         return data.toString();
     }
 

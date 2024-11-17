@@ -3,25 +3,25 @@
     <el-card class="course-content" shadow="hover">
       <h2>Course Content</h2>
       <el-collapse>
-        <!-- <el-collapse-item title="Teaching Chapters" name="1">
+        <el-collapse-item title="Teaching Chapters" name="1">
           <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
             <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.title">
+              <el-list-item v-for="material in chapter.materials" :key="material.url">
                 <div v-if="material.type === 'mp4'" class="video-container">
-                  <video controls :src="`/assets/Materials/${material.title}`" width="50%"></video>
+                  <video controls :src="`${material.url}`" width="50%"></video>
                 </div>
                 <div v-else>
                   <a :href="`/assets/Materials/${material.title}`" target="_blank">
                     <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
-                    {{ material.title }}
+                    {{material.title}}
                   </a>
                 </div>
               </el-list-item>
             </el-list>
           </div>
-        </el-collapse-item> -->
-  
+        </el-collapse-item>
+
         <!-- <el-collapse-item title="Homework Chapters" name="2">
           <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
@@ -35,7 +35,7 @@
             </el-list>
           </div>
         </el-collapse-item> -->
-  
+
         <!-- <el-collapse-item title="Project Chapters" name="3">
           <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
             <h3>{{ chapter.name }}</h3>
@@ -66,8 +66,12 @@
       },
     },
     setup(props) {
-      const course = ref(null);
-  
+      const course = ref({
+        teachingChapters: [],
+        homeworkChapters: [],
+        projectChapters: []
+      });
+
       // Simulated course data
       // const coursesData = [
       //   {
@@ -116,7 +120,7 @@
       //     ],
       //   },
       // ];
-  
+
       const materialIcon = (type) => {
         switch (type) {
           case "pdf":
@@ -129,7 +133,7 @@
             return Files;
         }
       };
-  
+
       // onMounted(() => {
       //   course.value = coursesData.find((c) => c.id === props.courseId);
       //   if (!course.value) {
@@ -142,8 +146,8 @@
           const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
           const coursesData = response.data
           console.log(coursesData)
-          console.log(coursesData.find((c) => c.id === props.courseId));
           course.value = coursesData.find((c) => c.id === props.courseId);
+
 
           if (!course.value) {
             console.error("Course not found!");
@@ -152,7 +156,7 @@
           console.error('Error fetching courses:', error);
         }
       });
-  
+
       return {
         course,
         materialIcon,
