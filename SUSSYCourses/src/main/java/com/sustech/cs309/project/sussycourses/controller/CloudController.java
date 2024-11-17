@@ -11,7 +11,7 @@ import java.io.IOException;
 @RequestMapping("/cloud")
 public class CloudController {
     private static final Dotenv dotenv = Dotenv.configure()
-            .directory("/Users/layhenghok/Desktop/SUSTech/Year3Semester1/CS309-Object-oriented-Analysis-and-Design/Project/SUSSYCourses/SUSSYCourses/src/main/resources/.env")
+            .directory("./.env")
             .filename(".env")
             .load();
 
