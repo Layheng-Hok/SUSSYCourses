@@ -6,10 +6,11 @@ import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -38,16 +39,21 @@ public class CourseService {
                 .toList();
     }
 
-    public String approveCourse(Long id) {
+    public ResponseEntity<String> approveCourse(Long id) {
         Optional<Course> courseOptional = courseRepository.findById(id);
 
         if (courseOptional.isPresent()) {
             Course course = courseOptional.get();
-            course.setStatus("APPROVED");
+
+            if (course.getStatus().equalsIgnoreCase("approved")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Course is already approved");
+            }
+
+            course.setStatus("approved");
             courseRepository.save(course);
-            return "Course approved successfully.";
+            return ResponseEntity.ok("Course approved successfully");
         } else {
-            throw new NoSuchElementException("Course not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
         }
     }
 }
