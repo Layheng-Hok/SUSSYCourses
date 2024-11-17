@@ -1,7 +1,7 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.dto.LoginDto;
-import com.sustech.cs309.project.sussycourses.dto.RegistrationDto;
+import com.sustech.cs309.project.sussycourses.dto.LoginRequest;
+import com.sustech.cs309.project.sussycourses.dto.RegistrationRequest;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class AuthController {
     private final WebAppUserService webAppUserService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationDto registrationDto) {
-        return webAppUserService.createWebAppUser(registrationDto);
+    public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationRequest registrationRequest) {
+        return webAppUserService.createWebAppUser(registrationRequest);
     }
 
     @GetMapping("/verify-email")
@@ -38,7 +38,7 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/login")
-    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginDto loginDto) {
-        return webAppUserService.loginWebAppUser(loginDto);
+    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginRequest loginRequest) {
+        return webAppUserService.loginWebAppUser(loginRequest);
     }
 }
