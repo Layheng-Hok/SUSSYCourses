@@ -172,7 +172,7 @@ public class WebAppUserService {
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.isLiked()))
+                        courseStudent.getStatus(), courseStudent.isLiked(), courseStudent.getCourse().getCreatedAt()))
                 .toList();
 
         return new StudentDetailResponse(
@@ -202,7 +202,7 @@ public class WebAppUserService {
         List<InstructorCourseDetailResponse> courseInfoResponses = courses.stream()
                 .map(course -> new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
                         course.getDescription(), course.getTopic(), course.getCoverImage(),
-                        course.getType(), course.getStatus()))
+                        course.getType(), course.getStatus(), course.getCreatedAt()))
                 .toList();
 
         return new InstructorDetailResponse(
