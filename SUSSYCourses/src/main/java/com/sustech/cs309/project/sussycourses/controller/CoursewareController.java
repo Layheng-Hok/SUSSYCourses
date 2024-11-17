@@ -1,7 +1,9 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
+import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
 import com.sustech.cs309.project.sussycourses.service.CoursewareService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +23,8 @@ public class CoursewareController {
         return coursewareService.retrieveCoursewareData();
     }
 
-//    @PostMapping("/create")
-//    public String createCourseware() throws IOException {
-//        return coursewareService.uploadCourseware();
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<String> createCourseware(CoursewareRequest coursewareRequest) throws Exception {
+        return coursewareService.uploadCourseware(coursewareRequest);
+    }
 }

@@ -47,6 +47,24 @@ public class CourseService {
                 .toList();
     }
 
+    public ResponseEntity<String> approveCourse(Long id) {
+        Optional<Course> courseOptional = courseRepository.findById(id);
+
+        if (courseOptional.isPresent()) {
+            Course course = courseOptional.get();
+
+            if (course.getStatus().equalsIgnoreCase("approved")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Course is already approved");
+            }
+
+            course.setStatus("approved");
+            courseRepository.save(course);
+            return ResponseEntity.ok("Course approved successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
+        }
+    }
+
     public void uploadCoverImage(MultipartFile coverImageFile, String fileType, String courseName, String fileName) throws Exception {
         cloudController.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + fileName);
     }
@@ -77,39 +95,17 @@ public class CourseService {
         return ResponseEntity.ok("Course created successfully");
     }
 
-    public ResponseEntity<String> approveCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
+    public ResponseEntity<String> updateCourse(CourseCreationRequest courseCreationRequest) throws Exception {
+        String courseName = courseCreationRequest.courseName();
+        long teacherId = courseCreationRequest.teacherId();
+        String description = courseCreationRequest.description();
+        String type = courseCreationRequest.type();
+        String status = courseCreationRequest.status();
+        String topic = courseCreationRequest.topic();
+        MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
+        String fileType = courseCreationRequest.fileType();
+        String coverImageName = courseCreationRequest.coverImageName();
 
-        if (courseOptional.isPresent()) {
-            Course course = courseOptional.get();
-
-            if (course.getStatus().equalsIgnoreCase("approved")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Course is already approved");
-            }
-
-            course.setStatus("approved");
-            courseRepository.save(course);
-            return ResponseEntity.ok("Course approved successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
-        }
-    }
-
-    public ResponseEntity<String> rejectCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
-
-        if (courseOptional.isPresent()) {
-            Course course = courseOptional.get();
-
-            if (course.getStatus().equalsIgnoreCase("rejected")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Course is already rejected");
-            }
-
-            course.setStatus("rejected");
-            courseRepository.save(course);
-            return ResponseEntity.ok("Course rejected");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
-        }
+        return ResponseEntity.ok("Course updated successfully");
     }
 }

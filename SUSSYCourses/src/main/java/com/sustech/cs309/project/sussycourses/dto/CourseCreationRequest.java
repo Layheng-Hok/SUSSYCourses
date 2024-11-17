@@ -14,3 +14,10 @@ public record CourseCreationRequest(
         MultipartFile coverImageFile
 ) {
 }
+
+//
+//...formdata,
+//status: "PENDING",
+//coverImageName: file.getName(),
+//teacherId: localStorage.getId(),
+//fileType: file.fileType

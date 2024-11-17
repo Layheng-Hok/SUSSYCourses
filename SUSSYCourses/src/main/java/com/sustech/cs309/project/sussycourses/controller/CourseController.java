@@ -35,6 +35,12 @@ public class CourseController {
         return courseService.uploadCourse(newCourse);
     }
 
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @PostMapping("/course/update")
+    public ResponseEntity<String> updateCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
+        return courseService.updateCourse(newCourse);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/approve/{courseId}")
     public ResponseEntity<String> approveCourse(@PathVariable Long courseId) {
