@@ -25,7 +25,8 @@ import TeacherProfile from "@/components/TeacherProfile.vue";
 import Guideline from "@/components/Guideline.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 
-import NotFound from "@/components/NotFound.vue";
+import NotFound from "@/components/404.vue";
+import ForbiddenPage from "@/components/403.vue";
 
 const routes = [
   {
@@ -138,6 +139,11 @@ const routes = [
     name: "TeacherCoursesDetails",
     component: TeacherCoursesDetails,
   },
+  {
+    path: '/403',
+    name: 'ForbiddenPage',
+    component: ForbiddenPage
+},
   {
     path: "/:pathMatch(.*)*", // Catch-all route
     name: "NotFound",

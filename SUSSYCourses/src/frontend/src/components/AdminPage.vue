@@ -90,7 +90,11 @@ const fetchUserData = async () => {
     console.log(courses.value);
   } catch (error) {
     console.log("Error Details:", error);
-  }
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }  }
 };
 
 onMounted(fetchUserData);

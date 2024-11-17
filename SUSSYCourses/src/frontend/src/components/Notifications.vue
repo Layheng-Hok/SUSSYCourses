@@ -65,6 +65,12 @@
   const markAsRead = (index) => {
     notifications.value[index].read = true;
   };
+  // console.log("Error Details:", error);
+  //   if (error.response && error.response.status === 403) {
+  //     router.push({ name: 'ForbiddenPage' }); // Redirect to 403 page
+  //   } else {
+  //     console.error("Unexpected error occurred:", error);
+  //   }
   </script>
   
   <style scoped>
