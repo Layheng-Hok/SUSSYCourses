@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,10 @@ public class CloudService {
 
         return url.toString();
     }
-
+    private static final Dotenv dotenv = Dotenv.configure()
+            .directory("SUSSYCourses/src/main/resources/.env")
+            .filename(".env")
+            .load();
 
     public static String readStorageKey(String filePath) {
         try {
@@ -65,7 +69,7 @@ public class CloudService {
             String projectId, String bucketName, String objectName, MultipartFile file, String fileType) throws IOException {
 
         ServiceAccountCredentials credentials = ServiceAccountCredentials
-                .fromStream(new FileInputStream("SUSSYCourses/src/main/config/storage_key.json"));
+                .fromStream(new FileInputStream(dotenv.get("STORAGE_KEY")));
 
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId(projectId).build().getService();
         BlobId blobId = BlobId.of(bucketName, objectName);
