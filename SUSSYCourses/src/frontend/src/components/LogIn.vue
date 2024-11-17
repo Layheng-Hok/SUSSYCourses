@@ -158,7 +158,7 @@ const handleLogin = async () => {
         localStorage.setItem('userId', userId);
 
         if (userRole === 'ADMIN') {
-          await router.push(`admin-dashboard/${userId}`);
+          await router.push(`admin-dashboard`);
         } else if (userRole === 'STUDENT') {
           await router.push(`student-dashboard/${userId}`);
         } else if (userRole === 'INSTRUCTOR') {
