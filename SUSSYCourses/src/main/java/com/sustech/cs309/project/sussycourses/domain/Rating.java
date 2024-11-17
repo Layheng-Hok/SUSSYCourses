@@ -22,7 +22,16 @@ public class Rating {
     private Course course;
 
     @Column(nullable = false)
-    private int rating;
+    private Float overallRating;
+
+    @Column(nullable = false)
+    private Float contentQuality;
+
+    @Column(nullable = false)
+    private Float teachingCompetence;
+
+    @Column(nullable = false)
+    private Float workloadBalance;
 
     @Column(length = 300)
     private String feedback;
