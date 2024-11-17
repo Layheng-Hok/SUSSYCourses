@@ -25,7 +25,7 @@ public class CourseService {
                 .map(course -> new AdminCourseDetailResponse(course.getCourseId(), course.getCourseName(),
                         course.getDescription(), course.getTopic(), course.getCoverImage(),
                         course.getTeacher().getUserId(), course.getTeacher().getFullName(), course.getType(),
-                        course.getStatus()))
+                        course.getStatus(), course.getCreatedAt()))
                 .toList();
     }
 
@@ -35,7 +35,7 @@ public class CourseService {
                 .map(course -> new AdminCourseDetailResponse(course.getCourseId(), course.getCourseName(),
                         course.getDescription(), course.getTopic(), course.getCoverImage(),
                         course.getTeacher().getUserId(), course.getTeacher().getFullName(), course.getType(),
-                        course.getStatus()))
+                        course.getStatus(), course.getCreatedAt()))
                 .toList();
     }
 
