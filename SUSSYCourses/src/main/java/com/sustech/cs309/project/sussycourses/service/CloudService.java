@@ -101,21 +101,5 @@ public class CloudService {
 
         return "Successful upload";
     }
-
-    public static String fixName(String fileType, String fileName){
-        if(Objects.equals(fileType, "video/mp4")){
-            return "Courseware/videos/" + fileName;
-        }
-        else if(Objects.equals(fileType, "application/pdf")){
-            return "Courseware/pdf/" + fileName;
-        }
-        else if(Objects.equals(fileType, "image/jpeg") || Objects.equals(fileType, "image/png")){
-            return "Courseware/images/" + fileName;
-        }
-        else if(Objects.equals(fileType, "text/markdown")){
-            return "Courseware/md/" + fileName;
-        }
-        return "File Type Not Supported";
-    }
 }
 

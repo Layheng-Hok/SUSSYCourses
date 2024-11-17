@@ -12,7 +12,7 @@
                   <video controls :src="`${material.url}`" width="50%"></video>
                 </div>
                 <div v-else>
-                  <a :href="`/assets/Materials/${material.title}`" target="_blank">
+                  <a :href="`${material.url}`" target="_blank">
                     <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
                     {{material.title}}
                   </a>
@@ -147,7 +147,6 @@
           const coursesData = response.data
           console.log(coursesData)
           course.value = coursesData.find((c) => c.id === props.courseId);
-
 
           if (!course.value) {
             console.error("Course not found!");

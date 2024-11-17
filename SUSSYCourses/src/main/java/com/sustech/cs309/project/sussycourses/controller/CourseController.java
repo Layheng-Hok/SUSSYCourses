@@ -1,7 +1,9 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
+import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +30,10 @@ public class CourseController {
         return courseService.getCoursesByStatus("pending");
     }
 
-//    @PostMapping("/course/create")
-//    public ResponseEntity<String> createCourse(@RequestBody Course newCourse) {
-//        Course course = new Course();
-//        courseRepository.save(newCourse);
-//        return ResponseEntity.ok("Course Submitted Successfully! Awaiting Admin Approval.");
-//    }
+    @PostMapping("/course/create")
+    public ResponseEntity<String> createCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
+        return courseService.uploadCourse(newCourse);
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/approve/{courseId}")

@@ -7,9 +7,10 @@ public record CourseCreationRequest(
         String description,
         Long teacherId,
         String type,
+        String status,
         String topic,
         String coverImageName,
         String fileType,
-        MultipartFile file
+        MultipartFile coverImageFile
 ) {
 }

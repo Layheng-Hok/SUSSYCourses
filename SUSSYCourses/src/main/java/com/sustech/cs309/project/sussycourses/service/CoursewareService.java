@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ import java.util.Objects;
 @Service
 public class CoursewareService {
     @Autowired
-    private CoursewareRepository coursewareRepository;
+    CoursewareRepository coursewareRepository;
 
     @Autowired
-    private CourseRepository courseRepository;
+    CourseRepository courseRepository;
 
     @Autowired
     CloudController cloudController;
@@ -42,6 +43,22 @@ public class CoursewareService {
             return "Courses/" + courseName + "/courseware/images/" + url;
         }
         return "filenotfound404.jpg";
+    }
+
+    public String uploadCourseware(long courseId, String fileType, String category, boolean downloadable, int chapter, int order, MultipartFile file) throws Exception {
+        Courseware courseware = new Courseware();
+        Course course = courseRepository.findById(courseId).orElse(null);
+        courseware.setCourse(course);
+        courseware.setCategory(category);
+        courseware.setCoursewareOrder(order);
+        courseware.setChapter(chapter);
+        courseware.setDownloadable(downloadable);
+        courseware.setFileType(fileType);
+        courseware.setUrl(file.getName());
+        String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), fileType);
+        cloudController.putStorageKey(file, fileType, url);
+        coursewareRepository.save(courseware);
+        return "e";
     }
 
     public String retrieveCoursewareData() throws IOException {

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
 @RestController
 @RequestMapping("/cloud")
 public class CloudController {
@@ -24,12 +23,11 @@ public class CloudController {
 
     //Upload a file to GCP
     @PostMapping("/put")
-    public String putStorageKey(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType, @RequestParam("fileName") String fileName) throws Exception {
-        String fixed_name = CloudService.fixName(fileType, fileName);
-        if(fixed_name.equals("File Type Not Supported")){
+    public String putStorageKey(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType, @RequestParam("fileLocation") String fileLocation) throws Exception {
+        if(fileLocation.equals("File Type Not Supported")){
             return "File Type Not Supported";
         }
         String projectId = CloudService.readStorageKey(dotenv.get("STORAGE_KEY"));
-        return CloudService.uploadObject(projectId, "sussycourses", fixed_name, file, fileType);
+        return CloudService.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
     }
 }

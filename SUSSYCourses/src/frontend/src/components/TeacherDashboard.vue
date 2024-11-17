@@ -111,8 +111,11 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-      <TeacherCourses v-if="activeTab === 'courses' && !showCourseDetails"
-                      @course-submitted="navigateToCourseDetails"/>
+      <TeacherCourses
+          v-if="activeTab === 'courses' && !showCourseDetails"
+          :userId="userId"
+          @course-submitted="navigateToCourseDetails"
+      />
       <TeacherCoursesDetails v-if="activeTab === 'courses' && showCourseDetails"
       />
       <HelpSupport v-if="activeTab === 'help'"/>
