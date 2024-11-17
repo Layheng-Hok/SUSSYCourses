@@ -1,94 +1,121 @@
 <template>
-    <div class="back-button" @click="goBack">
-      <ArrowLeft class="back-icon" /> Back
-    </div>
-    <div class="profile-container">
-      <!-- Avatar Selection -->
-      <div class="profile-picture-section">
-        <img :src="user.profilePic" alt="Profile Picture" class="profile-pic" />
-        <div class="avatar-selection">
-          <img
-            v-for="(avatar, index) in avatars"
-            :key="index"
-            :src="avatar"
-            class="avatar-option"
-            @click="selectAvatar(avatar)"
-          />
-        </div>
+  <div class="back-button" @click="goBack">
+    <ArrowLeft class="back-icon" /> Back
+  </div>
+  <div class="profile-container">
+    <!-- Profile Picture Section -->
+    <div class="profile-picture-section">
+      <img :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
+      <div class="upload-avatar">
+        <label class="upload-label">
+          Upload New Picture
+          <input type="file" accept="image/*" @change="uploadAvatar" hidden />
+        </label>
       </div>
-  
-      <!-- User Information Form -->
-      <el-form :model="user" label-width="120px">
-        <el-form-item label="Username">
-          <el-input v-model="user.name" placeholder="Enter your name"></el-input>
-        </el-form-item>
-  
-        <el-form-item label="Gender">
-          <el-radio-group v-model="user.gender">
-            <el-radio label="Male">Male</el-radio>
-            <el-radio label="Female">Female</el-radio>
-            <el-radio label="Other">Other</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="Bio">
-      <el-input
-      type = "textarea"
-        class="input"
-        v-model="user.bio"
-        placeholder="Enter your bio description"
-        maxlength="300"
-        show-word-limit
-        rows = "4"
-      ></el-input>
-    </el-form-item>
-  
-        <el-form-item>
-          <el-button type="primary" @click="submitForm">Save Changes</el-button>
-        </el-form-item>
-      </el-form>
     </div>
-  </template>
+
+    <!-- User Information Form -->
+    <el-form :model="user" label-width="120px">
+      <el-form-item label="Username">
+        <el-input v-model="user.fullName" placeholder="Enter your name"></el-input>
+      </el-form-item>
+
+      <el-form-item label="Gender">
+        <el-radio-group v-model="user.gender">
+          <el-radio label="Male">Male</el-radio>
+          <el-radio label="Female">Female</el-radio>
+          <el-radio label="Other">Other</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="Bio">
+        <el-input
+          type="textarea"
+          v-model="user.bio"
+          placeholder="Enter your bio description"
+          maxlength="300"
+          show-word-limit
+          rows="4"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="submitForm">Save Changes</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted} from 'vue';
   import { useRouter } from 'vue-router';
 import { ArrowLeft } from '@element-plus/icons-vue';
-
-
-const router = useRouter(); 
+import axiosInstances from '@/services/axiosInstance';
 
 const goBack = () => {
   router.back();
 };
+
+const router = useRouter();
+const user = ref({
+  profilePic: null,
+  fullName: '',
+  gender: '',
+  bio: '',
+}); 
+const userId = localStorage.getItem('userId'); 
+const defaultProfilePic = "/assets/Avatars/student.jpg";
+
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+    console.log("Error Details:", error);
+  }
+};
+
+onMounted(fetchUserData);
   
-  const user = ref({
-    name: 'John Doe',
-    profilePic: "/assets/Avatars/student.jpg",
-    gender: 'Male',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  });
-  
-  const avatars = [
-    "/assets/Avatars/student.jpg",
-    "/assets/Avatars/student2.webp",
-    "/assets/Avatars/student3.jpg",
-  ];
-  
-  const selectAvatar = (avatar) => {
-    user.value.profilePic = avatar;
-  };
-  
-  const submitForm = () => {
-    console.log('Profile updated:', user.value);
-    // Save changes logic goes here
-  };
+  const uploadAvatar = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      user.value.profilePic = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+const submitForm = async () => {
+  try {
+    // Assuming your backend endpoint for updating user data is `student/profile/update`
+    const updatePayload = {
+      fullName: user.value.fullName,
+      gender: user.value.gender,
+      bio: user.value.bio,
+      profilePic: user.value.profilePic,
+    };
+
+    const response = await axiosInstances.axiosInstance.post(`student/profile/update`, updatePayload);
+    
+    if (response.status === 200) {
+      console.log('Profile updated successfully:', response.data);
+      alert('Profile updated successfully!');
+    } else {
+      console.error('Failed to update profile:', response);
+      alert('Failed to update profile. Please try again later.');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    alert('An error occurred while updating the profile. Please try again.');
+  }
+};
+
   </script>
   
   <style scoped>
 
-  .input {
-width: 100%;  }
   .back-button {
   display: flex;
   align-items: center;
@@ -116,7 +143,7 @@ width: 100%;  }
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 10%;
+    margin-top: 5%;
   }
   
   .profile-picture-section {
@@ -127,28 +154,30 @@ width: 100%;  }
   }
   
   .profile-pic {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #ddd;
   }
   
-  .avatar-selection {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .avatar-option {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    object-fit: cover;
-  }
-  
-  .avatar-option:hover {
-    border: 2px solid #007bff;
-  }
+  .upload-label {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 15px;
+}
+
+.upload-label:hover {
+  background-color: #45a049;
+}
+
+input[type="file"] {
+  display: none; 
+}
   </style>
   

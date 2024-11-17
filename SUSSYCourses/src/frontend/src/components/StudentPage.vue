@@ -7,7 +7,7 @@
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src="tempImg" alt="Profile Picture"/>
+      <img class="profile-pic-small" :src=" user?.profilePic || defaultProfilePic" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
@@ -17,7 +17,8 @@
     <!-- Main Content Section -->
     <div :class="['main-content', { 'content-shifted': isSidebarVisible }]">
       <!-- Search and Filter Section -->
-       <!-- <h1>{{ user.fullName }}</h1> -->
+      <h3>{{ user?.fullName || 'Loading...' }}</h3>
+
       <div class="search-filter-section">
       <el-input
         placeholder="Search for courses..."
@@ -71,7 +72,7 @@
         >
           <img :src="course.image" alt="Course Image" class="course-image"/>
           <h3>{{ course.title }}</h3>
-          <p class="course-instructor"> Intrusctor: Jane (example)</p>
+          <p class="course-instructor"> Intrusctor: </p>
           <p class="course-category"> Category: {{ course.category }}</p>
           
           <p class="course-rating">⭐ {{ course.rating }} / 5</p>
@@ -114,18 +115,16 @@ import axiosInstances from '@/services/axiosInstance';
 
 const user = ref(null); 
 const userId = localStorage.getItem('userId'); 
-const tempImg = "/assets/Avatars/Instructor.jpg";
+const defaultProfilePic = "/assets/Avatars/student.jpg";
 
 const fetchUserData = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
     user.value = response.data;
-    console.log("User Full Name:", user.value.fullName);
   } catch (error) {
     console.log("Error Details:", error);
   }
 };
-
 
 onMounted(fetchUserData);
 
@@ -189,8 +188,6 @@ const goToCourse = (courseId) => {
 const handleMenuSelect = (index) => {
   activeIndex.value = index;
 };
-
-
 </script>
 
 <style scoped>

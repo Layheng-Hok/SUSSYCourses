@@ -5,46 +5,49 @@
   <div class="profile-container">
     <!-- Profile Picture -->
     <div class="profile-picture-section">
-      <img :src="user.profilePic" alt="Profile Picture" class="profile-pic" />
+      <img :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
     </div>
 
     <!-- User Information -->
     <div class="profile-info">
-      <p><strong>Username:</strong> {{ user.name }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Gender:</strong> {{ user.gender }}</p>
-      <p><strong>Your Role:</strong> {{ user.role }}</p>
-      <p><strong>Points:</strong> {{ user.points }}</p>
-      <p><strong>Level:</strong> {{ user.points/100 }}</p>
-
-      <p><strong>Bio:</strong> {{ user.bio }}</p>
-      <p><strong>Courses Enrolled:</strong> {{ user.coursesEnrolled }}</p>
-
+      <p><strong>Username:</strong> {{ user?.fullName }}</p>
+    <p><strong>Email:</strong> {{ user?.email }}</p>
+        <p><strong>Gender:</strong> {{ user?.gender }}</p>
+      <p><strong>Your Role:</strong> {{ user?.roleName }}</p>
+      <p><strong>Points:</strong> {{ user?.points }}</p>
+      <p><strong>Level:</strong> {{ user?.points/100 }}</p>
+      <p><strong>Bio:</strong> 
+  {{ user?.bio || "No bio description yet. Add a description of yourself by going to 'Edit Profile'." }}</p>     
+    <p><strong>Courses Enrolled:</strong> {{ user?.numCoursesEnrolled }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from '@element-plus/icons-vue';
+import axiosInstances from '@/services/axiosInstance';
 
+const router = useRouter();
+const user = ref(null); 
+const userId = localStorage.getItem('userId'); 
+const defaultProfilePic = "/assets/Avatars/student.jpg";
 
-const router = useRouter(); 
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+    console.log("Error Details:", error);
+  }
+};
+
+onMounted(fetchUserData);
 
 const goBack = () => {
   router.back();
 };
-const user = ref({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  profilePic: "/assets/Avatars/student.jpg",
-  gender: 'Male',
-  role: 'Student',
-  points: 100,
-  bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac libero nec odio',
-  coursesEnrolled: 4,
-});
 </script>
 
 <style scoped>
@@ -69,13 +72,14 @@ const user = ref({
   color: #0056b3;
 }
 .profile-container {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 600px;
-  margin: 0 auto;
+  margin: auto auto;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 .profile-picture-section {

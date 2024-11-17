@@ -25,6 +25,8 @@ import TeacherProfile from "@/components/TeacherProfile.vue";
 import Guideline from "@/components/Guideline.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 
+import NotFound from "@/components/NotFound.vue";
+
 const routes = [
     {
         path: '/', // Home route
@@ -42,27 +44,27 @@ const routes = [
         component: StudentPage
     },
     {
-        path: '/adminpage',
+        path: '/admin-dashboard',
         name: 'AdminPage',
         component: AdminPage
     },
     {
-        path: '/profilepage',
+        path: '/student-dashboard/:userId/profilepage',
         name: 'ProfilePage',
-        component: ProfilePage
+        component: ProfilePage,
     },
     {
-        path: '/editprofile',
+        path: '/student-dashboard/:userId/editprofile',
         name: 'EditProfile',
         component: EditProfile
     },
     {
-        path: '/accountsecurity',
+        path: '/student-dashboard/:userId/accountsecurity',
         name: 'AccountSecurity',
         component: AccountSecurity
     },
     {
-        path: '/notifications',
+        path: '/student-dashboard/:userId/notifications',
         name: 'Notifications',
         component: Notifications
     },
@@ -131,6 +133,11 @@ const routes = [
         path: '/teacher-courses-details',
         name: 'TeacherCoursesDetails',
         component: TeacherCoursesDetails
+    },
+    {
+        path: '/:pathMatch(.*)*', // Catch-all route
+        name: 'NotFound',
+        component: NotFound,
     },
 ];
 
