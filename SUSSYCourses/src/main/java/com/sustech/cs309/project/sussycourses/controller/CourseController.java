@@ -1,53 +1,42 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 
-import com.sustech.cs309.project.sussycourses.domain.Course;
-import com.sustech.cs309.project.sussycourses.domain.Courseware;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
+import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
-@RequestMapping("/course")
+@RequiredArgsConstructor
 public class CourseController {
+    private final CourseService courseService;
 
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private CoursewareRepository coursewareRepository;
-    @Autowired
-    private CloudController cloudController;
-
-    //Student Functions
-    @GetMapping("/all")
-    public List<Course> all() {
-        return courseRepository.findAll();
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/courses")
+    public List<AdminCourseDetailResponse> getAllCourses() {
+        return courseService.getAllCourses();
     }
 
-    //Teacher Functions
-    @PostMapping("/create")
-    public ResponseEntity<String> createCourse(@RequestBody Course newCourse) {
-        Course course = new Course();
-        courseRepository.save(newCourse);
-        return ResponseEntity.ok("Course Submitted Successfully! Awaiting Admin Approval.");
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/courses/pending")
+    public List<AdminCourseDetailResponse> getAllPendingCourses() {
+        return courseService.getCoursesByStatus("pending");
     }
 
-    //Admin Functions
-    @PutMapping("/approve")
+//    @PostMapping("/course/create")
+//    public ResponseEntity<String> createCourse(@RequestBody Course newCourse) {
+//        Course course = new Course();
+//        courseRepository.save(newCourse);
+//        return ResponseEntity.ok("Course Submitted Successfully! Awaiting Admin Approval.");
+//    }
+
+    @PutMapping("/course/approve")
     public String approveCourse(@RequestBody Long id) {
         return courseService.approveCourse(id);
     }

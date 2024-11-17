@@ -38,8 +38,8 @@ public class WebAppUserService {
 
     private final EmailService emailService;
 
-    public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationDto registrationDto) {
-        if (webAppUserRepository.findByEmail(registrationDto.email()).isPresent()) {
+    public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationRequest registrationRequest) {
+        if (webAppUserRepository.findByEmail(registrationRequest.email()).isPresent()) {
             return ResponseEntity.status(409).body("User already exists");
         }
 
@@ -51,20 +51,20 @@ public class WebAppUserService {
                 + "The SUSSYCourses Team";
 
         try {
-            emailService.sendEmail(registrationDto.email(), testSubject, testMessage);
+            emailService.sendEmail(registrationRequest.email(), testSubject, testMessage);
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Invalid email address");
         }
 
         WebAppUser webAppUser = new WebAppUser();
 
-        webAppUser.setFullName(registrationDto.fullName());
-        webAppUser.setEmail(registrationDto.email());
-        webAppUser.setPassword(passwordEncoder.encode(registrationDto.password()));
-        webAppUser.setRole(roleRepository.findById(registrationDto.roleId()).orElse(null));
+        webAppUser.setFullName(registrationRequest.fullName());
+        webAppUser.setEmail(registrationRequest.email());
+        webAppUser.setPassword(passwordEncoder.encode(registrationRequest.password()));
+        webAppUser.setRole(roleRepository.findById(registrationRequest.roleId()).orElse(null));
         webAppUser.setEnabled(false);
         webAppUser.setVerificationToken(UUID.randomUUID().toString());
-        webAppUser.setGender(registrationDto.gender());
+        webAppUser.setGender(registrationRequest.gender());
         webAppUser.setCreatedAt(LocalDateTime.now());
 
         webAppUserRepository.save(webAppUser);
@@ -84,11 +84,11 @@ public class WebAppUserService {
         return ResponseEntity.status(201).body("Our dear user, please check your email to verify your account. Thank you for joining us.");
     }
 
-    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<String> loginWebAppUser(@RequestBody LoginRequest loginRequest) {
         try {
             // Create an authentication token with the provided email and password
             Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
-                    loginDto.email(), loginDto.password()
+                    loginRequest.email(), loginRequest.password()
             );
 
             // Authenticate using AuthenticationProvider
@@ -96,7 +96,7 @@ public class WebAppUserService {
 
             // Log the authentication success and user details
             if (authentication.isAuthenticated()) {
-                log.info("Authentication successful for email: {}", loginDto.email());
+                log.info("Authentication successful for email: {}", loginRequest.email());
                 log.info("Authenticated user: {}", authentication.getPrincipal()); // Logs the UserDetails object
 //                log.info("User roles: {}", userDetails.getAuthorities()); // Logs the roles of the user
 // Check if userDetails is not null and has authorities
@@ -107,14 +107,14 @@ public class WebAppUserService {
                 log.info("Scope: {}", scope);
 
             } else {
-                log.warn("Authentication failed for email: {}", loginDto.email());
+                log.warn("Authentication failed for email: {}", loginRequest.email());
             }
 
             // Return a successful response if authentication is successful
             return ResponseEntity.ok("Login successful");
         } catch (AuthenticationException e) {
             // Log an error if authentication fails
-            log.error("Authentication failed for email: {}. Error: {}", loginDto.email(), e.getMessage());
+            log.error("Authentication failed for email: {}. Error: {}", loginRequest.email(), e.getMessage());
             return ResponseEntity.status(401).body("Invalid credentials");
         }
     }

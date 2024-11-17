@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findById(Long courseId);
 
+    List<Course> findByStatus(String status);
+
     @Query("SELECT c FROM Course c JOIN c.teacher u WHERE u.userId = c.teacher.userId")
     List<Course> findCoursesWithTeacherInfo();
 
