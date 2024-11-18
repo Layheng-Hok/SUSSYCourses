@@ -3,12 +3,13 @@ package com.sustech.cs309.project.sussycourses.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-//@ToString
+@ToString
 @Entity
 @Table(name = "comment")
 public class Comment {
@@ -33,7 +34,6 @@ public class Comment {
 
     @Column()
     private Long replyId;
-
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -3,13 +3,14 @@ package com.sustech.cs309.project.sussycourses.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
 @Getter
 @Setter
-//@ToString
+@ToString
 @Entity
 @Table(name = "role")
 
