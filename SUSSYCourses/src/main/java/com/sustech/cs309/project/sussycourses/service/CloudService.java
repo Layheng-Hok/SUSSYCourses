@@ -37,7 +37,7 @@ public class CloudService {
         return url.toString();
     }
     private static final Dotenv dotenv = Dotenv.configure()
-            .directory("SUSSYCourses/src/main/resources/.env")
+            .directory("./.env")
             .filename(".env")
             .load();
 

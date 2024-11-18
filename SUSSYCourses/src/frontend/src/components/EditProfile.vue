@@ -93,7 +93,6 @@ onMounted(fetchUserData);
 };
 const submitForm = async () => {
   try {
-    // Assuming your backend endpoint for updating user data is `student/profile/update`
     const updatePayload = {
       fullName: user.value.fullName,
       gender: user.value.gender,
@@ -101,7 +100,7 @@ const submitForm = async () => {
       profilePic: user.value.profilePic,
     };
 
-    const response = await axiosInstances.axiosInstance.post(`student/profile/update`, updatePayload);
+    const response = await axiosInstances.axiosInstance.put(`users/update/${userId}`, updatePayload);
     
     if (response.status === 200) {
       console.log('Profile updated successfully:', response.data);
