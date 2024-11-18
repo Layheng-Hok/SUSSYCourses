@@ -30,13 +30,13 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PostMapping("/course/create")
+    @PostMapping("/create")
     public ResponseEntity<String> createCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
         return courseService.uploadCourse(newCourse);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PostMapping("/course/update")
+    @PostMapping("/update")
     public ResponseEntity<String> updateCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
         return courseService.updateCourse(newCourse);
     }
