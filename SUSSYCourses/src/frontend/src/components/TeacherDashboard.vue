@@ -88,7 +88,8 @@
         <span>Profile</span>
       </el-menu-item>
 
-      <el-menu-item index="2">
+      <el-menu-item index="2" @click="setActiveTab('courses')" :class="{ 'is-active': activeTab === 'courses' }"
+      >
         <i class="el-icon-folder"></i>
         <span>My Courses</span>
       </el-menu-item>

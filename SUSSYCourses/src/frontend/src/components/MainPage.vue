@@ -248,12 +248,7 @@
         </ul>
       </div>
     </div>
-
   </div>
-  <div>
-  <router-link to="/teacherdashboard">Trial teacher-dashboard</router-link>
-</div>
-
 </template>
 
 <script setup>

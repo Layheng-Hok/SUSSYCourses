@@ -34,8 +34,8 @@
           <el-input placeholder="Course Name" v-model="form.courseName" class="modal-input"/>
         </el-form-item>
 
-        <el-form-item label="Select Field" prop="courseField">
-          <el-select v-model="form.courseField" placeholder="Select Field" class="modal-input">
+        <el-form-item label="Select Topic" prop="courseField">
+          <el-select v-model="form.courseField" placeholder="Select Topic" class="modal-input">
             <el-option label="Web Development" value="Web Development"/>
             <el-option label="Data Science" value="Data Science"/>
             <el-option label="Marketing" value="Marketing"/>
@@ -53,8 +53,16 @@
           <el-input type="textarea" placeholder="Description" v-model="form.courseDescription" class="modal-input"/>
         </el-form-item>
 
+        <el-form-item label="Select Type" prop="courseType">
+          <el-select v-model="form.courseType" placeholder="Select Type" class="modal-input">
+            <el-option label="open" value="open"/>
+            <el-option label="semi-open" value="semi-open"/>
+            <el-option label="non-open" value="non-open"/>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="Course Image" prop="courseImage">
-          <template v-if="form.courseImage.length === 0">
+          <template v-if="!form.courseImagePreview">
             <el-upload
                 class="upload-demo"
                 action=""
@@ -67,7 +75,7 @@
           </template>
           <template v-else>
             <img
-                :src="form.courseImage[0]"
+                :src="form.courseImagePreview"
                 style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; cursor: pointer;"
                 @click="triggerImageUpload"
             />
@@ -81,66 +89,91 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="isModalVisible = false" class="cancel-button">Cancel</el-button>
-        <el-button type="primary" @click="submitCourse" class="submit-button">Submit</el-button>
+        <el-button @click="cancelChanges" class="cancel-button">Cancel</el-button>
+        <el-button type="primary" :loading="isSaving" @click="submitCourse" class="submit-button">Submit</el-button>
       </template>
     </el-dialog>
   </div>
 
-    <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block">
-      <div class="pending-courses">
-        <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
-        <div class="course-info">
-          <p><strong>Course Name:</strong> {{ course.courseName }}</p>
-          <p><strong>Topic:</strong> {{ course.topic }}</p>
-          <p><strong>Description:</strong> {{ course.description }}</p>
-          <p><strong>Type:</strong> {{ course.type }}</p>
-          <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-          <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
+  <div v-if="searchQuery.trim() && noCoursesFound" class="pending">
+    <h2>No courses found</h2>
+    <p>We couldn't find any courses matching your search query. Please try a different keyword.</p>
+  </div>
+
+    <div v-if="approvedCourses.length > 0" class="pending">
+      <h2>Your Courses</h2>
+      <p>The courses below have been approved!</p>
+
+      <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block">
+        <div class="pending-courses">
+          <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
+          <div class="course-info">
+            <p><strong>Course Name:</strong> {{ course.courseName }}</p>
+            <p><strong>Topic:</strong> {{ course.topic }}</p>
+            <p><strong>Description:</strong> {{ course.description }}</p>
+            <p><strong>Type:</strong> {{ course.type }}</p>
+            <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
+            <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
+          </div>
+          <p class="submission-date">{{ course.createdAt }}</p>
         </div>
-        <p class="submission-date">{{ course.createdAt }}</p>
       </div>
     </div>
-
-  <div class="pending">
-    <h2>Pending Courses</h2>
-    <p>Waiting to be approved by administrator...</p>
-  </div>
-
-  <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block">
-    <div class="pending-courses">
-      <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
-      <div class="course-info">
-        <p><strong>Course Name:</strong> {{ course.courseName }}</p>
-        <p><strong>Topic:</strong> {{ course.topic }}</p>
-        <p><strong>Description:</strong> {{ course.description }}</p>
-        <p><strong>Type:</strong> {{ course.type }}</p>
-        <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-        <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
-      </div>
-      <p class="submission-date">{{ course.createdAt }}</p>
+    <div v-else-if="approvedCourses.length =0">
+      <h2>Your Courses</h2>
+      <p>You don’t have any approved courses yet.</p>
     </div>
-  </div>
 
-  <div class="pending">
-    <h2>Rejected Courses</h2>
-    <p>The courses below have been rejected...</p>
-  </div>
+    <div v-if="pendingCourses.length > 0" class="pending">
+      <h2>Pending Courses</h2>
+      <p>Waiting to be approved by administrator...</p>
 
-  <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block">
-    <div class="pending-courses">
-      <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
-      <div class="course-info">
-        <p><strong>Course Name:</strong> {{ course.courseName }}</p>
-        <p><strong>Topic:</strong> {{ course.topic }}</p>
-        <p><strong>Description:</strong> {{ course.description }}</p>
-        <p><strong>Type:</strong> {{ course.type }}</p>
-        <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-        <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
+      <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block">
+        <div class="pending-courses">
+          <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
+          <div class="course-info">
+            <p><strong>Course Name:</strong> {{ course.courseName }}</p>
+            <p><strong>Topic:</strong> {{ course.topic }}</p>
+            <p><strong>Description:</strong> {{ course.description }}</p>
+            <p><strong>Type:</strong> {{ course.type }}</p>
+            <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
+            <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
+          </div>
+          <p class="submission-date">{{ course.createdAt }}</p>
+        </div>
       </div>
-      <p class="submission-date">{{ course.createdAt }}</p>
     </div>
-  </div>
+    <div v-else-if="pendingCourses.length =0">
+      <h2>Pending Courses</h2>
+      <p>You don’t have any pending courses yet.</p>
+    </div>
+
+    <div v-if="rejectedCourses.length > 0" class="pending">
+      <h2>Rejected Courses</h2>
+      <p>The courses below have been rejected...</p>
+
+      <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block">
+        <div class="pending-courses">
+          <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
+          <div class="course-info">
+            <p><strong>Course Name:</strong> {{ course.courseName }}</p>
+            <p><strong>Topic:</strong> {{ course.topic }}</p>
+            <p><strong>Description:</strong> {{ course.description }}</p>
+            <p><strong>Type:</strong> {{ course.type }}</p>
+            <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
+            <div style="background-color: #ffe6e6; padding: 8px; border-radius: 5px; margin-top: 10px;">
+              <span style="color: red;"><strong>Rejection Reason:</strong> {{ course.type }} </span>
+            </div>
+
+          </div>
+          <p class="submission-date">{{ course.createdAt }}</p>
+        </div>
+      </div>
+    </div>
+    <div v-else-if="rejectedCourses.length =0">
+      <h2>Rejected Courses</h2>
+      <p>You don’t have any rejected courses!</p>
+    </div>
 
   <div class="second">
     <p>Based on your experience, we think these resources will be helpful.
@@ -178,9 +211,13 @@
 </template>
 
 <script>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {Search} from '@element-plus/icons-vue';
 import axiosInstances from "@/services/axiosInstance";
+//import {useRouter} from 'vue-router';
+import {ElMessage} from "element-plus";
+
+//const router = useRouter();
 
 export default {
   components: {
@@ -204,21 +241,49 @@ export default {
       },
     ]);
 
-    // Search functionality
     const searchQuery = ref('');
+    const allCourses = ref([]); // all courses
+
+    const noCoursesFound = computed(() => {
+      return (
+          approvedCourses.value.length === 0 &&
+          pendingCourses.value.length === 0 &&
+          rejectedCourses.value.length === 0
+      );
+    });
 
     const handleSearch = () => {
-      console.log('Searching for:', searchQuery.value);
-      // logic
+      const query = searchQuery.value.toLowerCase().trim();
+
+      if (!query) {
+        // Reset the courses to their original grouping
+        approvedCourses.value = allCourses.value.filter(course => course.approvalStatus === "approved");
+        pendingCourses.value = allCourses.value.filter(course => course.approvalStatus === "pending");
+        rejectedCourses.value = allCourses.value.filter(course => course.approvalStatus === "rejected");
+        return;
+      }
+
+      // Filter courses by the search query
+      approvedCourses.value = allCourses.value.filter(
+          course => course.approvalStatus === "approved" && course.courseName.toLowerCase().includes(query)
+      );
+      pendingCourses.value = allCourses.value.filter(
+          course => course.approvalStatus === "pending" && course.courseName.toLowerCase().includes(query)
+      );
+      rejectedCourses.value = allCourses.value.filter(
+          course => course.approvalStatus === "rejected" && course.courseName.toLowerCase().includes(query)
+      );
     };
 
-    // Modal visibility
+
     const isModalVisible = ref(false);
     const pendingCourses = ref([]);
     const approvedCourses = ref([]);
     const rejectedCourses = ref([]);
 
     const formRef = ref(null);
+    const isSaving = ref(false);
+
     const courses = ref([]);
     const courseIndex = ref(null);
     const fileInput = ref(null);
@@ -233,28 +298,33 @@ export default {
 
         const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
 
-        if (response.data && response.data.courses) {
-          pendingCourses.value = response.data.courses.filter(course => course.approvalStatus === "pending");
-          approvedCourses.value = response.data.courses.filter(course => course.approvalStatus === "approved");
-          rejectedCourses.value = response.data.courses.filter(course => course.approvalStatus === "rejected");
-        } else  {
-          console.warn("No courses found in the response.");
-          pendingCourses.value = [];
-          approvedCourses.value = [];
-          rejectedCourses.value = [];
+        // Check if response.data contains an array of courses
+        if (response.data?.courses) {
+          allCourses.value = response.data.courses; // Ensure allCourses is an array
+        } else {
+          console.warn("Courses not found in the response.");
+          allCourses.value = []; // Fallback to empty array
         }
+
+        console.log('All courses:', allCourses.value);
+
+        // Initialize approved, pending, and rejected courses
+        approvedCourses.value = allCourses.value.filter(course => course.approvalStatus === "approved");
+        pendingCourses.value = allCourses.value.filter(course => course.approvalStatus === "pending");
+        rejectedCourses.value = allCourses.value.filter(course => course.approvalStatus === "rejected");
       } catch (error) {
         console.error("Error fetching courses:", error);
-
+        allCourses.value = []; // Fallback in case of error
       }
     });
 
-    // Form and validation rules
+
     const form = ref({
       courseName: '',
       courseField: '',
       courseDescription: '',
       courseImage: [],
+      courseType: '',
     });
 
     const rules = {
@@ -268,7 +338,10 @@ export default {
         {required: true, message: 'Please select a course field', trigger: ['blur', 'change']}
       ],
       courseImage: [
-        {required: true, message: 'Please select an image for your course', trigger: 'blue'}
+        {required: true, message: 'Please select an image for your course', trigger: 'blur'}
+      ],
+      courseType: [
+        {required: true, message: 'Please select a course type', trigger: 'blur'}
       ],
     };
 
@@ -279,36 +352,70 @@ export default {
       isModalVisible.value = true;
     };
 
-    const submitCourse = () => {
-      formRef.value.validate((valid) => {
-        if (valid) {
-          const updatedCourse = {
-            ...form.value,
-            submissionDate: new Date().toLocaleString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric',
-              hour12: true,
-            })
-          };
+    const cancelChanges = () => {
+      resetForm();
+      isModalVisible.value = false;
+      ElMessage.info('Changes canceled');
+    }
 
-          if (courseIndex.value === null) {
-            courses.value.push(updatedCourse);
-          } else {
-            courses.value.splice(courseIndex.value, 1, updatedCourse);
+    const submitCourse = async () => {
+      formRef.value.validate(async (valid) => {
+        if (!valid) return;
+        try {
+          isSaving.value = true;
+          const userId = localStorage.getItem("userId");
+          if (!userId) {
+            ElMessage.error("User ID not found. Please log in.");
+            return;
           }
 
-          localStorage.setItem('courses', JSON.stringify(courses.value));
-          resetForm();
+          const formData = new FormData();
+          formData.append("courseName", form.value.courseName);
+          formData.append("description", form.value.courseDescription);
+          formData.append("teacherId", userId);
+          formData.append("type", form.value.courseType);
+          formData.append("status", "pending");
+          formData.append("topic", form.value.courseField);
+          const file = form.value.courseImage[0];
+          if (file) {
+            formData.append("coverImageName", form.value.coverImageName);
+            formData.append("fileType", form.value.fileType);
+            formData.append("coverImageFile", file);
+          } else {
+            throw new Error("No image file selected.");
+          }
+
+          const response = await axiosInstances.axiosInstance.post("/courses/create", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          if (response.status === 200) {
+            ElMessage.success("Course added successfully!");
+            resetForm();
+          } else {
+            throw new Error(response.data.message || "Failed to add course.");
+          }
+        } catch (error) {
+          ElMessage.error("Failed to add course. Please try again.");
+        } finally {
+          isSaving.value = false;
         }
       });
     };
+
     const handleImageChange = (file) => {
       if (file.raw) {
-        form.value.courseImage = [URL.createObjectURL(file.raw)];
+        form.value.courseImage = [file.raw];
+        form.value.courseImagePreview = URL.createObjectURL(file.raw);
+
+        const fullFileName = file.raw.name;
+        const fileNameWithoutExtension = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
+        const fileExtension = fullFileName.substring(fullFileName.lastIndexOf('.') + 1);
+
+        form.value.coverImageName = fileNameWithoutExtension;
+        form.value.fileType = fileExtension;
       }
     };
 
@@ -329,6 +436,8 @@ export default {
         courseField: '',
         courseDescription: '',
         courseImage: [],
+        courseImagePreview: null,
+        courseType: '',
       };
       courseIndex.value = null;
       isModalVisible.value = false;
@@ -353,10 +462,14 @@ export default {
       triggerImageUpload,
       pendingCourses,
       approvedCourses,
-      rejectedCourses
+      rejectedCourses,
+      cancelChanges,
+      isSaving,
+      noCoursesFound,
     };
   }
-};
+}
+;
 </script>
 
 <style scoped>
@@ -407,7 +520,7 @@ export default {
   color: white;
   font-weight: bold;
   cursor: pointer;
-  margin-right: 40px;
+  margin-right: 43px;
 }
 
 .new-course button:hover {
@@ -477,17 +590,12 @@ export default {
   font-family: Garamond;
 }
 
-.pending p {
-  color: black;
-  margin-top: 0;
-}
-
 .course-block {
   margin-top: 25px;
   background-color: white;
   padding: 30px;
-  width: 89%;
-  margin-left: 80px;
+  width: 94.2%;
+  margin-left: 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   position: relative;
@@ -619,7 +727,7 @@ export default {
 }
 
 .final-text button {
-  padding: 15px 20px;
+  padding: 15px 15px;
   font-size: 16px;
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
@@ -638,4 +746,7 @@ export default {
   border: none !important;
   box-shadow: none !important;
 }
+
+
 </style>
+
