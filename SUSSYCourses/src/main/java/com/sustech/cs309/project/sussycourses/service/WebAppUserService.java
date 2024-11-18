@@ -157,20 +157,21 @@ public class WebAppUserService {
         );
     }
 
-    public StudentDetailResponse getStudentById(long userId) {
+    public StudentDetailResponse getAllCoursesByStudentId(long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
         }
 
         WebAppUser webAppUser = webAppUserOptional.get();
-        List<CourseStudent> courses = courseStudentRepository.findEnrolledCourseStudentsByStudentId(userId);
+        List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
         List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
                 .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
                         courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
                         courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.isLiked(),
+                        courseStudent.getStatus(), courseStudent.getLiked(),
+                        courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
                         ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId())
                         , courseStudent.getCourse().getCreatedAt()))
                 .toList();
@@ -187,6 +188,33 @@ public class WebAppUserService {
                 webAppUser.getCreatedAt(),
                 studentCourseDetailResponses.size(),
                 studentCourseDetailResponses
+        );
+    }
+
+    public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) {
+        Optional<CourseStudent> courseStudentOptional =
+                courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+
+        if (courseStudentOptional.isEmpty() ||
+                !courseStudentOptional.get().getStatus().equalsIgnoreCase("enrolled")) {
+            return null;
+        }
+
+        CourseStudent courseStudent = courseStudentOptional.get();
+        return new StudentCourseDetailResponse(
+                courseId,
+                courseStudent.getCourse().getCourseName(),
+                courseStudent.getCourse().getDescription(),
+                courseStudent.getCourse().getTopic(),
+                courseStudent.getCourse().getCoverImage(),
+                courseStudent.getCourse().getTeacher().getUserId(),
+                courseStudent.getCourse().getTeacher().getFullName(),
+                courseStudent.getCourse().getType(),
+                "approved",
+                courseStudent.getLiked(),
+                courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
+                ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId()),
+                courseStudent.getCourse().getCreatedAt()
         );
     }
 

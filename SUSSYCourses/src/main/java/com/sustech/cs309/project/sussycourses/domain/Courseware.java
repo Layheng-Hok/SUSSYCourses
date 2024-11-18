@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+//@ToString
 @Entity
 @Table(name = "courseware")
 public class Courseware {
@@ -38,77 +41,5 @@ public class Courseware {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    public void setCoursewareId(Long coursewareId) {
-        this.coursewareId = coursewareId;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public void setChapter(int chapter) {
-        this.chapter = chapter;
-    }
-
-    public void setCoursewareOrder(int coursewareOrder) {
-        this.coursewareOrder = coursewareOrder;
-    }
-
-    public int getCoursewareOrder() {
-        return coursewareOrder;
-    }
-
-    public int getChapter() {
-        return chapter;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setDownloadable(Boolean downloadable) {
-        this.downloadable = downloadable;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getCoursewareId() {
-        return coursewareId;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Boolean getDownloadable() {
-        return downloadable;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 }
 

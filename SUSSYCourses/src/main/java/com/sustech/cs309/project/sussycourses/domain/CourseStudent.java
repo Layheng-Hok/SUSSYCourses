@@ -3,13 +3,13 @@ package com.sustech.cs309.project.sussycourses.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-@Entity
 @Getter
 @Setter
-@ToString
-@Table(name = "course_student")
+//@ToString
+@Entity
+@Table(name = "course_student",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"course_id", "student_id"})})
 public class CourseStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,6 +27,6 @@ public class CourseStudent {
     private String status;
 
     @Column(nullable = false)
-    private boolean liked;
+    private Boolean liked;
 }
 

@@ -1,13 +1,14 @@
 package com.sustech.cs309.project.sussycourses.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
-@ToString
+@Getter
+@Setter
+//@ToString
 @Entity
 @Table(name = "web_app_user")
 public class WebAppUser {
@@ -45,6 +46,9 @@ public class WebAppUser {
 
     @Column
     private int points = 0;
+
+//    @OneToMany(mappedBy = "student")
+//    private List<CourseStudent> courseStudents;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

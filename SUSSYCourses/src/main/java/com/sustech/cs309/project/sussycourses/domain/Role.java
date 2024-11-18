@@ -1,14 +1,15 @@
 package com.sustech.cs309.project.sussycourses.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
-@Data
-@ToString
+@Getter
+@Setter
+//@ToString
 @Entity
 @Table(name = "role")
 

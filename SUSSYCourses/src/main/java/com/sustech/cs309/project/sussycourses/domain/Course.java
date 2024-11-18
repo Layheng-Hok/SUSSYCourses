@@ -3,15 +3,14 @@ package com.sustech.cs309.project.sussycourses.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@ToString
+//@ToString
+@Entity
 @Table(name = "course")
 public class Course {
     @Id
@@ -45,6 +44,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<Rating> ratings;
+
+//    @OneToMany(mappedBy = "student")
+//    private List<CourseStudent> courseStudents;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

@@ -1,21 +1,16 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.dto.InstructorDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.UserResponse;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
-import com.sustech.cs309.project.sussycourses.dto.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
-public class UserController {
+public class WebAppUserController {
     private final WebAppUserService webAppUserService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -32,8 +27,16 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/student/profile/{userId}")
-    public StudentDetailResponse getStudentById(@PathVariable long userId) {
-        return webAppUserService.getStudentById(userId);
+    public StudentDetailResponse getAllCoursesByStudentId(@PathVariable long userId) {
+        return webAppUserService.getAllCoursesByStudentId(userId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/students/{userId}/courses/{courseId}")
+    public StudentCourseDetailResponse getCourseDetailForStudent(
+            @PathVariable Long userId,
+            @PathVariable Long courseId) {
+        return webAppUserService.getCourseDetailForStudent(userId, courseId);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
