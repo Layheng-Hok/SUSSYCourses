@@ -48,9 +48,6 @@ public class WebAppUser {
     @Column
     private int points = 0;
 
-//    @OneToMany(mappedBy = "student")
-//    private List<CourseStudent> courseStudents;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

@@ -46,9 +46,6 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Rating> ratings;
 
-//    @OneToMany(mappedBy = "student")
-//    private List<CourseStudent> courseStudents;
-
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 }

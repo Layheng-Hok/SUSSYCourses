@@ -26,12 +26,18 @@ public class WebAppUserController {
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    @GetMapping("/student/profile/{userId}")
-    public StudentDetailResponse getAllCoursesByStudentId(@PathVariable long userId) {
+    @GetMapping("/students/{userId}")
+    public StudentDetailResponse getStudentUserDetail(@PathVariable Long userId) {
+        return webAppUserService.getStudentUserDetail(userId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping("/students/{userId}/courses")
+    public StudentCourseListResponse getAllCoursesByStudentId(@PathVariable Long userId) {
         return webAppUserService.getAllCoursesByStudentId(userId);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/students/{userId}/courses/{courseId}")
     public StudentCourseDetailResponse getCourseDetailForStudent(
             @PathVariable Long userId,

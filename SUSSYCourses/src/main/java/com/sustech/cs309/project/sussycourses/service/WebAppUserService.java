@@ -157,7 +157,7 @@ public class WebAppUserService {
         );
     }
 
-    public StudentDetailResponse getAllCoursesByStudentId(long userId) {
+    public StudentDetailResponse getStudentUserDetail(Long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
@@ -185,7 +185,27 @@ public class WebAppUserService {
                 webAppUser.getRole().getRoleName(),
                 webAppUser.getPoints(),
                 webAppUser.getBio(),
-                webAppUser.getCreatedAt(),
+                webAppUser.getCreatedAt()
+        );
+    }
+
+    public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return null;
+        }
+
+        List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
+        List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
+                .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
+                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
+                        courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
+                        courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
+                        courseStudent.getStatus(), courseStudent.getLiked(), 0L, 0.0F,
+                        courseStudent.getCourse().getCreatedAt()))
+                .toList();
+
+        return new StudentCourseListResponse(
                 studentCourseDetailResponses.size(),
                 studentCourseDetailResponses
         );
@@ -210,7 +230,7 @@ public class WebAppUserService {
                 courseStudent.getCourse().getTeacher().getUserId(),
                 courseStudent.getCourse().getTeacher().getFullName(),
                 courseStudent.getCourse().getType(),
-                "approved",
+                "enrolled",
                 courseStudent.getLiked(),
                 courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
                 ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId()),
