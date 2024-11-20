@@ -35,7 +35,7 @@
           placeholder="Enter your bio description"
           maxlength="300"
           show-word-limit
-          rows="4"
+          :rows="4"
         ></el-input>
       </el-form-item>
 
@@ -68,7 +68,7 @@ const defaultProfilePic = "/assets/Avatars/student.jpg";
 
 const fetchUserData = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
     user.value = response.data;
   } catch (error) {
     console.log("Error Details:", error);

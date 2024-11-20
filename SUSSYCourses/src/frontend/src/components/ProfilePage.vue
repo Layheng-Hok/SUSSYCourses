@@ -18,7 +18,7 @@
       <p><strong>Level:</strong> {{ user?.points/100 }}</p>
       <p><strong>Bio:</strong> 
   {{ user?.bio || "No bio description yet. Add a description of yourself by going to 'Edit Profile'." }}</p>     
-    <p><strong>Courses Enrolled:</strong> {{ user?.numCoursesEnrolled }}</p>
+    <!-- <p><strong>Courses Enrolled:</strong> {{ user?.numCoursesEnrolled }}</p> -->
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ const defaultProfilePic = "/assets/Avatars/student.jpg";
 
 const fetchUserData = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
     user.value = response.data;
   } catch (error) {
     console.log("Error Details:", error);

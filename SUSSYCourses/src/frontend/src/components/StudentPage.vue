@@ -87,7 +87,7 @@
           <p class="course-instructor"> Intrusctor: {{ course.teacherName }} </p>
           <p class="course-topic"> Category: {{ course.topic }}</p>
           
-          <p class="course-rating">⭐ {{ course.rating }} / 5</p>
+          <!-- <p class="course-rating">⭐ {{ course.rating }} / 5</p> -->
           <p class="course-progress"> Learning progress: NA %</p>
         </div>
       </div>
@@ -141,9 +141,23 @@ const sortBy = ref('Default');
 
 const fetchUserData = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
     user.value = response.data;
-    courses.value = user.value.coursesEnrolled;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
+
+const fetchCourseData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses`);
+    courses.value = response.data.courses;
   } catch (error) {
 
     console.log("Error Details:", error);
@@ -200,7 +214,10 @@ const handleMenuSelect = (index) => {
   activeIndex.value = index;
 };
 
-onMounted(fetchUserData);
+onMounted(async () => {
+  await fetchUserData();
+  await fetchCourseData();
+});
 </script>
 
 <style scoped>

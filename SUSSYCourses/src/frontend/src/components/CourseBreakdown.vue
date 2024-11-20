@@ -4,9 +4,10 @@
     </div>
   </template>
   
-  
   <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted} from "vue";
+import { useRouter } from "vue-router";
+import axiosInstances from '@/services/axiosInstance';
 import { Doughnut } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -18,7 +19,11 @@ import {
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
-const categories = ref([
+const router = useRouter();
+const courses = ref([]);
+const userId = localStorage.getItem('userId');
+
+const categories = [
   "Web Development",
   "Marketing",
   "Programming",
@@ -28,38 +33,46 @@ const categories = ref([
   "Design",
   "Hardware",
   "Economics",
-]);
+];
 
-// User's enrolled courses (replace with actual data from the backend)
-const enrolledCourses = ref([
-  { id: 1, title: "Intro to Web Dev", category: "Web Development" },
-  { id: 2, title: "JavaScript Basics", category: "Programming" },
-  { id: 3, title: "Advanced Python", category: "Programming" },
-  { id: 4, title: "Data Analysis", category: "Data Science" },
-]);
+const fetchCourseData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses`);
+    courses.value = response.data.courses;
+  } catch (error) {
 
-// Calculate percentages for each category
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
+
+// Calculate percentages for each topic
 const categoryPercentages = computed(() => {
-  const totalCourses = enrolledCourses.value.length;
+  const totalCourses = courses.value.length;
   const counts = {};
 
-  categories.value.forEach((category) => (counts[category] = 0));
-  enrolledCourses.value.forEach((course) => {
-    if (counts[course.category] !== undefined) {
-      counts[course.category]++;
+  categories.forEach((topic) => (counts[topic] = 0));
+
+  courses.value.forEach((course) => {
+    if (counts[course.topic] !== undefined) {
+      counts[course.topic]++;
     }
   });
 
-  return categories.value.map((category) => ({
-    category,
-    percentage: ((counts[category] / totalCourses) * 100).toFixed(2),
+  return categories.map((topic) => ({
+    topic,
+    percentage: totalCourses > 0 ? ((counts[topic] / totalCourses) * 100).toFixed(2) : 0,
   }));
 });
 
 const chartData = computed(() => ({
   labels: categoryPercentages.value
     .filter((item) => item.percentage > 0) // Only show non-zero categories
-    .map((item) => item.category),
+    .map((item) => item.topic),
   datasets: [
     {
       label: "Enrollment Percentage",
@@ -103,6 +116,8 @@ const chartOptions = {
     },
   },
 };
+
+onMounted(fetchCourseData);
 </script>
 
 <style scoped>

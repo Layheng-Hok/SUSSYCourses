@@ -23,12 +23,12 @@
         <!-- Courseware Section -->
         <div class="courseware-section">
           <h2>Courseware</h2>
-          <Courseware :course-id="course.id" />
+          <Courseware :course-id="courseId" />
         </div>
 
+        <!-- Learning Progress Chart -->
         <div class="learning-progress-section">
           <h2>Learning Progress</h2>
-          <!-- Slot for the chart -->
           <slot name="learning-progress">
             <DoughnutChart/>
           </slot>
@@ -36,22 +36,13 @@
 
         <!-- Rating and Review Section -->
         <div class="ratings-section">
-          <h2>Rate and Review</h2>
-          <el-rate v-model="userRating" allow-half></el-rate>
-          <el-input
-            type="textarea"
-            class ="review-input"
-            v-model="userReview"
-            placeholder="Write your review here..."
-            rows="4"
-          ></el-input>
-          <el-button type="primary" class ="submit-button" @click="submitReview">Submit</el-button>
+          <RatingAndReview />
         </div>
 
         <!-- Comment Section -->
         <div class="comments-section">
           <h2>Comments</h2>
-          <CommentSection :student-id="studentId" />
+          <CommentSection :student-id="userId" />
         </div>
       </div>
 
@@ -60,24 +51,35 @@
         <!-- Course Details -->
         <el-card class="course-details" shadow="hover">
           <h2>Course Details</h2>
-          <img :src="course.image" alt="Course Image" class="course-image" />
-          <p><strong>{{ course.name }}</strong></p>
+          <img :src="course?.coverImageUrl || defaultCoverPic" alt="Course Image" class="course-image" />
+          <p><strong>{{ course.courseName }}</strong></p>
           <p class="description">{{ course.description }}</p>
-          <p><strong>Category:</strong> {{ course.category }}</p>
-          <p><strong>Rating:</strong> ⭐ {{ course.rating }}</p>
+          <p><strong>Category:</strong> {{ course.topic }}</p>
+          <p><strong>Rating:</strong> ⭐ {{ course.averageRating }}</p>
+          <p><strong>Likes Count:</strong> ❤️ {{ course.likesCount }}</p>
+           <!-- Like Button -->
+          <el-button
+              type="text"
+              class="like-button"
+              @click="incrementLikes"
+            >
+            <i :class="['fa-heart', isLiked ? 'fas liked' : 'far']"></i>
+            {{ isLiked ? ' Unlike' : ' Like' }}
+            </el-button>
         </el-card>
-
+        <!-- <p><strong>Enrolled Students:</strong> {{ course.numStudentsEnrolled }}</p> -->
+        
         <!-- Instructor Information -->
         <el-card class="instructor-info" shadow="hover">
           <h2>Instructor Information</h2>
           <div>  <img
-                :src="course.instructorImage"
+                :src="course?.instructorImage || defaultProfilePic"
                 alt="Instructor Image"
                 class="instructor-image">
               </div>
         <div>
-           <p><strong>{{ course.instructorName }}</strong></p>
-            <p class="bio">{{ course.instructorBio }}</p>
+           <p><strong>{{ course.teacherName }}</strong></p>
+            <p class="bio">{{ course?.instructorBio || " to be fetched" }}</p>
         </div>
         </el-card>
       </div>
@@ -99,40 +101,48 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import Courseware from './Courseware.vue';
-import CommentSection from './CommentSection.vue';
-import DoughnutChart from './DoughnutChart.vue';
+import { useRoute, useRouter } from 'vue-router';
 import ProfileSidebar from './ProfileSidebar.vue';
+import Courseware from './Courseware.vue';
+import RatingAndReview from './RatingAndReview.vue';
+import DoughnutChart from './DoughnutChart.vue';
+import CommentSection from './CommentSection.vue';
 import axiosInstances from '@/services/axiosInstance';
+import '@fortawesome/fontawesome-free/css/all.css';
+import '@fortawesome/fontawesome-free/js/all.js';
 
+
+const route = useRoute();
 const router = useRouter();
 const user = ref(null); 
 const userId = localStorage.getItem('userId');
-const userRating = ref(0);
-const userReview = ref("");
-// const likes = ref(0); // To be fetched
-// const liked = ref(false);
-const defaultProfilePic = "/assets/Avatars/student.jpg";
+const course = ref(null);
+const courseId = route.params.courseId;
+const isLiked = ref(false); //
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
+const defaultProfilePic = "/assets/Avatars/student.jpg";
+const defaultCoverPic = "/assets/Banner/whale.jpg";
 
-const course = {
-  id: '1',
-  name: 'Vue Crash Course',
-  description: 'Learn Vue.js from scratch in this comprehensive crash course.',
-  image: '/assets/Courses/course.jpg',
-  instructorName: 'Jane Doe',
-  instructorImage: '/assets/Avatars/instructor.jpg',
-  instructorBio: 'A passionate Vue.js developer and instructor with over 5 years of experience.',
-  likes: 123,
-  rating: 4.5,
-  category: 'Web Development',
+const incrementLikes = async () => {
+  isLiked.value = !isLiked.value;
+  course.value.likesCount += isLiked.value ? 1 : -1;
+
+  // try {
+  //   await axiosInstances.post('/course/like', {
+  //     courseId: course.value.id,
+  //     isLiked: isLiked.value,
+  //   });
+  // } catch (error) {
+  //   console.error('Failed to update likes:', error);
+  //   isLiked.value = !isLiked.value;
+  //   likesCount.value += isLiked.value ? -1 : 1;
+  // }
 };
 
 const fetchUserData = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`student/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
     user.value = response.data;
   } catch (error) {
 
@@ -145,15 +155,18 @@ const fetchUserData = async () => {
   }
 };
 
-const submitReview = () => {
-  if (userRating.value && userReview.value.trim()) {
-    alert(
-      `Thank you for your review! Rating: ${userRating.value}, Review: "${userReview.value}"`
-    );
-    userRating.value = 0;
-    userReview.value = "";
-  } else {
-    alert("Please provide a rating and review before submitting.");
+const fetchCourseDetails = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses/${courseId}`);
+    course.value = response.data;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
   }
 };
 
@@ -161,7 +174,10 @@ const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
-onMounted(fetchUserData);
+onMounted(async () => {
+  await fetchUserData();
+  await fetchCourseDetails();
+});
 </script>
 
 
@@ -245,7 +261,6 @@ onMounted(fetchUserData);
 }
 
 .courseware-section,
-.ratings-section,
 .comments-section,
 .learning-progress-section {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -288,33 +303,35 @@ onMounted(fetchUserData);
   color: black !important;
 }
 
-.ratings-section .el-rate {
-  margin-bottom: 10px;
-}
-
-.review-input {
-  width: 800px;
-  font-size: 16px;
-}
-
-.submit-button{
-  background: #007bff;
-  color: #fff;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 16px;
-  width: 100px;
-  height: auto;
-  margin-top: 10px;
-}
-
 .description, .bio {
   margin: 20px 100px;
   text-align: justify;
   font-size: 16px;
   line-height: 1.6;
 }
+
+.like-button i {
+  color: #999; /* Default icon color */
+  font-size: 24px; /* Adjust size as needed */
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth color and transform */
+}
+
+.like-button i.liked {
+  color: #ff5a5f; /* Highlight color for liked state */
+  animation: heart-pop 0.3s ease; /* Pop animation */
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 </style>

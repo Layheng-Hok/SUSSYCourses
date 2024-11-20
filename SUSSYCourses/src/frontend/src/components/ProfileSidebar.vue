@@ -50,9 +50,18 @@
   const defaultProfilePic = "/assets/Avatars/student.jpg";
 
   defineProps({
-    user: Object,
-    activeIndex: String,
-    isVisible: Boolean,
+    user: {
+      type: Object,
+      required: true
+    },
+    activeIndex: {
+      type: String,
+      required: true
+    },
+    isVisible: {
+      type: Boolean,
+      required: true
+    }
   });
   
   // Emit event for menu selection handling
