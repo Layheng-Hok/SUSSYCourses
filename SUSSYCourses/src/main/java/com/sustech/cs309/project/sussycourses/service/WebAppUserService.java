@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,8 @@ public class WebAppUserService {
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
     private final RatingRepository ratingRepository;
+
+    private final CloudController cloudController;
 
     private final EmailService emailService;
 
@@ -248,9 +252,15 @@ public class WebAppUserService {
         WebAppUser webAppUser = webAppUserOptional.get();
         List<Course> courses = courseRepository.findByTeacher_UserId(userId);
         List<InstructorCourseDetailResponse> courseInfoResponses = courses.stream()
-                .map(course -> new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
-                        course.getDescription(), course.getTopic(), course.getCoverImage(),
-                        course.getType(), course.getStatus(), course.getCreatedAt()))
+                .map(course -> {
+                    try {
+                        return new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
+                                course.getDescription(), course.getTopic(), cloudController.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
+                                course.getType(), course.getStatus(), course.getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
 
         return new InstructorDetailResponse(
@@ -290,5 +300,9 @@ public class WebAppUserService {
         if (webAppUserRepository.existsById(userId)) {
             webAppUserRepository.save(user);
         }
+    }
+
+    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName){
+        return "Courses/" + courseName + "/" + coverPhotoName;
     }
 }
