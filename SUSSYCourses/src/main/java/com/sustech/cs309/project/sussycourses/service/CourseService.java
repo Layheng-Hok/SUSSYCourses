@@ -50,7 +50,7 @@ public class CourseService {
         CloudUtils.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + fileName);
     }
 
-    public ResponseEntity<String> uploadCourse(CourseCreationRequest courseCreationRequest) throws Exception {
+    public ResponseEntity<String> createCourse(CourseCreationRequest courseCreationRequest) throws Exception {
         String courseName = courseCreationRequest.courseName();
         long teacherId = courseCreationRequest.teacherId();
         String description = courseCreationRequest.description();

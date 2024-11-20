@@ -51,10 +51,9 @@ public class WebAppUserController {
         return webAppUserService.getInstructorById(userId);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT','ROLE_INSTRUCTOR')")
     @PutMapping("/users/update/{userId}")
-    public void updateInstructorProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) {
-        webAppUserService.updateInstructorProfile(userId, updateUserRequest);
+    public void updateUserProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) {
+        webAppUserService.updateUserProfile(userId, updateUserRequest);
     }
-
 }

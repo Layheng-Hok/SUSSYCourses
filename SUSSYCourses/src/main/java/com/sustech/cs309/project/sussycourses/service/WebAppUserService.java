@@ -281,7 +281,7 @@ public class WebAppUserService {
         );
     }
 
-    public void updateInstructorProfile(Long userId, UpdateUserRequest updateUserRequest) {
+    public void updateUserProfile(Long userId, UpdateUserRequest updateUserRequest) {
         if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
         }
