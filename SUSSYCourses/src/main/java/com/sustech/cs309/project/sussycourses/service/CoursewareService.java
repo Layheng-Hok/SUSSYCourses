@@ -1,15 +1,15 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
-import org.checkerframework.checker.units.qual.A;
+import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,28 +20,24 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CoursewareService {
-    @Autowired
-    CoursewareRepository coursewareRepository;
+    private final CoursewareRepository coursewareRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    CloudController cloudController;
-
-    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName){
+    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
 
-    public String resolveCoursewareLocation(String courseName, String url, String fileType){
-        if (Objects.equals(fileType, "pdf")){
+    public String resolveCoursewareLocation(String courseName, String url, String fileType) {
+        if (Objects.equals(fileType, "pdf")) {
             return "Courses/" + courseName + "/courseware/pdf/" + url;
-        } else if (Objects.equals(fileType, "md")){
+        } else if (Objects.equals(fileType, "md")) {
             return "Courses/" + courseName + "/courseware/md/" + url;
-        } else if (Objects.equals(fileType, "mp4")){
+        } else if (Objects.equals(fileType, "mp4")) {
             return "Courses/" + courseName + "/courseware/videos/" + url;
-        } else if (Objects.equals(fileType, "jpg") || Objects.equals(fileType, "jpeg") || Objects.equals(fileType, "png")){
+        } else if (Objects.equals(fileType, "jpg") || Objects.equals(fileType, "jpeg") || Objects.equals(fileType, "png")) {
             return "Courses/" + courseName + "/courseware/images/" + url;
         }
         return "filenotfound404.jpg";
@@ -67,7 +63,7 @@ public class CoursewareService {
         courseware.setFileType(fileType);
         courseware.setUrl(file.getName());
         String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), fileType);
-        cloudController.putStorageKey(file, fileType, url);
+        CloudUtils.putStorageKey(file, fileType, url);
         coursewareRepository.save(courseware);
         return ResponseEntity.ok().body("Courseware uploaded");
     }
@@ -86,7 +82,7 @@ public class CoursewareService {
             courseData.put("id", course.getCourseId().toString());
             courseData.put("name", courseName);
             courseData.put("description", course.getDescription());
-            courseData.put("image", cloudController.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
+            courseData.put("image", CloudUtils.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
             // Instructor info
             courseData.put("instructorName", course.getTeacher().getFullName());
             courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
@@ -105,7 +101,7 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -115,7 +111,7 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -130,7 +126,7 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -140,7 +136,7 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -154,7 +150,7 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -164,7 +160,7 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = cloudController.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, fileType));
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());

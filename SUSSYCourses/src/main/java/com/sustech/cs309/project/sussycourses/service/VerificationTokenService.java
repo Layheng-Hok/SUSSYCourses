@@ -2,14 +2,15 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class VerificationTokenService {
-
-    @Autowired
-    private WebAppUserRepository userRepository;
+    private final WebAppUserRepository userRepository;
 
     public void createVerificationToken(WebAppUser webAppUser, String token) {
         webAppUser.setVerificationToken(token);

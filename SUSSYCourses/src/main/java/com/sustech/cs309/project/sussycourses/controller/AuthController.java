@@ -13,9 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080")
 public class AuthController {
-
     private final WebAppUserService webAppUserService;
 
     @PostMapping("/register")

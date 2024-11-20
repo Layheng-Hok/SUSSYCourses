@@ -16,7 +16,7 @@ public class WebAppUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/users")
     public List<UserResponse> findAll() {
-        return webAppUserService.findAllUser();
+        return webAppUserService.findAllUsers();
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STUDENT', 'ROLE_INSTRUCTOR')")

@@ -1,11 +1,11 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.repository.*;
+import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,6 @@ public class WebAppUserService {
     private final CourseStudentRepository courseStudentRepository;
     private final RatingRepository ratingRepository;
 
-    private final CloudController cloudController;
 
     private final EmailService emailService;
 
@@ -134,7 +133,7 @@ public class WebAppUserService {
         return "valid";
     }
 
-    public List<UserResponse> findAllUser() {
+    public List<UserResponse> findAllUsers() {
         List<WebAppUser> webAppUsers = webAppUserRepository.findAll();
         return webAppUsers.stream()
                 .map(webAppUser -> new UserResponse(webAppUser.getUserId(), webAppUser.getFullName(), webAppUser.getEmail(), webAppUser.getProfilePicture(), webAppUser.getGender(), webAppUser.getRole().getRoleName(), webAppUser.getBio(), webAppUser.getCreatedAt()))
@@ -255,7 +254,7 @@ public class WebAppUserService {
                 .map(course -> {
                     try {
                         return new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
-                                course.getDescription(), course.getTopic(), cloudController.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
+                                course.getDescription(), course.getTopic(), CloudUtils.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
                                 course.getType(), course.getStatus(), course.getCreatedAt());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -302,7 +301,7 @@ public class WebAppUserService {
         }
     }
 
-    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName){
+    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
 }

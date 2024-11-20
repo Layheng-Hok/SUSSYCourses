@@ -11,7 +11,6 @@ import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/comments")
-@CrossOrigin(origins = "http://localhost:8081", allowCredentials = "true")
 public class CommentsController {
     private final CommentRepository commentRepository;
 

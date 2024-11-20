@@ -1,13 +1,13 @@
 package com.sustech.cs309.project.sussycourses.service;
 
 
-import com.sustech.cs309.project.sussycourses.controller.CloudController;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,6 @@ import java.util.Optional;
 @Slf4j
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final CloudController cloudController;
     private final WebAppUserRepository webAppUserRepository;
 
     public List<AdminCourseDetailResponse> getAllCourses() {
@@ -48,7 +47,7 @@ public class CourseService {
     }
 
     public void uploadCoverImage(MultipartFile coverImageFile, String fileType, String courseName, String fileName) throws Exception {
-        cloudController.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + fileName);
+        CloudUtils.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + fileName);
     }
 
     public ResponseEntity<String> uploadCourse(CourseCreationRequest courseCreationRequest) throws Exception {

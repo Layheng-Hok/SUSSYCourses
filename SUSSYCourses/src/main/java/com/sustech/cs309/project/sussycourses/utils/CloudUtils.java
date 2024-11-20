@@ -1,30 +1,47 @@
-package com.sustech.cs309.project.sussycourses.service;
+package com.sustech.cs309.project.sussycourses.utils;
+
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+public class CloudUtils {
+    private static final Dotenv dotenv = Dotenv.configure()
+            .directory("./.env")
+            .filename(".env")
+            .load();
 
-import java.util.HashMap;
-import java.util.Map;
+    public static String getStorageKey(String fileName) throws IOException {
+        String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
+        return CloudUtils.generateV4GetObjectSignedUrl(projectId, "sussycourses", fileName, dotenv.get("STORAGE_KEY"));
+    }
 
-@Service
-public class CloudService {
-    public static String generateV4GetObjectSignedUrl(
-            String projectId, String bucketName, String objectName, String serviceAccountKeyPath) throws StorageException, IOException {
+
+    public static String putStorageKey(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType, @RequestParam("fileLocation") String fileLocation) throws Exception {
+        if (fileLocation.equals("File Type Not Supported")) {
+            return "File Type Not Supported";
+        }
+        String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
+        return CloudUtils.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
+    }
+
+    public static String deleteBlob(@RequestParam("fileLocation") String fileLocation) throws Exception {
+        String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
+        return CloudUtils.deleteObject(projectId, "sussycourses", fileLocation);
+    }
+
+    private static String generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName, String serviceAccountKeyPath) throws StorageException, IOException {
         ServiceAccountCredentials credentials = ServiceAccountCredentials
                 .fromStream(new FileInputStream(serviceAccountKeyPath));
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId(projectId).build().getService();
@@ -36,12 +53,8 @@ public class CloudService {
 
         return url.toString();
     }
-    private static final Dotenv dotenv = Dotenv.configure()
-            .directory("./.env")
-            .filename(".env")
-            .load();
 
-    public static String readStorageKey(String filePath) {
+    private static String readStorageKey(String filePath) {
         try {
             // Read the JSON file content into a String
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -61,7 +74,7 @@ public class CloudService {
         return null;
     }
 
-    public static String uploadObject(
+    private static String uploadObject(
             String projectId, String bucketName, String objectName, MultipartFile file, String fileType) throws IOException {
 
         ServiceAccountCredentials credentials = ServiceAccountCredentials
@@ -99,15 +112,14 @@ public class CloudService {
     }
 
 
-    public static String deleteObject(String projectId, String bucketName, String objectName) throws IOException {
+    private static String deleteObject(String projectId, String bucketName, String objectName) throws IOException {
         ServiceAccountCredentials credentials = ServiceAccountCredentials
                 .fromStream(new FileInputStream(dotenv.get("STORAGE_KEY")));
 
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId(projectId).build().getService();
         Bucket bucket = storage.get(bucketName);
-        Blob blob =bucket.get(objectName);
+        Blob blob = bucket.get(objectName);
         blob.delete();
         return "Successful delete";
     }
 }
-
