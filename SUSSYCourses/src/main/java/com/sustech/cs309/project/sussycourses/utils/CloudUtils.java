@@ -22,9 +22,12 @@ public class CloudUtils {
             .filename(".env")
             .load();
 
-    public static String getStorageKey(String fileName) throws IOException {
+    public static String getStorageKey(String filePath) throws IOException {
+        if (filePath == null) {
+            return null;
+        }
         String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
-        return CloudUtils.generateV4GetObjectSignedUrl(projectId, "sussycourses", fileName, dotenv.get("STORAGE_KEY"));
+        return CloudUtils.generateV4GetObjectSignedUrl(projectId, "sussycourses", filePath, dotenv.get("STORAGE_KEY"));
     }
 
 

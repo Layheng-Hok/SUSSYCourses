@@ -47,13 +47,13 @@ public class WebAppUserController {
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @GetMapping("/instructor/profile/{userId}")
-    public InstructorDetailResponse getInstructorById(@PathVariable long userId) {
+    public InstructorDetailResponse getInstructorById(@PathVariable Long userId) {
         return webAppUserService.getInstructorById(userId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR', 'ROLE_STUDENT')")
     @PutMapping("/users/update/{userId}")
-    public void updateInstructorProfile(@PathVariable long userId, @RequestBody UpdateUserRequest updateUserRequest) throws Exception {
+    public void updateInstructorProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) {
         webAppUserService.updateInstructorProfile(userId, updateUserRequest);
     }
 

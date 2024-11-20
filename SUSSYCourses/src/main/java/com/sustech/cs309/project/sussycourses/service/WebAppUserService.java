@@ -241,7 +241,7 @@ public class WebAppUserService {
         );
     }
 
-    public InstructorDetailResponse getInstructorById(long userId) {
+    public InstructorDetailResponse getInstructorById(Long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 3);
 
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
@@ -253,9 +253,14 @@ public class WebAppUserService {
         List<InstructorCourseDetailResponse> courseInfoResponses = courses.stream()
                 .map(course -> {
                     try {
-                        return new InstructorCourseDetailResponse(course.getCourseId(), course.getCourseName(),
-                                course.getDescription(), course.getTopic(), CloudUtils.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
-                                course.getType(), course.getStatus(), course.getCreatedAt());
+                        return new InstructorCourseDetailResponse(course.getCourseId(),
+                                course.getCourseName(),
+                                course.getDescription(),
+                                course.getTopic(),
+                                CloudUtils.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
+                                course.getType(),
+                                course.getStatus(),
+                                course.getCreatedAt());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -276,7 +281,7 @@ public class WebAppUserService {
         );
     }
 
-    public void updateInstructorProfile(long userId, UpdateUserRequest updateUserRequest) {
+    public void updateInstructorProfile(Long userId, UpdateUserRequest updateUserRequest) {
         if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
         }
@@ -302,6 +307,9 @@ public class WebAppUserService {
     }
 
     public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
+        if (coverPhotoName == null || coverPhotoName.trim().isEmpty()) {
+            return null;
+        }
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
 }
