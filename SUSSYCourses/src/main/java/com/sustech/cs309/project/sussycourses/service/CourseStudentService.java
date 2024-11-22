@@ -1,9 +1,97 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
+import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
+import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
+import com.sustech.cs309.project.sussycourses.repository.RatingRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-@RestController
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+@Service
 @RequiredArgsConstructor
+@Slf4j
 public class CourseStudentService {
+    private final CourseStudentRepository courseStudentRepository;
+    private final WebAppUserRepository webAppUserRepository;
+    private final RatingRepository ratingRepository;
+
+    public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return null;
+        }
+
+        List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
+        List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
+                .map(courseStudent -> {
+                    try {
+                        return new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
+                                courseStudent.getCourse().getCourseName(),
+                                courseStudent.getCourse().getDescription(),
+                                courseStudent.getCourse().getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                                        String.valueOf(courseStudent.getCourse().getCourseId()),
+                                        courseStudent.getCourse().getCoverImage())),
+                                courseStudent.getCourse().getTeacher().getUserId(),
+                                null,
+                                null,
+                                null,
+                                courseStudent.getCourse().getType(),
+                                courseStudent.getStatus(),
+                                courseStudent.getLiked(),
+                                null,
+                                null,
+                                courseStudent.getCourse().getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+
+        return new StudentCourseListResponse(
+                studentCourseDetailResponses.size(),
+                studentCourseDetailResponses
+        );
+    }
+
+    public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) throws IOException {
+        Optional<CourseStudent> courseStudentOptional =
+                courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+
+        if (courseStudentOptional.isEmpty() ||
+                !courseStudentOptional.get().getStatus().equalsIgnoreCase("enrolled")) {
+            return null;
+        }
+
+        CourseStudent courseStudent = courseStudentOptional.get();
+        return new StudentCourseDetailResponse(
+                courseId,
+                courseStudent.getCourse().getCourseName(),
+                courseStudent.getCourse().getDescription(),
+                courseStudent.getCourse().getTopic(),
+                courseStudent.getCourse().getCoverImage(),
+                courseStudent.getCourse().getTeacher().getUserId(),
+                courseStudent.getCourse().getTeacher().getFullName(),
+                courseStudent.getCourse().getTeacher().getBio(),
+                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                        String.valueOf(courseStudent.getCourse().getTeacher().getUserId()),
+                        courseStudent.getCourse().getTeacher().getProfilePicture()
+                )),
+                courseStudent.getCourse().getType(),
+                "enrolled",
+                courseStudent.getLiked(),
+                courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
+                ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId()),
+                courseStudent.getCourse().getCreatedAt()
+        );
+    }
 }
