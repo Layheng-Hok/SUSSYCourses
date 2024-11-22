@@ -43,7 +43,7 @@ public class WebAppUserController {
 
     @PreAuthorize("hasAnyRole('ROLE_STUDENT','ROLE_INSTRUCTOR')")
     @PutMapping("/users/update/{userId}")
-    public ResponseEntity<String> updateUserProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) throws Exception {
+    public ResponseEntity<String> updateUserProfile(@PathVariable Long userId, @ModelAttribute UpdateUserRequest updateUserRequest) throws Exception {
         return webAppUserService.updateUserProfile(userId, updateUserRequest);
     }
 }
