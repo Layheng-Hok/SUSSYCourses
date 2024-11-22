@@ -125,8 +125,7 @@
 </template>
 
 <script setup>
-import {ref, computed, watch, onMounted} from 'vue';
-import {defineProps} from 'vue';
+import {computed, defineProps, onMounted, ref, watch} from 'vue';
 import {Help, Notebook, Notification} from "@element-plus/icons-vue";
 import TeacherCourses from "@/components/TeacherCourses.vue";
 import HelpSupport from "@/components/HelpSupport.vue";
@@ -203,7 +202,7 @@ onMounted(async () => {
       return;
     }
 
-    const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`/instructors/${userId}`);
     const userData = response.data;
 
     user.value.name = userData.fullName || "No Name";

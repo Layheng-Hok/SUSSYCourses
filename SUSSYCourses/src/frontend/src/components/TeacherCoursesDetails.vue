@@ -293,7 +293,7 @@ export default {
           return;
         }
 
-        const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
+        const response = await axiosInstances.axiosInstance.get(`/instructors/${userId}`);
         if (response.data?.courses) {
           allCourses.value = response.data.courses;
 

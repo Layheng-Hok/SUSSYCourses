@@ -48,7 +48,7 @@ public class WebAppUserController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @GetMapping("/instructor/profile/{userId}")
+    @GetMapping("/instructors/{userId}")
     public InstructorDetailResponse getInstructorById(@PathVariable Long userId) {
         return webAppUserService.getInstructorById(userId);
     }

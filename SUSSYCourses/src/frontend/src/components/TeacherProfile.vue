@@ -70,8 +70,8 @@
 </template>
 
 <script setup>
-import {computed, ref, onMounted} from 'vue';
-import {PictureFilled, Edit} from "@element-plus/icons-vue";
+import {computed, onMounted, ref} from 'vue';
+import {Edit, PictureFilled} from "@element-plus/icons-vue";
 import {ElMessage} from 'element-plus';
 import axiosInstances from "@/services/axiosInstance";
 import {useRouter} from 'vue-router';
@@ -207,7 +207,7 @@ onMounted(async () => {
       return;
     }
 
-    const response = await axiosInstances.axiosInstance.get(`/instructor/profile/${userId}`);
+    const response = await axiosInstances.axiosInstance.get(`/instructors/${userId}`);
     const userData = response.data;
 
     user.value.name = userData.fullName || "No Name";
