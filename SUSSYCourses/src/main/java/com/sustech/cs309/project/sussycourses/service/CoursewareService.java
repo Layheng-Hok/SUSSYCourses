@@ -52,7 +52,6 @@ public class CoursewareService {
         int order = coursewareRequest.order();
         MultipartFile file = coursewareRequest.file();
 
-
         Courseware courseware = new Courseware();
         Course course = courseRepository.findById(courseId).orElse(null);
         courseware.setCourse(course);

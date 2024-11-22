@@ -18,6 +18,10 @@ public class Rating {
     private Long ratingId;
 
     @ManyToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "userId", nullable = false)
+    private WebAppUser student;
+
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "courseId", nullable = false)
     private Course course;
 
