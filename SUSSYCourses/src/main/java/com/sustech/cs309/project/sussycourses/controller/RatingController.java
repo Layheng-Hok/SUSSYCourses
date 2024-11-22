@@ -17,7 +17,7 @@ public class RatingController {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Transactional
-    @PostMapping("/students/{userId}/courses/{courseId}/rate")
+    @PutMapping("/students/{userId}/courses/{courseId}/rate")
     public ResponseEntity<String> rateCourse(
             @PathVariable Long userId,
             @PathVariable Long courseId,
