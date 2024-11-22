@@ -10,6 +10,7 @@ import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -93,5 +94,26 @@ public class CourseStudentService {
                 ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId()),
                 courseStudent.getCourse().getCreatedAt()
         );
+    }
+
+    public ResponseEntity<String> likeOrUnlikeCourse(Long userId, Long courseId) {
+        Optional<CourseStudent> courseStudentOptional =
+                courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+
+        if (courseStudentOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("Student is not enrolled in the course");
+        }
+
+        CourseStudent courseStudent = courseStudentOptional.get();
+        Boolean isLiked = courseStudent.getLiked();
+
+        courseStudent.setLiked(!isLiked);
+        courseStudentRepository.save(courseStudent);
+
+        String message = isLiked
+                ? "Course unliked successfully"
+                : "Course liked successfully";
+
+        return ResponseEntity.ok(message);
     }
 }
