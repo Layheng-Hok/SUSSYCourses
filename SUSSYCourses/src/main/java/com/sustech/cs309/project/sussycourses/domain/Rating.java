@@ -1,12 +1,12 @@
 package com.sustech.cs309.project.sussycourses.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -37,7 +37,7 @@ public class Rating {
     @Column(nullable = false)
     private Float workloadBalance;
 
-    @Column(length = 300)
+    @Column(nullable = false, length = 300)
     private String feedback;
 
     @Column(nullable = false, updatable = false)

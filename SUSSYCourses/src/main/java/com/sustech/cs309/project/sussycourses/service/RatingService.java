@@ -1,15 +1,51 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
+import com.sustech.cs309.project.sussycourses.domain.Rating;
+import com.sustech.cs309.project.sussycourses.dto.RatingRequest;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RatingRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RatingService {
     private final RatingRepository ratingRepository;
+    private final WebAppUserRepository webAppUserRepository;
+    private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
+
+    public ResponseEntity<String> rateCourse(Long userId, Long courseId, RatingRequest ratingRequest) {
+        Optional<CourseStudent> courseStudent = courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+        if (courseStudent.isEmpty() || !courseStudent.get().getStatus().equalsIgnoreCase("enrolled")) {
+            return ResponseEntity.status(404).body("Student is not enrolled in this course");
+        }
+
+        Float contentQuality = ratingRequest.contentQuality();
+        Float teachingCompetence = ratingRequest.teachingCompetence();
+        Float workloadBalance = ratingRequest.workloadBalance();
+        Float overallRating = (contentQuality + teachingCompetence + workloadBalance) / 3;
+
+        Rating rating = new Rating();
+        rating.setStudent(webAppUserRepository.findById(userId).orElse(null));
+        rating.setCourse(courseRepository.findById(courseId).orElse(null));
+        rating.setOverallRating(overallRating);
+        rating.setContentQuality(contentQuality);
+        rating.setTeachingCompetence(teachingCompetence);
+        rating.setWorkloadBalance(workloadBalance);
+        rating.setFeedback(ratingRequest.feedback());
+        rating.setCreatedAt(LocalDateTime.now());
+        ratingRepository.save(rating);
+
+        return ResponseEntity.ok("Rating submitted successfully");
+    }
 }
