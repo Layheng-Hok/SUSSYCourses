@@ -76,7 +76,6 @@ public class CourseService {
         Long teacherId = courseCreationRequest.teacherId();
         String description = courseCreationRequest.description();
         String type = courseCreationRequest.type();
-        String status = courseCreationRequest.status();
         String topic = courseCreationRequest.topic();
         MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
         String fileType = courseCreationRequest.fileType();
