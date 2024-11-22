@@ -31,12 +31,12 @@ public class CloudUtils {
     }
 
 
-    public static String putStorageKey(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType, @RequestParam("fileLocation") String fileLocation) throws Exception {
+    public static void putStorageKey(MultipartFile file, String fileType, String fileLocation) throws Exception {
         if (fileLocation.equals("File Type Not Supported")) {
-            return "File Type Not Supported";
+            return;
         }
         String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
-        return CloudUtils.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
+        CloudUtils.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
     }
 
     public static String deleteBlob(@RequestParam("fileLocation") String fileLocation) throws Exception {

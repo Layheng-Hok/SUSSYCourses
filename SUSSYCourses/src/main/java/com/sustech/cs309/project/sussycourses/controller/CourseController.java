@@ -31,8 +31,8 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")
-    public ResponseEntity<String> createCourse(@ModelAttribute CourseCreationRequest newCourse) throws Exception {
-        return courseService.createCourse(newCourse);
+    public ResponseEntity<String> createCourse(@ModelAttribute CourseCreationRequest courseCreationRequest) throws Exception {
+        return courseService.createCourse(courseCreationRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")

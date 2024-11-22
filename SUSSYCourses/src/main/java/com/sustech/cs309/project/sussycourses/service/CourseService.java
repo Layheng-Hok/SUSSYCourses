@@ -46,13 +46,9 @@ public class CourseService {
                 .toList();
     }
 
-    public void uploadCoverImage(MultipartFile coverImageFile, String fileType, String courseName, String fileName) throws Exception {
-        CloudUtils.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + fileName);
-    }
-
     public ResponseEntity<String> createCourse(CourseCreationRequest courseCreationRequest) throws Exception {
         String courseName = courseCreationRequest.courseName();
-        long teacherId = courseCreationRequest.teacherId();
+        Long teacherId = courseCreationRequest.teacherId();
         String description = courseCreationRequest.description();
         String type = courseCreationRequest.type();
         String status = courseCreationRequest.status();
@@ -71,14 +67,14 @@ public class CourseService {
         course.setCoverImage(coverImageName);
         course.setTopic(topic);
         course.setCreatedAt(LocalDateTime.now());
-        uploadCoverImage(coverImageFile, fileType, courseName, coverImageName);
+        CloudUtils.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + coverImageName);
         courseRepository.save(course);
         return ResponseEntity.ok("Course created successfully");
     }
 
     public ResponseEntity<String> updateCourse(CourseCreationRequest courseCreationRequest) throws Exception {
         String courseName = courseCreationRequest.courseName();
-        long teacherId = courseCreationRequest.teacherId();
+        Long teacherId = courseCreationRequest.teacherId();
         String description = courseCreationRequest.description();
         String type = courseCreationRequest.type();
         String status = courseCreationRequest.status();
