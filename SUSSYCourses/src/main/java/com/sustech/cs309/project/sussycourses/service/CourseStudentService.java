@@ -66,7 +66,7 @@ public class CourseStudentService {
 
     public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) throws IOException {
         Optional<CourseStudent> courseStudentOptional =
-                courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+                courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
 
         if (courseStudentOptional.isEmpty() ||
                 !courseStudentOptional.get().getStatus().equalsIgnoreCase("enrolled")) {
@@ -98,7 +98,7 @@ public class CourseStudentService {
 
     public ResponseEntity<String> likeOrUnlikeCourse(Long userId, Long courseId) {
         Optional<CourseStudent> courseStudentOptional =
-                courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+                courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
 
         if (courseStudentOptional.isEmpty()) {
             return ResponseEntity.status(404).body("Student is not enrolled in the course");

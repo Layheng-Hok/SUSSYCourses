@@ -14,9 +14,7 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
     List<CourseStudent> findAllCoursesByStudentId(@Param("userId") Long userId);
 
     @Query("SELECT cs FROM CourseStudent cs WHERE cs.student.userId = :userId AND cs.course.courseId = :courseId")
-    Optional<CourseStudent> findCourseStudentByStudentIdAndCourseId(
-            @Param("userId") Long userId,
-            @Param("courseId") Long courseId
+    Optional<CourseStudent> findByStudentIdAndCourseId(@Param("userId") Long userId, @Param("courseId") Long courseId
     );
 
     @Query("SELECT COUNT(cs) FROM CourseStudent cs WHERE cs.course.courseId = :courseId AND cs.liked = TRUE")

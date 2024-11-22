@@ -3,6 +3,7 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Rating;
 import com.sustech.cs309.project.sussycourses.dto.RatingRequest;
+import com.sustech.cs309.project.sussycourses.dto.RatingResponse;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RatingRepository;
@@ -25,7 +26,7 @@ public class RatingService {
     private final CourseStudentRepository courseStudentRepository;
 
     public ResponseEntity<String> rateCourse(Long userId, Long courseId, RatingRequest ratingRequest) {
-        Optional<CourseStudent> courseStudent = courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
+        Optional<CourseStudent> courseStudent = courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
         if (courseStudent.isEmpty() || !courseStudent.get().getStatus().equalsIgnoreCase("enrolled")) {
             return ResponseEntity.status(404).body("Student is not enrolled in this course");
         }
@@ -47,5 +48,21 @@ public class RatingService {
         ratingRepository.save(rating);
 
         return ResponseEntity.ok("Rating submitted successfully");
+    }
+
+    public RatingResponse getRatingByStudentIdAndCourseId(Long userId, Long courseId) {
+        Optional<Rating> ratingOptional = ratingRepository.findByStudentIdAndCourseId(userId, courseId);
+        if (ratingOptional.isEmpty()) {
+            return null;
+        }
+
+        Rating rating = ratingOptional.get();
+        return new RatingResponse(
+                rating.getOverallRating(),
+                rating.getContentQuality(),
+                rating.getTeachingCompetence(),
+                rating.getWorkloadBalance(),
+                rating.getFeedback()
+        );
     }
 }
