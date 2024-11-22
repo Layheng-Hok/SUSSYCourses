@@ -36,7 +36,7 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<String> updateCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
         return courseService.updateCourse(newCourse);
     }

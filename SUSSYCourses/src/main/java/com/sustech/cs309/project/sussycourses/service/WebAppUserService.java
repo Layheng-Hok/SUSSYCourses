@@ -16,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -165,20 +166,7 @@ public class WebAppUserService {
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
         }
-
         WebAppUser webAppUser = webAppUserOptional.get();
-        List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
-        List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
-                .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
-                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
-                        courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
-                        courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.getLiked(),
-                        courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
-                        ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId())
-                        , courseStudent.getCourse().getCreatedAt()))
-                .toList();
-
         return new StudentDetailResponse(
                 userId,
                 webAppUser.getFullName(),
@@ -257,7 +245,9 @@ public class WebAppUserService {
                                 course.getCourseName(),
                                 course.getDescription(),
                                 course.getTopic(),
-                                CloudUtils.getStorageKey(resolveCoverPhotoLocation(course.getCourseName(), course.getCoverImage())),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCoverPhotoLocation(
+                                        String.valueOf(course.getCourseId()),
+                                        course.getCoverImage())),
                                 course.getType(),
                                 course.getStatus(),
                                 course.getCreatedAt());
@@ -281,35 +271,45 @@ public class WebAppUserService {
         );
     }
 
-    public void updateUserProfile(Long userId, UpdateUserRequest updateUserRequest) {
-        if (updateUserRequest.fullName() == null || updateUserRequest.fullName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty.");
-        }
-        WebAppUser user = webAppUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-
-        if (!updateUserRequest.fullName().equals(user.getFullName())) {
-            user.setFullName(updateUserRequest.fullName());
-        }
-        if (updateUserRequest.gender() != null && !updateUserRequest.gender().equals(user.getGender())) {
-            user.setGender(updateUserRequest.gender());
-        }
-        if (updateUserRequest.bio() != null && !updateUserRequest.bio().equals(user.getBio())) {
-            user.setBio(updateUserRequest.bio());
-        }
-        if (updateUserRequest.profilePicture() != null && !updateUserRequest.profilePicture().equals(user.getProfilePicture())) {
-            user.setProfilePicture(updateUserRequest.profilePicture());
+    public ResponseEntity<String> updateUserProfile(Long userId, UpdateUserRequest updateUserRequest) throws Exception {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserId(userId);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("User not found or account is not enabled");
         }
 
-        if (webAppUserRepository.existsById(userId)) {
-            webAppUserRepository.save(user);
-        }
-    }
+        String fullName = updateUserRequest.fullName();
+        String gender = updateUserRequest.gender();
+        String bio = updateUserRequest.bio();
+        String profilePictureName = updateUserRequest.profilePictureName();
+        String fileType = updateUserRequest.fileType();
+        MultipartFile profilePicture = updateUserRequest.profilePicture();
 
-    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
-        if (coverPhotoName == null || coverPhotoName.trim().isEmpty()) {
-            return null;
+        WebAppUser webAppUser = webAppUserOptional.get();
+        if (!webAppUser.getFullName().equals(fullName)) {
+            webAppUser.setFullName(fullName);
         }
-        return "Courses/" + courseName + "/" + coverPhotoName;
+        if (!webAppUser.getGender().equals(gender)) {
+            webAppUser.setGender(gender);
+        }
+        if (!webAppUser.getBio().equals(bio)) {
+            webAppUser.setBio(bio);
+        }
+        if (profilePictureName != null && !profilePictureName.trim().isEmpty()) {
+            if (webAppUser.getProfilePicture() != null) {
+                CloudUtils.deleteBlob(CloudUtils.resolveUserProfilePictureLocation(
+                        String.valueOf(webAppUser.getUserId()),
+                        webAppUser.getProfilePicture()
+                ));
+            }
+
+            webAppUser.setProfilePicture(profilePictureName);
+            String fileLocation = CloudUtils.resolveUserProfilePictureLocation(
+                    String.valueOf(webAppUser.getUserId()),
+                    profilePictureName);
+            CloudUtils.putStorageKey(profilePicture, fileType, fileLocation);
+        }
+        webAppUserRepository.save(webAppUser);
+
+        return ResponseEntity.ok("User profile updated successfully");
     }
 }

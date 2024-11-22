@@ -3,6 +3,7 @@ package com.sustech.cs309.project.sussycourses.controller;
 import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class WebAppUserController {
 
     @PreAuthorize("hasAnyRole('ROLE_STUDENT','ROLE_INSTRUCTOR')")
     @PutMapping("/users/update/{userId}")
-    public void updateUserProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) {
-        webAppUserService.updateUserProfile(userId, updateUserRequest);
+    public ResponseEntity<String> updateUserProfile(@PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) throws Exception {
+        return webAppUserService.updateUserProfile(userId, updateUserRequest);
     }
 }

@@ -57,6 +57,10 @@ public class CourseService {
         String coverImageName = courseCreationRequest.coverImageName();
 
         WebAppUser teacher = webAppUserRepository.findById(teacherId).orElse(null);
+        if (teacher == null) {
+            return ResponseEntity.status(404).body("Instructor not found");
+        }
+
         Course course = new Course();
         course.setCourseName(courseName);
         course.setDescription(description);
@@ -66,8 +70,12 @@ public class CourseService {
         course.setCoverImage(coverImageName);
         course.setTopic(topic);
         course.setCreatedAt(LocalDateTime.now());
-        CloudUtils.putStorageKey(coverImageFile, fileType, "Courses/" + courseName + "/" + coverImageName);
         courseRepository.save(course);
+
+        Long courseId = course.getCourseId();
+        String fileLocation = CloudUtils.resolveCoverPhotoLocation(String.valueOf(course.getCourseId()), coverImageName);
+        CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
+
         return ResponseEntity.ok("Course created successfully");
     }
 

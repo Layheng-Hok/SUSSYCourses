@@ -5,7 +5,6 @@ import com.google.cloud.storage.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -39,9 +38,23 @@ public class CloudUtils {
         CloudUtils.uploadObject(projectId, "sussycourses", fileLocation, file, fileType);
     }
 
-    public static String deleteBlob(@RequestParam("fileLocation") String fileLocation) throws Exception {
+    public static void deleteBlob(String fileLocation) throws Exception {
         String projectId = CloudUtils.readStorageKey(dotenv.get("STORAGE_KEY"));
-        return CloudUtils.deleteObject(projectId, "sussycourses", fileLocation);
+        CloudUtils.deleteObject(projectId, "sussycourses", fileLocation);
+    }
+
+    public static String resolveUserProfilePictureLocation(String userId, String profilePicture) {
+        if (profilePicture == null || profilePicture.trim().isEmpty()) {
+            return null;
+        }
+        return "Users/" + userId + "/" + profilePicture;
+    }
+
+    public static String resolveCoverPhotoLocation(String courseId, String coverPhotoName) {
+        if (coverPhotoName == null || coverPhotoName.trim().isEmpty()) {
+            return null;
+        }
+        return "Courses/" + courseId + "/" + coverPhotoName;
     }
 
     private static String generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName, String serviceAccountKeyPath) throws StorageException, IOException {
