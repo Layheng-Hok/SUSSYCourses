@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import {ref, onMounted, computed} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import {Search} from '@element-plus/icons-vue';
 import axiosInstances from "@/services/axiosInstance";
 //import {useRouter} from 'vue-router';
@@ -365,7 +365,6 @@ export default {
           formData.append("description", form.value.courseDescription);
           formData.append("teacherId", userId);
           formData.append("type", form.value.courseType);
-          formData.append("status", "pending");
           formData.append("topic", form.value.courseField);
           const file = form.value.courseImage[0];
           if (file) {

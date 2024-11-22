@@ -51,7 +51,6 @@ public class CourseService {
         Long teacherId = courseCreationRequest.teacherId();
         String description = courseCreationRequest.description();
         String type = courseCreationRequest.type();
-        String status = courseCreationRequest.status();
         String topic = courseCreationRequest.topic();
         MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
         String fileType = courseCreationRequest.fileType();
@@ -63,7 +62,7 @@ public class CourseService {
         course.setDescription(description);
         course.setTeacher(teacher);
         course.setType(type);
-        course.setStatus(status);
+        course.setStatus("pending");
         course.setCoverImage(coverImageName);
         course.setTopic(topic);
         course.setCreatedAt(LocalDateTime.now());
