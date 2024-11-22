@@ -73,7 +73,7 @@ public class CourseService {
         courseRepository.save(course);
 
         Long courseId = course.getCourseId();
-        String fileLocation = CloudUtils.resolveCoverPhotoLocation(String.valueOf(course.getCourseId()), coverImageName);
+        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(String.valueOf(course.getCourseId()), coverImageName);
         CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
 
         return ResponseEntity.ok("Course created successfully");

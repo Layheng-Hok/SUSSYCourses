@@ -50,7 +50,7 @@ public class CloudUtils {
         return "Users/" + userId + "/" + profilePicture;
     }
 
-    public static String resolveCoverPhotoLocation(String courseId, String coverPhotoName) {
+    public static String resolveCourseCoverImageLocation(String courseId, String coverPhotoName) {
         if (coverPhotoName == null || coverPhotoName.trim().isEmpty()) {
             return null;
         }

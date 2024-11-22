@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -42,7 +43,7 @@ public class WebAppUserController {
     @GetMapping("/students/{userId}/courses/{courseId}")
     public StudentCourseDetailResponse getCourseDetailForStudent(
             @PathVariable Long userId,
-            @PathVariable Long courseId) {
+            @PathVariable Long courseId) throws IOException {
         return webAppUserService.getCourseDetailForStudent(userId, courseId);
     }
 

@@ -188,12 +188,29 @@ public class WebAppUserService {
 
         List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
         List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
-                .map(courseStudent -> new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
-                        courseStudent.getCourse().getCourseName(), courseStudent.getCourse().getDescription(), courseStudent.getCourse().getTopic(),
-                        courseStudent.getCourse().getCoverImage(), courseStudent.getCourse().getTeacher().getUserId(),
-                        courseStudent.getCourse().getTeacher().getFullName(), courseStudent.getCourse().getType(),
-                        courseStudent.getStatus(), courseStudent.getLiked(), 0L, 0.0F,
-                        courseStudent.getCourse().getCreatedAt()))
+                .map(courseStudent -> {
+                    try {
+                        return new StudentCourseDetailResponse(courseStudent.getCourse().getCourseId(),
+                                courseStudent.getCourse().getCourseName(),
+                                courseStudent.getCourse().getDescription(),
+                                courseStudent.getCourse().getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                                        String.valueOf(courseStudent.getCourse().getCourseId()),
+                                        courseStudent.getCourse().getCoverImage())),
+                                courseStudent.getCourse().getTeacher().getUserId(),
+                                null,
+                                null,
+                                null,
+                                courseStudent.getCourse().getType(),
+                                courseStudent.getStatus(),
+                                courseStudent.getLiked(),
+                                null,
+                                null,
+                                courseStudent.getCourse().getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
 
         return new StudentCourseListResponse(
@@ -202,7 +219,7 @@ public class WebAppUserService {
         );
     }
 
-    public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) {
+    public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) throws IOException {
         Optional<CourseStudent> courseStudentOptional =
                 courseStudentRepository.findCourseStudentByStudentIdAndCourseId(userId, courseId);
 
@@ -220,6 +237,11 @@ public class WebAppUserService {
                 courseStudent.getCourse().getCoverImage(),
                 courseStudent.getCourse().getTeacher().getUserId(),
                 courseStudent.getCourse().getTeacher().getFullName(),
+                courseStudent.getCourse().getTeacher().getBio(),
+                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                        String.valueOf(courseStudent.getCourse().getTeacher().getUserId()),
+                        courseStudent.getCourse().getTeacher().getProfilePicture()
+                )),
                 courseStudent.getCourse().getType(),
                 "enrolled",
                 courseStudent.getLiked(),
@@ -245,7 +267,7 @@ public class WebAppUserService {
                                 course.getCourseName(),
                                 course.getDescription(),
                                 course.getTopic(),
-                                CloudUtils.getStorageKey(CloudUtils.resolveCoverPhotoLocation(
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
                                         String.valueOf(course.getCourseId()),
                                         course.getCoverImage())),
                                 course.getType(),

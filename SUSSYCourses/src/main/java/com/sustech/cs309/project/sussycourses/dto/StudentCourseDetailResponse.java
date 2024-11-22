@@ -10,6 +10,8 @@ public record StudentCourseDetailResponse(
         String coverImageUrl,
         Long teacherId,
         String teacherName,
+        String teacherBio,
+        String teacherProfilePictureUrl,
         String type,
         String enrollmentStatus,
         Boolean liked,
