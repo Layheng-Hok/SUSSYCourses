@@ -115,72 +115,72 @@ const submitForm = async () => {
   }
 };
 
-  </script>
-  
-  <style scoped>
+</script>
 
-  .back-button {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #007bff;
-  font-weight: bold;
-  margin: 1% 0 0 1%;
-  font-family: 'Aptos Narrow', sans-serif;
+<style scoped>
+
+.back-button {
+display: flex;
+align-items: center;
+cursor: pointer;
+color: #007bff;
+font-weight: bold;
+margin: 1% 0 0 1%;
+font-family: 'Aptos Narrow', sans-serif;
 }
 
 .back-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 5px;
-  margin-right: 5px;
+width: 20px;
+height: 20px;
+font-size: 5px;
+margin-right: 5px;
 }
 
 .back-button:hover {
-  color: #0056b3;
+color: #0056b3;
 }
-  .profile-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 5%;
-  }
-  
-  .profile-picture-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-pic {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #ddd;
-  }
-  
-  .upload-label {
-  display: inline-block;
-  padding: 8px 15px;
-  background-color: #4caf50;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 15px;
+.profile-container {
+max-width: 600px;
+margin: 0 auto;
+padding: 20px;
+background-color: #f9f9f9;
+border-radius: 8px;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+margin-top: 5%;
+}
+
+.profile-picture-section {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.profile-pic {
+width: 120px;
+height: 120px;
+border-radius: 50%;
+object-fit: cover;
+border: 2px solid #ddd;
+}
+
+.upload-label {
+display: inline-block;
+padding: 8px 15px;
+background-color: #4caf50;
+color: white;
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s;
+margin-top: 15px;
 }
 
 .upload-label:hover {
-  background-color: #45a049;
+background-color: #45a049;
 }
 
 input[type="file"] {
-  display: none; 
+display: none; 
 }
-  </style>
+</style>
   

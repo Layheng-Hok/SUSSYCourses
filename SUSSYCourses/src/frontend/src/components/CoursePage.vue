@@ -63,8 +63,7 @@
               class="like-button"
               @click="incrementLikes"
             >
-            <i :class="['fa-heart', isLiked ? 'fas liked' : 'far']"></i>
-            {{ isLiked ? ' Unlike' : ' Like' }}
+            <span :class="{ liked: isLiked }">{{ isLiked ? '❤️ Unlike' : '🤍 Like' }}</span>
             </el-button>
         </el-card>
         <!-- <p><strong>Enrolled Students:</strong> {{ course.numStudentsEnrolled }}</p> -->
@@ -108,9 +107,6 @@ import RatingAndReview from './RatingAndReview.vue';
 import DoughnutChart from './DoughnutChart.vue';
 import CommentSection from './CommentSection.vue';
 import axiosInstances from '@/services/axiosInstance';
-import '@fortawesome/fontawesome-free/css/all.css';
-import '@fortawesome/fontawesome-free/js/all.js';
-
 
 const route = useRoute();
 const router = useRouter();
@@ -118,7 +114,8 @@ const user = ref(null);
 const userId = localStorage.getItem('userId');
 const course = ref(null);
 const courseId = route.params.courseId;
-const isLiked = ref(false); //
+const isLiked = ref(false);
+
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
@@ -127,17 +124,15 @@ const defaultCoverPic = "/assets/Banner/whale.jpg";
 const incrementLikes = async () => {
   isLiked.value = !isLiked.value;
   course.value.likesCount += isLiked.value ? 1 : -1;
-
-  // try {
-  //   await axiosInstances.post('/course/like', {
-  //     courseId: course.value.id,
-  //     isLiked: isLiked.value,
-  //   });
-  // } catch (error) {
-  //   console.error('Failed to update likes:', error);
-  //   isLiked.value = !isLiked.value;
-  //   likesCount.value += isLiked.value ? -1 : 1;
-  // }
+  try {
+    
+    await axiosInstances.axiosInstance.put(`students/${userId}/courses/${courseId}/like-unlike`);
+    console.log('Likes updated successfully');
+  } catch (error) {
+    console.error('Failed to update likes:', error);
+    isLiked.value = !isLiked.value;
+    course.value.likesCount += isLiked.value ? -1 : 1;
+  }
 };
 
 const fetchUserData = async () => {
@@ -159,6 +154,7 @@ const fetchCourseDetails = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses/${courseId}`);
     course.value = response.data;
+    isLiked.value = course.value.liked;
   } catch (error) {
 
     console.log("Error Details:", error);
@@ -310,16 +306,15 @@ onMounted(async () => {
   line-height: 1.6;
 }
 
-.like-button i {
-  color: #999; /* Default icon color */
-  font-size: 24px; /* Adjust size as needed */
+.like-button span {
+  font-size: 20px;
   cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease; /* Smooth color and transform */
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.like-button i.liked {
-  color: #ff5a5f; /* Highlight color for liked state */
-  animation: heart-pop 0.3s ease; /* Pop animation */
+.like-button span.liked {
+  color: #ff5a5f; 
+  animation: heart-pop 0.3s ease;
 }
 
 @keyframes heart-pop {
