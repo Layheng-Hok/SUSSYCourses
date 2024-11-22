@@ -46,9 +46,10 @@
   </div>
 </template>
   
-  <script setup>
-  import { ref, onMounted} from 'vue';
-  import { useRouter } from 'vue-router';
+<script setup>
+
+import { ref, onMounted} from 'vue';
+import { useRouter } from 'vue-router';
 import { ArrowLeft } from '@element-plus/icons-vue';
 import axiosInstances from '@/services/axiosInstance';
 
@@ -79,10 +80,9 @@ const fetchUserData = async () => {
     }  }
 };
 
-onMounted(fetchUserData);
   
-  const uploadAvatar = (event) => {
-  const file = event.target.files[0];
+const uploadAvatar = (event) => {
+const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -91,17 +91,36 @@ onMounted(fetchUserData);
     reader.readAsDataURL(file);
   }
 };
+
 const submitForm = async () => {
   try {
-    const updatePayload = {
-      fullName: user.value.fullName,
-      gender: user.value.gender,
-      bio: user.value.bio,
-      profilePic: user.value.profilePic,
-    };
+    if (!user.value.fullName || !user.value.gender || !user.value.bio || !user.value.profilePic) {
+      alert("Please fill in all the required fields and upload a profile picture.");
+      return;
+    }
 
-    const response = await axiosInstances.axiosInstance.put(`users/update/${userId}`, updatePayload);
-    
+    const file = document.querySelector('input[type="file"]').files[0];
+    if (!file) {
+      alert("Please upload a valid profile picture.");
+      return;
+    }
+
+    const baseFileName = file.name.replace(/\.[^/.]+$/, "");
+    console.log('baseFileName:', baseFileName);
+
+    const formData = new FormData();
+    formData.append('fullName', user.value.fullName);
+    formData.append('gender', user.value.gender);
+    formData.append('bio', user.value.bio);
+    formData.append('profilePictureName', baseFileName);
+    formData.append('fileType', file.type);
+    formData.append('profilePicture', file);
+
+    const response = await axiosInstances.axiosInstance.put(
+      `users/update/${userId}`,
+      formData
+    );
+
     if (response.status === 200) {
       console.log('Profile updated successfully:', response.data);
       alert('Profile updated successfully!');
@@ -114,6 +133,9 @@ const submitForm = async () => {
     alert('An error occurred while updating the profile. Please try again.');
   }
 };
+
+
+onMounted(fetchUserData);
 
 </script>
 

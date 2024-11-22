@@ -94,7 +94,7 @@
             class="course-box"
             @click="goToCourse(course.courseId)"
         >
-          <img :src="course.image" alt="Course Image" class="course-image"/>
+          <img :src="coverImageUrl?.image || defaultCoverPic" alt="Course Image" class="course-image"/>
           <h3>{{ course.courseName }}</h3>
           <p class="course-instructor"> Intrusctor: {{ course.teacherName }} </p>
           <p class="course-topic"> Category: {{ course.topic }}</p>
@@ -143,6 +143,7 @@ const courses = ref([]);
 const userId = localStorage.getItem('userId');
 
 const defaultProfilePic = "/assets/Avatars/student.jpg";
+const defaultCoverPic = "/assets/Courses/whale.png";
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const router = useRouter();

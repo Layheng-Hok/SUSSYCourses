@@ -1,14 +1,17 @@
 <template>
-<!-- Rating and Review Section -->
-<div class="ratings-section" :class="{'submitted-review': hasSubmittedReview}">
+  <!-- Rating and Review Section -->
+  <div class="ratings-section" :class="{'submitted-review': hasSubmittedReview}">
     <h2>Rate and Review</h2>
   
-    <!-- Check if the user has already submitted a review -->
+    <!-- Display submitted review if available -->
     <div v-if="hasSubmittedReview" class="submitted-message">
-      <p>You have already submitted a review before.</p>
+      <p><strong>Content Quality:</strong> {{ previousReview.contentQuality }} ⭐</p>
+      <p><strong>Teaching Competence:</strong> {{ previousReview.teachingCompetence }} ⭐</p>
+      <p><strong>Workload Balance:</strong> {{ previousReview.workBalance }} ⭐</p>
+      <p><strong>Feedback:</strong> {{ previousReview.feedback }}</p>
     </div>
   
-    <!-- Show Rating Section if not submitted before -->
+    <!-- Show Rating Form if no previous review -->
     <div v-else>
       <!-- Content Quality -->
       <div class="rating-item">
@@ -58,44 +61,80 @@
         Submit
       </el-button>
     </div>
-  
-    <!-- Button to toggle review section -->
-    <el-button
-      class="toggle-button"
-      @click="toggleReviewSection"
-    >
-      {{ hasSubmittedReview ? 'Edit Review' : 'Submit Review' }}
-    </el-button>
   </div>
 </template>
-  <script setup>
-import { ref } from 'vue';
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import axiosInstances from '@/services/axiosInstance';
+
+const route = useRoute();
+const userId = localStorage.getItem('userId');
+const courseId = route.params.courseId;
 
 const contentQualityRating = ref(0);
 const teachingCompetenceRating = ref(0);
 const workloadBalanceRating = ref(0);
 const userReview = ref('');
-const hasSubmittedReview = ref(false); // 
-const userRating = ref(0);
+const hasSubmittedReview = ref(false);
+const previousReview = ref(null); 
 
 
-const submitReview = () => {
-  if (userRating.value && userReview.value.trim()) {
-    alert(
-      `Thank you for your review! Rating: ${userRating.value}, Review: "${userReview.value}"`
+const fetchReview = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(
+      `/students/${userId}/courses/${courseId}/rating`
     );
-    userRating.value = 0;
-    userReview.value = "";
-    hasSubmittedReview.value = true;
-  } else {
-    alert("Please provide a rating and review before submitting.");
+
+    if (response.data) {
+      previousReview.value = response.data;
+      hasSubmittedReview.value = true;
+    } else {
+      hasSubmittedReview.value = false;
+    }
+  } catch (error) {
+    console.error("Failed to fetch the review:", error);
   }
 };
 
-const toggleReviewSection = () => {
-  hasSubmittedReview.value = !hasSubmittedReview.value;
+const submitReview = async () => {
+  if (
+    !contentQualityRating.value ||
+    !teachingCompetenceRating.value ||
+    !workloadBalanceRating.value ||
+    !userReview.value.trim()
+  ) {
+    alert("Please provide ratings for all categories and write a review before submitting.");
+    return;
+  }
+
+  const ratingRequest = {
+    contentQuality: contentQualityRating.value,
+    teachingCompetence: teachingCompetenceRating.value,
+    workloadBalance: workloadBalanceRating.value,
+    feedback: userReview.value.trim(),
+  };
+
+  try {
+    await axiosInstances.axiosInstance.put(
+      `/students/${userId}/courses/${courseId}/rate`,
+      ratingRequest
+    );
+
+    alert("Thank you for your review!");
+    hasSubmittedReview.value = true;
+
+    previousReview.value = ratingRequest;
+  } catch (error) {
+    console.error("Failed to submit the review:", error);
+    alert("An error occurred while submitting your review. Please try again.");
+  }
 };
+
+onMounted(fetchReview);
 </script>
+
 
 <style scoped>
 .ratings-section {
@@ -150,7 +189,4 @@ const toggleReviewSection = () => {
   font-weight: bold;
 }
 
-.toggle-button {
-  margin-top: 15px;
-}
 </style>

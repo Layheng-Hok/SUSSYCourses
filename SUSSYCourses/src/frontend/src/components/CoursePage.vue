@@ -72,13 +72,13 @@
         <el-card class="instructor-info" shadow="hover">
           <h2>Instructor Information</h2>
           <div>  <img
-                :src="course?.instructorImage || defaultProfilePic"
+                :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
                 alt="Instructor Image"
                 class="instructor-image">
               </div>
         <div>
            <p><strong>{{ course.teacherName }}</strong></p>
-            <p class="bio">{{ course?.instructorBio || " to be fetched" }}</p>
+            <p class="bio">{{ course?.teacherBio || "null" }}</p>
         </div>
         </el-card>
       </div>
@@ -119,7 +119,8 @@ const isLiked = ref(false);
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
-const defaultCoverPic = "/assets/Banner/whale.jpg";
+const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
+const defaultCoverPic = "/assets/Courses/whale.png";
 
 const incrementLikes = async () => {
   isLiked.value = !isLiked.value;
@@ -127,7 +128,6 @@ const incrementLikes = async () => {
   try {
     
     await axiosInstances.axiosInstance.put(`students/${userId}/courses/${courseId}/like-unlike`);
-    console.log('Likes updated successfully');
   } catch (error) {
     console.error('Failed to update likes:', error);
     isLiked.value = !isLiked.value;
