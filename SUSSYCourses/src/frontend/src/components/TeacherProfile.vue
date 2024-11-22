@@ -70,8 +70,8 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
-import {Edit, PictureFilled} from "@element-plus/icons-vue";
+import {computed, ref, onMounted} from 'vue';
+import {PictureFilled, Edit} from "@element-plus/icons-vue";
 import {ElMessage} from 'element-plus';
 import axiosInstances from "@/services/axiosInstance";
 import {useRouter} from 'vue-router';
@@ -130,28 +130,28 @@ const saveChanges = async () => {
       return;
     }
 
-    const updatedData = {};
+    const formData = new FormData();
     let hasChanges = false;
 
     if (user.value.bio !== backupUser.value.bio) {
-      updatedData.bio = user.value.bio;
+      formData.append("bio", user.value.bio);
       hasChanges = true;
     }
 
     if (user.value.gender !== backupUser.value.gender) {
-      updatedData.gender = user.value.gender;
+      formData.append("gender", user.value.gender);
       hasChanges = true;
     }
 
     if (user.value.name !== backupUser.value.name) {
-      updatedData.fullName = user.value.name;
+      formData.append("fullName", user.value.name);
       hasChanges = true;
     } else {
-      updatedData.fullName = backupUser.value.name;
+      formData.fullName = backupUser.value.name;
     }
 
-    if (newProfilePic.value) {
-      updatedData.profileImageUrl = newProfilePic.value;
+    if (user.value.profilePicFile) {
+      formData.append("profilePicture", user.value.profilePicFile);
       hasChanges = true;
     }
 
@@ -160,7 +160,14 @@ const saveChanges = async () => {
       return;
     }
 
-    await axiosInstances.axiosInstance.put(`/users/update/${userId}`, updatedData);
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+
+    await axiosInstances.axiosInstance.put(`/users/update/${userId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     backupUser.value = JSON.parse(JSON.stringify(user.value));
     newProfilePic.value = null;
@@ -183,7 +190,10 @@ const previewImage = (event) => {
   const file = event.target.files[0];
   if (file) {
     newProfilePic.value = URL.createObjectURL(file); // Show preview
+    user.value.profilePic = newProfilePic.value; // Temporarily set it in the user object
+    user.value.profilePicFile = file; // Store the actual file for backend submission
   }
+
 };
 
 const cancelUpload = () => {

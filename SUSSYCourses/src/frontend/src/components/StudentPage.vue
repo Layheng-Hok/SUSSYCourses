@@ -15,7 +15,7 @@
   <div class="hero-banner">
   <div class="hero-content">
     <div class="hero-text">
-      <h1>Welcome back, {{ user?.fullName || 'Student' }}!</h1>
+      <h1 class="typing-text">Welcome back, {{ user?.fullName || 'Student' }}</h1>
       <p>Discover your next adventure in learning!</p>
     </div>
   </div>
@@ -64,18 +64,30 @@
         <el-option label="Alphabetical (A to Z)" value="alphabetical-1" />
         <el-option label="Alphabetical (Z to A)" value="alphabetical-2" />
 
-        <el-option label="By Ratings (from Low to High)" value="rating-1" />
-        <el-option label="By Ratings (from High to Low)" value="rating-2" />
-
         <el-option label="By Progress (from Low to High)" value="progress-1" />
         <el-option label="By Progress (from High to Low)" value="progress-2" />
 
       </el-select>
+
+        <!-- Enrollment Status Filter -->
+        <el-select
+        v-model="selectedEnrollmentStatus"
+        placeholder="Filter by Enrollment Status"
+        @change="filterCourses"
+        clearable
+      >
+        <el-option label="All Statuses" value="all" />
+        <el-option label="Enrolled" value="enrolled" />
+        <el-option label="Pending" value="pending" />
+        <el-option label="Rejected" value="rejected" />
+      </el-select>
     </div>
 
       <!-- Course Boxes Section -->
-      <h2 class="section-heading">Courses that you are enrolled in:</h2>
-      <div class="course-boxes">
+      <h2 class="section-heading">
+      {{ selectedEnrollmentStatus === 'all' ? 'All Courses: ' : 'Courses that are: '+ selectedEnrollmentStatus }}
+    </h2>
+          <div class="course-boxes">
         <div
             v-for="(course, index) in filteredCourses"
             :key="index"
@@ -87,7 +99,8 @@
           <p class="course-instructor"> Intrusctor: {{ course.teacherName }} </p>
           <p class="course-topic"> Category: {{ course.topic }}</p>
           
-          <!-- <p class="course-rating">⭐ {{ course.rating }} / 5</p> -->
+          <p class="course-type"> Type: {{ course.type }}</p>
+          <p class="course-status"> Status: {{ course.enrollmentStatus }}</p>
           <p class="course-progress"> Learning progress: NA %</p>
         </div>
       </div>
@@ -137,7 +150,8 @@ const router = useRouter();
 const categories = ref(['All', 'Web Development','Marketing', 'Programming','Finance','Leadership','Data Science', 'Design','Hardware','Economics']);
 const searchQuery = ref('');
 const selectedCategory = ref('All');
-const sortBy = ref('Default');
+const sortBy = ref("");
+const selectedEnrollmentStatus = ref('all'); 
 
 const fetchUserData = async () => {
   try {
@@ -174,21 +188,18 @@ const toggleSidebar = () => {
 };
 
 const filteredCourses = computed(() => {
-  let filtered = courses.value.filter(course => {
-    console.log(course);
+  let filtered = courses.value.filter((course) => {
     const matchesSearch = course.courseName.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesCategory = selectedCategory.value === 'All' || course.topic === selectedCategory.value;
-    return matchesSearch && matchesCategory;
+    const matchesStatus = selectedEnrollmentStatus.value === 'all' || course.enrollmentStatus === selectedEnrollmentStatus.value;
+
+    return matchesSearch && matchesCategory && matchesStatus;
   });
   
   if (sortBy.value === 'alphabetical-1') {
     filtered.sort((a, b) => a.courseName.localeCompare(b.courseName)); // A to Z
   } else if (sortBy.value === 'alphabetical-2') {
     filtered.sort((a, b) => b.courseName.localeCompare(a.courseName)); // Z to A
-  } else if (sortBy.value === 'rating-1') {
-    filtered.sort((a, b) => a.rating - b.rating); // Low to High
-  } else if (sortBy.value === 'rating-2') {
-    filtered.sort((a, b) => b.rating - a.rating); // High to Low
   } else if (sortBy.value === 'progress-1') {
     filtered.sort((a, b) => a.progress - b.progress); // Low to High
   } else if (sortBy.value === 'progress-2') {
@@ -221,6 +232,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+html {
+  scroll-behavior: smooth;
+}
+
 .el-menu-demo {
   position: fixed;
   top: 0;
@@ -287,6 +303,43 @@ onMounted(async () => {
   margin-bottom: 40px;
   padding: 20px;
   gap: -100px !important;
+  opacity: 0;
+  transform: translateY(-50px);
+  animation: slide-in 1s ease forwards;
+}
+
+@keyframes slide-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.typing-text {
+  display: inline-block;
+  border-right: 2px solid #4caf50;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 3s steps(30, end), blink 0.5s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #4caf50;
+  }
 }
 
 .hero-content {
@@ -380,10 +433,23 @@ onMounted(async () => {
   transition: background-color 0.3s ease;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .course-box:hover {
-  background-color: #e0e0e0;
+  transform: scale(1.05);
+  background-color: #f0f0f0;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); 
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .course-box h3 {
@@ -395,7 +461,7 @@ onMounted(async () => {
   font-size: 16px;
   color: #555;
 }
-.course-box p.course-rating {
+.course-box p.course-type {
   font-size: 16px;
   color: #555;
 }
@@ -410,6 +476,11 @@ onMounted(async () => {
   width: 100%;
   height: 135px;
   border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.course-image:hover {
+  transform: scale(1.1); 
 }
 
 .call-to-action {
@@ -432,7 +503,6 @@ onMounted(async () => {
 }
 
 .cta-button {
-  background-color: #333;
   color: white;
   padding: 15px 50px;
   border: none;
@@ -440,7 +510,9 @@ onMounted(async () => {
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  background-color: #555;
+  transform: scale(1.1); 
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .cta-button:hover {
@@ -454,7 +526,7 @@ onMounted(async () => {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 1000px; /* Optional: Adjust the width as needed */
+  max-width: 1000px;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
