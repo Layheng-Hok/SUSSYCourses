@@ -51,13 +51,13 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/approve/{courseId}")
+    @PutMapping("/{courseId}/approve")
     public ResponseEntity<String> approveCourse(@PathVariable Long courseId) {
         return courseService.approveCourse(courseId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/reject/{courseId}")
+    @PutMapping("/{courseId}/reject")
     public ResponseEntity<String> rejectCourse(@PathVariable Long courseId) {
         return courseService.rejectCourse(courseId);
     }
