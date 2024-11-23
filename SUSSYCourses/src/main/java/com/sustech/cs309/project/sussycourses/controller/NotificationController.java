@@ -25,4 +25,14 @@ public class NotificationController {
             @RequestBody NotificationCreationRequest notificationCreationRequest) {
         return notificationService.notifyStudent(userId, courseId, notificationCreationRequest);
     }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @Transactional
+    @PostMapping("instructors/{userId}/courses/{courseId}/notify-all")
+    public ResponseEntity<String> notifyAllStudents(
+            @PathVariable Long userId,
+            @PathVariable Long courseId,
+            @RequestBody NotificationCreationRequest notificationCreationRequest) {
+        return notificationService.notifyAllStudents(userId, courseId, notificationCreationRequest);
+    }
 }

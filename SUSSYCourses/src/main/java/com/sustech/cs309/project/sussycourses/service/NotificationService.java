@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.NotificationCreationRequest;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +52,22 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         return ResponseEntity.ok().body("Notification sent successfully");
+    }
+
+    public ResponseEntity<String> notifyAllStudents(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
+        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseId(courseId);
+        for (CourseStudent courseStudent : courseStudents) {
+            NotificationCreationRequest newNotificationCreationRequest = new NotificationCreationRequest(
+                    courseStudent.getStudent().getEmail(),
+                    notificationCreationRequest.subject(),
+                    notificationCreationRequest.text()
+            );
+
+            ResponseEntity<String> response = notifyStudent(teacherId, courseId, newNotificationCreationRequest);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Failed to notify student: " + courseStudent.getStudent().getEmail());
+            }
+        }
+        return ResponseEntity.ok().body("Notifications sent successfully");
     }
 }
