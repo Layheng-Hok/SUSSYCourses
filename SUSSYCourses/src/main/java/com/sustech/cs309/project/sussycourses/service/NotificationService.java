@@ -4,6 +4,8 @@ import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.NotificationCreationRequest;
+import com.sustech.cs309.project.sussycourses.dto.NotificationListResponse;
+import com.sustech.cs309.project.sussycourses.dto.NotificationResponse;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
@@ -24,7 +26,39 @@ public class NotificationService {
     private final CourseStudentRepository courseStudentRepository;
     private final NotificationRepository notificationRepository;
 
-    public ResponseEntity<String> notifyStudent(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
+    public NotificationListResponse getUserMailbox(Long userId) {
+        List<Notification> notifications = notificationRepository.findByReceiver_UserId(userId);
+        List<NotificationResponse> notificationResponses = notifications.stream()
+                .map(notification -> new NotificationResponse(
+                        notification.getSender().getFullName(),
+                        notification.getSender().getEmail(),
+                        notification.getReceiver().getFullName(),
+                        notification.getReceiver().getEmail(),
+                        notification.getSubject(),
+                        notification.getText(),
+                        notification.getCreatedAt()
+                ))
+                .toList();
+        return new NotificationListResponse(notificationResponses.size(), notificationResponses);
+    }
+
+    public NotificationListResponse getUserSentMails(Long userId) {
+        List<Notification> notifications = notificationRepository.findBySender_UserId(userId);
+        List<NotificationResponse> notificationResponses = notifications.stream()
+                .map(notification -> new NotificationResponse(
+                        notification.getSender().getFullName(),
+                        notification.getSender().getEmail(),
+                        notification.getReceiver().getFullName(),
+                        notification.getReceiver().getEmail(),
+                        notification.getSubject(),
+                        notification.getText(),
+                        notification.getCreatedAt()
+                ))
+                .toList();
+        return new NotificationListResponse(notificationResponses.size(), notificationResponses);
+    }
+
+    public ResponseEntity<String> getUserMailbox(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
         Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(
                 teacherId, 3);
         if (teacherOptional.isEmpty()) {
@@ -63,7 +97,7 @@ public class NotificationService {
                     notificationCreationRequest.text()
             );
 
-            ResponseEntity<String> response = notifyStudent(teacherId, courseId, newNotificationCreationRequest);
+            ResponseEntity<String> response = getUserMailbox(teacherId, courseId, newNotificationCreationRequest);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("Failed to notify student: " + courseStudent.getStudent().getEmail());
             }
