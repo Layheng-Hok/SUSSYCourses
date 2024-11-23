@@ -147,42 +147,42 @@ public class CourseStudentService {
         courseStudent.setLiked(false);
         courseStudent.setCreatedAt(LocalDateTime.now());
 
-        Notification studentToInstructorNotification = new Notification();
-        studentToInstructorNotification.setSender(webAppUser);
-        studentToInstructorNotification.setReceiver(course.getTeacher());
-        studentToInstructorNotification.setCreatedAt(LocalDateTime.now());
+        Notification studentToTeacherNotification = new Notification();
+        studentToTeacherNotification.setSender(webAppUser);
+        studentToTeacherNotification.setReceiver(course.getTeacher());
+        studentToTeacherNotification.setCreatedAt(LocalDateTime.now());
 
-        Notification instructorToStudentNotification = new Notification();
-        instructorToStudentNotification.setSender(course.getTeacher());
-        instructorToStudentNotification.setReceiver(webAppUser);
-        instructorToStudentNotification.setCreatedAt(LocalDateTime.now());
+        Notification teacherToStudentNotification = new Notification();
+        teacherToStudentNotification.setSender(course.getTeacher());
+        teacherToStudentNotification.setReceiver(webAppUser);
+        teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
 
         if (course.getType().equalsIgnoreCase("open")) {
             courseStudent.setStatus("enrolled");
             courseStudentRepository.save(courseStudent);
 
-            studentToInstructorNotification.setSubject("New Student Enrollment");
-            studentToInstructorNotification.setText(String.format("Student %s (%s) has successfully enrolled in your course: %s.",
+            studentToTeacherNotification.setSubject("New Student Enrollment");
+            studentToTeacherNotification.setText(String.format("Student %s (%s) has successfully enrolled in your course: %s.",
                     webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
 
-            instructorToStudentNotification.setSubject("Enrollment Confirmation");
-            instructorToStudentNotification.setText(String.format("You have successfully enrolled in the course: %s, taught by %s.",
+            teacherToStudentNotification.setSubject("Enrollment Confirmation");
+            teacherToStudentNotification.setText(String.format("You have successfully enrolled in the course: %s, taught by %s.",
                     course.getCourseName(), course.getTeacher().getFullName()));
         } else if (course.getType().equalsIgnoreCase("semi-open")) {
             courseStudent.setStatus("pending");
             courseStudentRepository.save(courseStudent);
 
-            studentToInstructorNotification.setSubject("Course Enrollment Pending Approval");
-            studentToInstructorNotification.setText(String.format("Student %s (%s) has requested to join your course: %s. Approval is required.",
+            studentToTeacherNotification.setSubject("Course Enrollment Pending Approval");
+            studentToTeacherNotification.setText(String.format("Student %s (%s) has requested to join your course: %s. Approval is required.",
                     webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
 
-            instructorToStudentNotification.setSubject("Enrollment Request Received");
-            instructorToStudentNotification.setText(String.format("Your request to join the course: %s, has been sent to the instructor, %s, for approval.",
+            teacherToStudentNotification.setSubject("Enrollment Request Received");
+            teacherToStudentNotification.setText(String.format("Your request to join the course: %s, has been sent to the instructor, %s, for approval.",
                     course.getCourseName(), course.getTeacher().getFullName()));
         }
 
-        notificationRepository.save(studentToInstructorNotification);
-        notificationRepository.save(instructorToStudentNotification);
+        notificationRepository.save(studentToTeacherNotification);
+        notificationRepository.save(teacherToStudentNotification);
 
         return ResponseEntity.ok("Course registration successful");
     }

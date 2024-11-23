@@ -2,10 +2,12 @@ package com.sustech.cs309.project.sussycourses.service;
 
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
+import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
+import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final WebAppUserRepository webAppUserRepository;
+    private final NotificationRepository notificationRepository;
 
     public List<AdminCourseDetailResponse> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
@@ -56,10 +59,12 @@ public class CourseService {
         String fileType = courseCreationRequest.fileType();
         String coverImageName = courseCreationRequest.coverImageName();
 
-        WebAppUser teacher = webAppUserRepository.findById(teacherId).orElse(null);
-        if (teacher == null) {
+        Optional<WebAppUser> teacherOptional = webAppUserRepository.findById(teacherId);
+        if (teacherOptional.isEmpty()) {
             return ResponseEntity.status(404).body("Instructor not found");
         }
+
+        WebAppUser teacher = teacherOptional.get();
 
         Course course = new Course();
         course.setCourseName(courseName);
@@ -72,8 +77,27 @@ public class CourseService {
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
+        WebAppUser admin = webAppUserRepository.findById(2L).orElse(null);
+
+        Notification teacherToAdminNotification = new Notification();
+        teacherToAdminNotification.setSender(teacher);
+        teacherToAdminNotification.setReceiver(admin);
+        teacherToAdminNotification.setSubject("New Course Submission: " + courseName);
+        teacherToAdminNotification.setText(String.format("Instructor %s (%s) has submitted a new course titled '%s' for approval. Please review the course details.",
+                teacher.getFullName(), teacher.getEmail(), courseName));
+        teacherToAdminNotification.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(teacherToAdminNotification);
+
+        Notification adminToTeacherNotification = new Notification();
+        adminToTeacherNotification.setSender(admin);
+        adminToTeacherNotification.setReceiver(teacher);
+        adminToTeacherNotification.setSubject("Course Submission Received");
+        adminToTeacherNotification.setText(String.format("Your course titled '%s' has been successfully submitted and is pending review by the admin. You will be notified once the review is complete.",
+                courseName));
+        adminToTeacherNotification.setCreatedAt(LocalDateTime.now());
+
         Long courseId = course.getCourseId();
-        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(String.valueOf(course.getCourseId()), coverImageName);
+        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(String.valueOf(courseId), coverImageName);
         CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
 
         return ResponseEntity.ok("Course created successfully");
