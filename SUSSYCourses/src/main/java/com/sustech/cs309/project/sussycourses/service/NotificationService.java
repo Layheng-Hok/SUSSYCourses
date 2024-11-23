@@ -22,10 +22,10 @@ public class NotificationService {
     private final CourseStudentRepository courseStudentRepository;
     private final NotificationRepository notificationRepository;
 
-    public ResponseEntity<String> createNotification(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
-        Optional<WebAppUser> teacherOptional = webAppUserRepository.findByEmailAndRoleRoleId(
-                notificationCreationRequest.senderEmail(), 3);
-        if (teacherOptional.isEmpty() || teacherOptional.get().getUserId() != teacherId) {
+    public ResponseEntity<String> notifyStudent(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
+        Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(
+                teacherId, 3);
+        if (teacherOptional.isEmpty()) {
             return ResponseEntity.status(404).body("Instructor not found");
         }
 
@@ -37,6 +37,9 @@ public class NotificationService {
 
         WebAppUser teacher = teacherOptional.get();
         WebAppUser student = studentOptional.get();
+        if (courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(student.getUserId(), courseId, "enrolled").isEmpty()) {
+            return ResponseEntity.status(404).body("Student not enrolled in this course");
+        }
 
         Notification notification = new Notification();
         notification.setSender(teacher);
@@ -44,7 +47,8 @@ public class NotificationService {
         notification.setSubject(notificationCreationRequest.subject());
         notification.setText(notificationCreationRequest.text());
         notification.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(notification);
 
-        return null;
+        return ResponseEntity.ok().body("Notification sent successfully");
     }
 }
