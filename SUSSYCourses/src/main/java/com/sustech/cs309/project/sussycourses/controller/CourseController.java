@@ -2,6 +2,7 @@ package com.sustech.cs309.project.sussycourses.controller;
 
 
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
+import com.sustech.cs309.project.sussycourses.dto.BasicCourseResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +24,21 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping("/approved")
+    public ResponseEntity<List<BasicCourseResponse>> getApprovedCoursesPaginated(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return ResponseEntity.ok(courseService.getApprovedCoursesPaginated(page, size));
+    }
+
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/pending")
     public List<AdminCourseDetailResponse> getAllPendingCourses() {
-        return courseService.getCoursesByStatus("pending");
+        return courseService.getAllPendingCourses();
     }
 
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
-    @GetMapping("/approved")
-    public List<AdminCourseDetailResponse> getAllApprovedCourses() {
-        /* *
-        ! TO DO LATER
-        */
-        return courseService.getCoursesByStatus("pending");
-    }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")

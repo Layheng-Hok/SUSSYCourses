@@ -1,9 +1,10 @@
 package com.sustech.cs309.project.sussycourses.repository;
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findById(Long courseId);
 
     List<Course> findByStatus(String status);
+
+    Page<Course> findByStatus(String status, Pageable pageable);
 
     @Query("SELECT c FROM Course c JOIN c.teacher u WHERE u.userId = c.teacher.userId")
     List<Course> findCoursesWithTeacherInfo();

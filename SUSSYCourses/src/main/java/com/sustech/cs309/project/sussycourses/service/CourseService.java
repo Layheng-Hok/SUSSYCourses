@@ -5,18 +5,21 @@ import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
+import com.sustech.cs309.project.sussycourses.dto.BasicCourseResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,26 +29,79 @@ import java.util.Optional;
 @Slf4j
 public class CourseService {
     private final CourseRepository courseRepository;
+    private final CourseStudentRepository courseStudentRepository;
     private final WebAppUserRepository webAppUserRepository;
     private final NotificationRepository notificationRepository;
+    private final RatingRepository ratingRepository;
 
     public List<AdminCourseDetailResponse> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
         return courses.stream()
-                .map(course -> new AdminCourseDetailResponse(course.getCourseId(), course.getCourseName(),
-                        course.getDescription(), course.getTopic(), course.getCoverImage(),
-                        course.getTeacher().getUserId(), course.getTeacher().getFullName(), course.getType(),
-                        course.getStatus(), course.getCreatedAt()))
+                .map(course -> new AdminCourseDetailResponse(
+                        course.getCourseId(),
+                        course.getCourseName(),
+                        course.getDescription(),
+                        course.getTopic(),
+                        course.getCoverImage(),
+                        course.getTeacher().getUserId(),
+                        course.getTeacher().getFullName(),
+                        course.getType(),
+                        course.getStatus(),
+                        course.getCreatedAt()))
                 .toList();
     }
 
-    public List<AdminCourseDetailResponse> getCoursesByStatus(String status) {
-        List<Course> courses = courseRepository.findByStatus(status);
+
+    public List<BasicCourseResponse> getApprovedCoursesPaginated(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> courses = courseRepository.findByStatus("approved", pageable);
+
         return courses.stream()
-                .map(course -> new AdminCourseDetailResponse(course.getCourseId(), course.getCourseName(),
-                        course.getDescription(), course.getTopic(), course.getCoverImage(),
-                        course.getTeacher().getUserId(), course.getTeacher().getFullName(), course.getType(),
-                        course.getStatus(), course.getCreatedAt()))
+                .map(course -> {
+                    try {
+                        return new BasicCourseResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getDescription(),
+                                course.getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                                        String.valueOf(course.getCourseId()), course.getCoverImage())),
+                                course.getTeacher().getUserId(),
+                                course.getTeacher().getFullName(),
+                                course.getTeacher().getEmail(),
+                                course.getType(),
+                                courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                ratingRepository.findAverageRatingByCourseId(course.getCourseId()),
+                                course.getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+    }
+
+    public List<AdminCourseDetailResponse> getAllPendingCourses() {
+        List<Course> courses = courseRepository.findByStatus("pending");
+        return courses.stream()
+                .map(course -> {
+                    try {
+                        return new AdminCourseDetailResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getDescription(),
+                                course.getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                                        String.valueOf(course.getCourseId()),
+                                        course.getCoverImage())),
+                                course.getTeacher().getUserId(),
+                                course.getTeacher().getFullName(),
+                                course.getType(),
+                                course.getStatus(),
+                                course.getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
     }
 

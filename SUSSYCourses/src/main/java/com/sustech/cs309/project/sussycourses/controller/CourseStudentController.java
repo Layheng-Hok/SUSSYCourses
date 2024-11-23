@@ -18,7 +18,7 @@ public class CourseStudentController {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Transactional
-    @PostMapping("/students/{userId}/courses/{courseId}/join")
+    @PostMapping("/students/{userId}/courses/{courseId}/enroll")
     public ResponseEntity<String> joinCourse(@PathVariable Long userId, @PathVariable Long courseId) {
         return courseStudentService.joinCourse(userId, courseId);
     }
