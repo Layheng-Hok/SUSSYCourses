@@ -24,14 +24,12 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/approved")
     public ApprovedCoursesResponse getApprovedCoursesPaginated(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer size) {
         return courseService.getApprovedCoursesPaginated(page, size);
     }
-
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/pending")
