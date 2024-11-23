@@ -18,6 +18,12 @@ import java.io.IOException;
 public class CourseStudentController {
     private final CourseStudentService courseStudentService;
 
+    @PreAuthorize("hasRole('ROLE_STUDENTS')")
+    @PutMapping("/students/{userId}/courses/{courseId}/join")
+    public ResponseEntity<String> joinOpenCourse(@PathVariable Long userId, @PathVariable Long courseId) {
+        return courseStudentService.joinOpenCourse(userId, courseId);
+    }
+
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/students/{userId}/courses")
     public StudentCourseListResponse getAllCoursesByStudentId(@PathVariable Long userId) {

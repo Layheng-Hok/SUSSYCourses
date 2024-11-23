@@ -14,5 +14,6 @@ public interface CoursewareRepository extends JpaRepository<Courseware, Long> {
     @Query("SELECT cw FROM Courseware cw JOIN cw.course c WHERE c.courseId = :courseId")
     List<Courseware> findCoursewareForCourse(@Param("courseId") long courseId);
 
+    List<Courseware> findByCourse_CourseId(Long courseId);
 
 }

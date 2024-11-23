@@ -29,6 +29,15 @@ public class CourseController {
         return courseService.getCoursesByStatus("pending");
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping("/approved")
+    public List<AdminCourseDetailResponse> getAllApprovedCourses() {
+        /* *
+        ! TO DO LATER
+        */
+        return courseService.getCoursesByStatus("pending");
+    }
+
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")
     public ResponseEntity<String> createCourse(@ModelAttribute CourseCreationRequest courseCreationRequest) throws Exception {

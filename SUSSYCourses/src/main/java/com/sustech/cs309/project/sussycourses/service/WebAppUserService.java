@@ -160,7 +160,7 @@ public class WebAppUserService {
         );
     }
 
-    public StudentDetailResponse getStudentUserDetail(Long userId) {
+    public StudentDetailResponse getStudentUserDetail(Long userId) throws IOException {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
@@ -170,7 +170,9 @@ public class WebAppUserService {
                 userId,
                 webAppUser.getFullName(),
                 webAppUser.getEmail(),
-                webAppUser.getProfilePicture(),
+                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                        String.valueOf(userId),
+                        webAppUser.getProfilePicture())),
                 webAppUser.getGender(),
                 webAppUser.getRole().getRoleName(),
                 webAppUser.getPoints(),
@@ -179,7 +181,7 @@ public class WebAppUserService {
         );
     }
 
-    public InstructorDetailResponse getInstructorById(Long userId) {
+    public InstructorDetailResponse getInstructorById(Long userId) throws IOException {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 3);
 
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
@@ -211,7 +213,9 @@ public class WebAppUserService {
                 userId,
                 webAppUser.getFullName(),
                 webAppUser.getEmail(),
-                webAppUser.getProfilePicture(),
+                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                        String.valueOf(userId),
+                        webAppUser.getProfilePicture())),
                 webAppUser.getGender(),
                 webAppUser.getRole().getRoleName(),
                 webAppUser.getBio(),

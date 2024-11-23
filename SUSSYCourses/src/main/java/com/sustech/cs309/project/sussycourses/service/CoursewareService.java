@@ -73,7 +73,7 @@ public class CoursewareService {
 
         for (Course course : courses) {
             JSONObject courseData = new JSONObject();
-            List<Courseware> courseware = coursewareRepository.findCoursewareForCourse(course.getCourseId());
+            List<Courseware> courseware = coursewareRepository.findByCourse_CourseId(course.getCourseId());
 
             String courseName = course.getCourseName();
             String coverPhotoName = course.getCoverImage();

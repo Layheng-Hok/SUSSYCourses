@@ -1,9 +1,11 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.RatingRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class CourseStudentService {
     private final CourseStudentRepository courseStudentRepository;
     private final WebAppUserRepository webAppUserRepository;
+    private final CourseRepository courseRepository;
     private final RatingRepository ratingRepository;
 
     public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
@@ -115,5 +118,16 @@ public class CourseStudentService {
                 : "Course liked successfully";
 
         return ResponseEntity.ok(message);
+    }
+
+    public ResponseEntity<String> joinOpenCourse(Long userId, Long courseId) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Invalid user");
+        }
+
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+
+        return null;
     }
 }
