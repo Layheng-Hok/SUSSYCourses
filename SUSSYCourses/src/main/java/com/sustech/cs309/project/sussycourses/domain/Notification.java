@@ -3,6 +3,8 @@ package com.sustech.cs309.project.sussycourses.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,4 +30,7 @@ public class Notification {
 
     @Column(nullable = false)
     private String text;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

@@ -2,13 +2,11 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
+import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
-import com.sustech.cs309.project.sussycourses.repository.RatingRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +26,7 @@ public class CourseStudentService {
     private final WebAppUserRepository webAppUserRepository;
     private final CourseRepository courseRepository;
     private final RatingRepository ratingRepository;
+    private final NotificationRepository notificationRepository;
 
     public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
@@ -120,14 +120,70 @@ public class CourseStudentService {
         return ResponseEntity.ok(message);
     }
 
-    public ResponseEntity<String> joinOpenCourse(Long userId, Long courseId) {
+    public ResponseEntity<String> joinCourse(Long userId, Long courseId) {
+        Optional<CourseStudent> courseStudentOptional = courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
+        if (courseStudentOptional.isPresent()) {
+            return ResponseEntity.status(409).body("User is already enrolled or pending approval for this course");
+        }
+
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return ResponseEntity.status(404).body("Invalid user");
         }
 
         Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty() ||
+                !courseOptional.get().getStatus().equalsIgnoreCase("approved") ||
+                courseOptional.get().getType().equalsIgnoreCase("non-open")) {
+            return ResponseEntity.status(404).body("Course not found or not opened");
+        }
 
-        return null;
+        WebAppUser webAppUser = webAppUserOptional.get();
+        Course course = courseOptional.get();
+
+        CourseStudent courseStudent = new CourseStudent();
+        courseStudent.setStudent(webAppUser);
+        courseStudent.setCourse(course);
+        courseStudent.setLiked(false);
+        courseStudent.setCreatedAt(LocalDateTime.now());
+
+        Notification studentToInstructorNotification = new Notification();
+        studentToInstructorNotification.setSender(webAppUser);
+        studentToInstructorNotification.setReceiver(course.getTeacher());
+        studentToInstructorNotification.setCreatedAt(LocalDateTime.now());
+
+        Notification instructorToStudentNotification = new Notification();
+        instructorToStudentNotification.setSender(course.getTeacher());
+        instructorToStudentNotification.setReceiver(webAppUser);
+        instructorToStudentNotification.setCreatedAt(LocalDateTime.now());
+
+        if (course.getType().equalsIgnoreCase("open")) {
+            courseStudent.setStatus("enrolled");
+            courseStudentRepository.save(courseStudent);
+
+            studentToInstructorNotification.setSubject("New Student Enrollment");
+            studentToInstructorNotification.setText(String.format("Student %s (%s) has successfully enrolled in your course: %s.",
+                    webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
+
+            instructorToStudentNotification.setSubject("Enrollment Confirmation");
+            instructorToStudentNotification.setText(String.format("You have successfully enrolled in the course: %s, taught by %s.",
+                    course.getCourseName(), course.getTeacher().getFullName()));
+        } else if (course.getType().equalsIgnoreCase("semi-open")) {
+            courseStudent.setStatus("pending");
+            courseStudentRepository.save(courseStudent);
+
+            studentToInstructorNotification.setSubject("Course Enrollment Pending Approval");
+            studentToInstructorNotification.setText(String.format("Student %s (%s) has requested to join your course: %s. Approval is required.",
+                    webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
+
+            instructorToStudentNotification.setSubject("Enrollment Request Received");
+            instructorToStudentNotification.setText(String.format("Your request to join the course: %s, has been sent to the instructor, %s, for approval.",
+                    course.getCourseName(), course.getTeacher().getFullName()));
+        }
+
+        notificationRepository.save(studentToInstructorNotification);
+        notificationRepository.save(instructorToStudentNotification);
+
+        return ResponseEntity.ok("Course registration successful");
     }
 }
