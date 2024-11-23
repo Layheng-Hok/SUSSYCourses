@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
+import com.sustech.cs309.project.sussycourses.dto.CourseStudentListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
 import com.sustech.cs309.project.sussycourses.service.CourseStudentService;
@@ -27,6 +28,12 @@ public class CourseStudentController {
     @GetMapping("/students/{userId}/courses")
     public StudentCourseListResponse getAllCoursesByStudentId(@PathVariable Long userId) {
         return courseStudentService.getAllCoursesByStudentId(userId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @GetMapping("/courses/{courseId}/students")
+    public CourseStudentListResponse getAllStudentsByCourseId(@PathVariable Long courseId) {
+        return courseStudentService.getAllStudentsByCourseId(courseId);
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")

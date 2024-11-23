@@ -4,8 +4,10 @@ import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.dto.CourseStudentListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
+import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
 import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +68,26 @@ public class CourseStudentService {
                 studentCourseDetailResponses
         );
     }
+
+    public CourseStudentListResponse getAllStudentsByCourseId(Long courseId) {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty() || !courseOptional.get().getStatus().equalsIgnoreCase("approved")) {
+            return null;
+        }
+
+        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseId(courseId);
+        List<StudentDetailResponse> studentDetailResponses = courseStudents.stream()
+                .map(courseStudent -> new StudentDetailResponse(
+                        courseStudent.getStudent().getUserId(),
+                        courseStudent.getStudent().getFullName(),
+                        courseStudent.getStudent().getEmail(),
+                        null, null, null, null, null, null
+                ))
+                .toList();
+
+        return new CourseStudentListResponse(studentDetailResponses.size(), studentDetailResponses);
+    }
+
 
     public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) throws IOException {
         Optional<CourseStudent> courseStudentOptional =
