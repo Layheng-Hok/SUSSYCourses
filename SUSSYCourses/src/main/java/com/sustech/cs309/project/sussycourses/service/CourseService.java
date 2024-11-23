@@ -5,6 +5,7 @@ import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
+import com.sustech.cs309.project.sussycourses.dto.ApprovedCoursesResponse;
 import com.sustech.cs309.project.sussycourses.dto.BasicCourseResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.repository.*;
@@ -52,12 +53,13 @@ public class CourseService {
     }
 
 
-    public List<BasicCourseResponse> getApprovedCoursesPaginated(Integer page, Integer size) {
+    public ApprovedCoursesResponse getApprovedCoursesPaginated(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Course> courses = courseRepository.findByStatus("approved", pageable);
+        Page<Course> coursesPage = courseRepository.findByStatus("approved", pageable);
 
-        return courses.stream()
+        List<BasicCourseResponse> courses = coursesPage.stream()
                 .map(course -> {
+
                     try {
                         return new BasicCourseResponse(
                                 course.getCourseId(),
@@ -78,6 +80,10 @@ public class CourseService {
                     }
                 })
                 .toList();
+
+        Long totalApprovedCourses = courseRepository.countByStatus("approved");
+
+        return new ApprovedCoursesResponse(totalApprovedCourses, courses);
     }
 
     public List<AdminCourseDetailResponse> getAllPendingCourses() {

@@ -16,6 +16,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findByStatus(String status, Pageable pageable);
 
+    Long countByStatus(String status);
+
     @Query("SELECT c FROM Course c JOIN c.teacher u WHERE u.userId = c.teacher.userId")
     List<Course> findCoursesWithTeacherInfo();
 

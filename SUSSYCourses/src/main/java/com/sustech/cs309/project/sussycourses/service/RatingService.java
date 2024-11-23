@@ -26,7 +26,7 @@ public class RatingService {
     private final CourseStudentRepository courseStudentRepository;
 
     public ResponseEntity<String> rateCourse(Long userId, Long courseId, RatingRequest ratingRequest) {
-        Optional<CourseStudent> courseStudent = courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
+        Optional<CourseStudent> courseStudent = courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseId(userId, courseId);
         if (courseStudent.isEmpty() || !courseStudent.get().getStatus().equalsIgnoreCase("enrolled")) {
             return ResponseEntity.status(404).body("Student is not enrolled in this course");
         }

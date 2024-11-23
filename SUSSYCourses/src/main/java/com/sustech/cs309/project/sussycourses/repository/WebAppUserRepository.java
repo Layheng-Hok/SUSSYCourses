@@ -8,9 +8,11 @@ import java.util.Optional;
 public interface WebAppUserRepository extends JpaRepository<WebAppUser, Long> {
     Optional<WebAppUser> findByEmail(String email);
 
-    Optional<WebAppUser> findByUserId(long userId);
+    Optional<WebAppUser> findByUserId(Long userId);
 
-    Optional<WebAppUser> findByUserIdAndRoleRoleId(long userId, int roleId);
+    Optional<WebAppUser> findByUserIdAndRoleRoleId(Long userId, Integer roleId);
+
+    Optional<WebAppUser> findByEmailAndRoleRoleId(String email, Integer roleId);
 
     Optional<WebAppUser> findByFullName(String username);
 

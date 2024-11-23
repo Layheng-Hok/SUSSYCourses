@@ -34,7 +34,7 @@ public class CourseStudentService {
             return null;
         }
 
-        List<CourseStudent> courses = courseStudentRepository.findAllCoursesByStudentId(userId);
+        List<CourseStudent> courses = courseStudentRepository.findByStudent_UserId(userId);
         List<StudentCourseDetailResponse> studentCourseDetailResponses = courses.stream()
                 .map(courseStudent -> {
                     try {
@@ -69,7 +69,7 @@ public class CourseStudentService {
 
     public StudentCourseDetailResponse getCourseDetailForStudent(Long userId, Long courseId) throws IOException {
         Optional<CourseStudent> courseStudentOptional =
-                courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
+                courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseId(userId, courseId);
 
         if (courseStudentOptional.isEmpty() ||
                 !courseStudentOptional.get().getStatus().equalsIgnoreCase("enrolled")) {
@@ -101,7 +101,7 @@ public class CourseStudentService {
 
     public ResponseEntity<String> likeOrUnlikeCourse(Long userId, Long courseId) {
         Optional<CourseStudent> courseStudentOptional =
-                courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
+                courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseId(userId, courseId);
 
         if (courseStudentOptional.isEmpty()) {
             return ResponseEntity.status(404).body("Student is not enrolled in the course");
@@ -121,7 +121,7 @@ public class CourseStudentService {
     }
 
     public ResponseEntity<String> joinCourse(Long userId, Long courseId) {
-        Optional<CourseStudent> courseStudentOptional = courseStudentRepository.findByStudentIdAndCourseId(userId, courseId);
+        Optional<CourseStudent> courseStudentOptional = courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseId(userId, courseId);
         if (courseStudentOptional.isPresent()) {
             return ResponseEntity.status(409).body("User is already enrolled or pending approval for this course");
         }

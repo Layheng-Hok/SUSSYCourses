@@ -2,7 +2,7 @@ package com.sustech.cs309.project.sussycourses.controller;
 
 
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.BasicCourseResponse;
+import com.sustech.cs309.project.sussycourses.dto.ApprovedCoursesResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +26,10 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/approved")
-    public ResponseEntity<List<BasicCourseResponse>> getApprovedCoursesPaginated(
+    public ApprovedCoursesResponse getApprovedCoursesPaginated(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer size) {
-        return ResponseEntity.ok(courseService.getApprovedCoursesPaginated(page, size));
+        return courseService.getApprovedCoursesPaginated(page, size);
     }
 
 

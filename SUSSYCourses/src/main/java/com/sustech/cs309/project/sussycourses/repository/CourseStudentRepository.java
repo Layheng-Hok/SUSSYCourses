@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseStudentRepository extends JpaRepository<CourseStudent, Long> {
+    List<CourseStudent> findByCourse_CourseId(Long courseId);
 
-    @Query("SELECT cs FROM CourseStudent cs WHERE cs.student.userId = :userId")
-    List<CourseStudent> findAllCoursesByStudentId(@Param("userId") Long userId);
+    List<CourseStudent> findByStudent_UserId(Long userId);
 
-    @Query("SELECT cs FROM CourseStudent cs WHERE cs.student.userId = :userId AND cs.course.courseId = :courseId")
-    Optional<CourseStudent> findByStudentIdAndCourseId(@Param("userId") Long userId, @Param("courseId") Long courseId
-    );
+    Optional<CourseStudent> findCourseStudentByStudent_UserIdAndCourse_CourseId(Long userId, Long courseId);
 
     @Query("SELECT COUNT(cs) FROM CourseStudent cs WHERE cs.course.courseId = :courseId AND cs.liked = TRUE")
     Long countLikesByCourseId(@Param("courseId") Long courseId);

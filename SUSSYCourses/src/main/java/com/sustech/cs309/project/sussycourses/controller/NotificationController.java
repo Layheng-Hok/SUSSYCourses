@@ -1,15 +1,28 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
+import com.sustech.cs309.project.sussycourses.dto.NotificationCreationRequest;
+import com.sustech.cs309.project.sussycourses.service.NotificationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
 public class NotificationController {
-//    @GetMapping("/coursewarePage")
-//    public List<Not> coursePage() {
-//        return coursewareService.retrieveCoursewareData();
-//    }
+    private final NotificationService notificationService;
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @Transactional
+    @PostMapping("instructors/{userId}/courses/{courseId}/notify")
+    public ResponseEntity<String> createNotification(
+            @PathVariable Long userId,
+            @PathVariable Long courseId,
+            @RequestBody NotificationCreationRequest notificationCreationRequest) {
+        return notificationService.createNotification(userId, courseId, notificationCreationRequest);
+    }
 }
