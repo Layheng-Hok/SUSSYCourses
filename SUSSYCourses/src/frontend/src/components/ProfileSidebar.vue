@@ -2,7 +2,7 @@
     <el-aside class="profile-sidebar" :class="{ visible: isVisible }">
       <!-- Profile Section -->
       <div class="profile-section">
-        <img class="profile-pic-large" :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" />
+        <img class="profile-pic-large" :src="user?.profileImageUrl || defaultProfilePic" alt="Profile Picture" />
         <h3>{{ user?.fullName }}</h3>
         <p>{{ user?.email }}</p>
       </div>

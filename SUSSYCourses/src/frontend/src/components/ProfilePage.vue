@@ -5,7 +5,7 @@
   <div class="profile-container">
     <!-- Profile Picture -->
     <div class="profile-picture-section">
-      <img :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
+      <img :src="user?.profileImageUrl || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
     </div>
 
     <!-- User Information -->

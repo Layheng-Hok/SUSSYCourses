@@ -7,7 +7,7 @@
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src=" user?.profilePic || defaultProfilePic" alt="Profile Picture"/>
+      <img class="profile-pic-small" :src=" user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
     </el-menu-item>
   </el-menu>
 
@@ -270,8 +270,8 @@ html {
 }
 
 .profile-pic-small {
-  width: 65spx;
-  height: 65px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   object-fit: cover;
   overflow: hidden;

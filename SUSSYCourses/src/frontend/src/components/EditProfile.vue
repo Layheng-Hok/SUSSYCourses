@@ -5,11 +5,11 @@
   <div class="profile-container">
     <!-- Profile Picture Section -->
     <div class="profile-picture-section">
-      <img :src="user?.profilePic || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
+      <img :src="profileImagePreview || user?.profileImageUrl || defaultProfilePic" alt="Profile Picture" class="profile-pic" />
       <div class="upload-avatar">
         <label class="upload-label">
           Upload New Picture
-          <input type="file" accept="image/*" @change="uploadAvatar" hidden />
+          <input type="file" accept="image/*" @change="handleImageChange" hidden />
         </label>
       </div>
     </div>
@@ -47,86 +47,81 @@
 </template>
   
 <script setup>
-
-import { ref, onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from '@element-plus/icons-vue';
 import axiosInstances from '@/services/axiosInstance';
 
-const goBack = () => {
-  router.back();
-};
-
 const router = useRouter();
+const goBack = () => router.back();
+
 const user = ref({
   profilePic: null,
   fullName: '',
   gender: '',
   bio: '',
-}); 
-const userId = localStorage.getItem('userId'); 
-const defaultProfilePic = "/assets/Avatars/student.jpg";
+});
+const userId = localStorage.getItem('userId');
+const defaultProfilePic = '/assets/Avatars/student.jpg';
+
+const profileImage = ref(null); 
+const profileImagePreview = ref(null);
+const fileNameWithoutExtension = ref('');
+const fileType = ref('');
 
 const fetchUserData = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
     user.value = response.data;
   } catch (error) {
-    console.log("Error Details:", error);
-    if (error.response && error.response.status === 403) {
-      router.push({ name: 'ForbiddenPage' }); 
-    } else {
-      console.error("Unexpected error occurred:", error);
-    }  }
+    console.error('Error fetching user data:', error);
+    if (error.response?.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    }
+  }
 };
 
-  
-const uploadAvatar = (event) => {
-const file = event.target.files[0];
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      user.value.profilePic = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    profileImage.value = file;
+    profileImagePreview.value = URL.createObjectURL(file);
+
+    const fullFileName = file.name;
+    fileNameWithoutExtension.value = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
+    fileType.value = fullFileName.substring(fullFileName.lastIndexOf('.') + 1);
   }
 };
 
 const submitForm = async () => {
   try {
-    if (!user.value.fullName || !user.value.gender || !user.value.bio || !user.value.profilePic) {
-      alert("Please fill in all the required fields and upload a profile picture.");
+    if (!user.value.fullName || !user.value.gender || !user.value.bio) {
+      alert('Please fill in all the required fields.');
       return;
     }
-
-    const file = document.querySelector('input[type="file"]').files[0];
-    if (!file) {
-      alert("Please upload a valid profile picture.");
-      return;
-    }
-
-    const baseFileName = file.name.replace(/\.[^/.]+$/, "");
-    console.log('baseFileName:', baseFileName);
 
     const formData = new FormData();
     formData.append('fullName', user.value.fullName);
     formData.append('gender', user.value.gender);
     formData.append('bio', user.value.bio);
-    formData.append('profilePictureName', baseFileName);
-    formData.append('fileType', file.type);
-    formData.append('profilePicture', file);
 
-    const response = await axiosInstances.axiosInstance.put(
-      `users/update/${userId}`,
-      formData
-    );
+    if (profileImage.value) {
+      formData.append('profilePictureName', fileNameWithoutExtension.value);
+      formData.append('fileType', fileType.value);
+      formData.append('profilePicture', profileImage.value);
+    }
+
+    const response = await axiosInstances.axiosInstance.put(`users/update/${userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
     if (response.status === 200) {
       console.log('Profile updated successfully:', response.data);
       alert('Profile updated successfully!');
     } else {
-      console.error('Failed to update profile:', response);
-      alert('Failed to update profile. Please try again later.');
+      throw new Error(response.data.message || 'Failed to update profile.');
     }
   } catch (error) {
     console.error('Error updating profile:', error);
@@ -134,9 +129,7 @@ const submitForm = async () => {
   }
 };
 
-
 onMounted(fetchUserData);
-
 </script>
 
 <style scoped>
