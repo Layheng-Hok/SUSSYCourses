@@ -1,17 +1,15 @@
-// src/router/index.js
-
 import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/components/MainPage.vue"; // Import TopBar component
 import TeacherPage from "@/components/TeacherPage.vue";
 import StudentPage from "@/components/StudentPage.vue";
 import AdminPage from "@/components/AdminPage.vue";
-
 import ProfilePage from "@/components/ProfilePage.vue";
 import CoursePage from "@/components/CoursePage.vue";
 import EditProfile from "@/components/EditProfile.vue";
 import AccountSecurity from "@/components/AccountSecurity.vue";
 import Notifications from "@/components/Notifications.vue";
 import HelpSupport from "@/components/HelpSupport.vue";
+import CourseList from "@/components/CourseList.vue";
 
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
@@ -138,6 +136,11 @@ const routes = [
     path: "/teacher-courses-details",
     name: "TeacherCoursesDetails",
     component: TeacherCoursesDetails,
+  },
+  {
+    path : "/courselist",
+    name : "CourseList",
+    component : CourseList
   },
   {
     path: '/403',
