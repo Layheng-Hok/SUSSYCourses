@@ -77,8 +77,17 @@
               </div>
         <div>
            <p><strong>{{ course.teacherName }}</strong></p>
-            <p class="bio">{{ course?.teacherBio || "null" }}</p>
-        </div>
+            <p class="bio">{{ course?.teacherBio || "The teacher doesn't want to introduce him/herself" }}</p>
+            <el-button type="primary" class="tts-button" @click="readBio('en')">
+            🔊 Read Bio (English)
+          </el-button>
+          <el-button type="success" class="tts-button" @click="readBio('zh')">
+            🔊 Read Bio (Chinese)
+          </el-button>
+          <el-button type="warning" class="tts-button" @click="readBio('ja')">
+            🔊 Read Bio (Japanese)
+          </el-button>
+          </div>
         </el-card>
       </div>
     </div>
@@ -120,6 +129,56 @@ const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
+
+import axios from 'axios';
+
+const readBio = async (language) => {
+  const bioText = course.value?.teacherBio || "No bio available for this instructor.";
+  let translatedText = bioText;
+
+  if (language !== 'en') {
+    translatedText = await translateText(bioText, language);
+  }
+
+  const utterance = new SpeechSynthesisUtterance(translatedText);
+  utterance.rate = 1; 
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+  if (language === 'zh') {
+    utterance.voice = voices.find((voice) => voice.lang === 'zh-CN'); 
+  } else if (language === 'ja') {
+    utterance.voice = voices.find((voice) => voice.lang === 'ja-JP'); 
+  } else {
+    utterance.voice = voices.find((voice) => voice.lang === 'en-US'); 
+  }
+
+  window.speechSynthesis.speak(utterance);
+};
+
+const translateText = async (text, targetLanguage) => {
+  const apiKey = process.env.VUE_APP_GOOGLE_API_KEY;
+
+  try {
+    const response = await axios.post(
+      `https://translation.googleapis.com/language/translate/v2`,
+      {
+        q: text,
+        target: targetLanguage,
+      },
+      {
+        params: {
+          key: apiKey, 
+        },
+      }
+    );
+    return response.data.data.translations[0].translatedText;
+  } catch (error) {
+    console.error("Translation failed:", error.response?.data || error.message);
+    return text;
+  }
+};
 
 const incrementLikes = async () => {
   isLiked.value = !isLiked.value;
@@ -272,6 +331,24 @@ onMounted(async () => {
   border-radius: 8px;
   padding: 5px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tts-button {
+  margin: 10px 5px 0 0;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tts-button[type="success"] {
+  background-color: #67c23a;
+  color: #fff;
+}
+
+.tts-button[type="warning"] {
+  background-color: #e6a23c;
+  color: #fff;
 }
 
 .course-image{
