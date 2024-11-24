@@ -192,6 +192,7 @@ public class CoursewareService {
         int order = updateCoursewareRequest.order();
         int version = updateCoursewareRequest.version();
         long variant = updateCoursewareRequest.variant_of();
+        boolean changeFile = updateCoursewareRequest.changeFile();
         MultipartFile file = updateCoursewareRequest.file();
 
         Course course = courseRepository.findById(courseId).get();
@@ -203,7 +204,7 @@ public class CoursewareService {
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
 
-        if(file != null){
+        if(changeFile){
             String url = resolveCoursewareLocation(course.getCourseName(), courseware.getUrl(), chapter);
             CloudUtils.putStorageKey(file, fileType, url);
         }

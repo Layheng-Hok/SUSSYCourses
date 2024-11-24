@@ -12,4 +12,5 @@ public record UpdateCoursewareRequest(
         Integer order,
         Long variant_of,
         Integer version,
+        Boolean changeFile,
         MultipartFile file) {}
