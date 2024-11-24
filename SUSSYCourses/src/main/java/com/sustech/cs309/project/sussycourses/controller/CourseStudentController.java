@@ -35,16 +35,27 @@ public class CourseStudentController {
         return courseStudentService.addStudent(instructorId, courseId, studentEmail);
     }
 
-//    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-//    @Transactional
-//    @PostMapping("/instructors/{instructorId}/courses/{courseId}/accept/{studentEmail}")
-//    public ResponseEntity<String> addStudent
-//            (@PathVariable Long instructorId,
-//             @PathVariable Long courseId,
-//             @PathVariable String studentEmail
-//            ) {
-//        return courseStudentService.addStudent(instructorId, courseId, studentEmail);
-//    }
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @Transactional
+    @PutMapping("/instructors/{instructorId}/courses/{courseId}/accept/{studentId}")
+    public ResponseEntity<String> acceptStudent
+            (@PathVariable Long instructorId,
+             @PathVariable Long courseId,
+             @PathVariable Long studentId
+            ) {
+        return courseStudentService.acceptOrRejectStudent(instructorId, courseId, studentId, "enrolled");
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @Transactional
+    @PutMapping("/instructors/{instructorId}/courses/{courseId}/reject/{studentId}")
+    public ResponseEntity<String> rejectStudent
+            (@PathVariable Long instructorId,
+             @PathVariable Long courseId,
+             @PathVariable Long studentId
+            ) {
+        return courseStudentService.acceptOrRejectStudent(instructorId, courseId, studentId, "rejected");
+    }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/students/{userId}/courses")

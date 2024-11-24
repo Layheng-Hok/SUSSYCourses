@@ -269,4 +269,33 @@ public class CourseStudentService {
 
         return ResponseEntity.ok().body("Student added successfully");
     }
+
+    public ResponseEntity<String> acceptOrRejectStudent(Long teacherId, Long courseId, Long studentId, String decision) {
+        Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(teacherId, 3);
+        if (teacherOptional.isEmpty() || !teacherOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Instructor not found");
+        }
+
+        Optional<WebAppUser> studentOptional = webAppUserRepository.findByUserIdAndRoleRoleId(studentId, 2);
+        if (studentOptional.isEmpty() || !studentOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Student not found");
+        }
+
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
+        if (courseOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("Course not found");
+        }
+        if (!courseOptional.get().getTeacher().getUserId().equals(teacherId)) {
+            return ResponseEntity.status(403).body("Teacher does not have permission to add a student to this course");
+        }
+
+        Optional<CourseStudent> courseStudentOptional = courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(studentId, courseId, "pending");
+        if (courseStudentOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("No pending enrollment request found for this student in the course");
+        }
+
+        courseStudentOptional.get().setStatus(decision);
+
+        return ResponseEntity.ok("Student accepted successfully");
+    }
 }

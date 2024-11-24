@@ -198,7 +198,9 @@ VALUES (1, 3, 'enrolled', TRUE),
        (6, 5, 'enrolled', TRUE),
        (11, 3, 'enrolled', TRUE),
        (1, 5, 'enrolled', TRUE),
-       (1, 6, 'enrolled', TRUE);
+       (1, 6, 'enrolled', TRUE),
+       (13, 3, 'pending', FALSE),
+       (13, 5, 'pending', FALSE);
 
 INSERT INTO comment (user_id, course_id, message, attachment, attachment_type, reply_id, created_at)
 VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, NULL, '2023-10-01T12:00:00Z'),
