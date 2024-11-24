@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,21 +20,25 @@ public class Comment {
     private Long commentId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
     private WebAppUser user;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "courseId")
+    @JoinColumn(name = "course_id", referencedColumnName = "courseId", nullable = false)
     private Course course;
 
     @Column(length = 300, nullable = false)
     private String message;
 
-    @Column(length = 300)
-    private String reply;
+    @Column
+    private String attachment;
 
-    @Column()
-    private Long replyId;
+    @ManyToOne
+    @JoinColumn(name = "reply_id")
+    private Comment reply;
+
+    @OneToMany(mappedBy = "reply", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> replies;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

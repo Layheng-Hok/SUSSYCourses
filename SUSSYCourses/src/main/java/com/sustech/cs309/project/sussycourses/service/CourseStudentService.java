@@ -48,7 +48,7 @@ public class CourseStudentService {
                                         String.valueOf(courseStudent.getCourse().getCourseId()),
                                         courseStudent.getCourse().getCoverImage())),
                                 courseStudent.getCourse().getTeacher().getUserId(),
-                                null,
+                                courseStudent.getCourse().getTeacher().getFullName(),
                                 null,
                                 null,
                                 courseStudent.getCourse().getType(),

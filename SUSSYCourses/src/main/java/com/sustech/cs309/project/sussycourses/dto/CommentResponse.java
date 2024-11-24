@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 
 public record CommentResponse(
         Long commentId,
-        Long replyId,
-        String replyMessage,
-        String fullName,
-        String message,
-        String reply,
-        LocalDateTime createdAt,
-        String repliedTo
+        String commentFullName,
+        String commentProfilePictureUrl,
+        String commentMessage,
+        String commentAttachment,
+        LocalDateTime commentCreatedAt,
+        Long replyToId,
+        String replyToFullName,
+        String replyToProfilePictureUrl,
+        String replyToMessage,
+        String replyToAttachment,
+        LocalDateTime replyToCreatedAt
 ) {
 }
