@@ -3,6 +3,7 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
+import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
@@ -30,8 +31,7 @@ public class CoursewareService {
     public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
-    public String resolveCoursewareLocation(String courseName, String url, int chapter, int version) {
-        System.out.println("Courses/" + courseName + "/courseware/" + chapter + "/" + url);
+    public String resolveCoursewareLocation(String courseName, String url, int chapter) {
         return "Courses/" + courseName + "/courseware/" + chapter + "/" + url;
     }
 
@@ -58,7 +58,7 @@ public class CoursewareService {
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
         courseware.setCreatedAt(LocalDateTime.now());
-        String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), chapter, version);
+        String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), chapter);
         CloudUtils.putStorageKey(file, fileType, url);
         coursewareRepository.save(courseware);
         return ResponseEntity.ok().body("Courseware uploaded");
@@ -97,7 +97,8 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -107,7 +108,8 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -122,7 +124,8 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -132,13 +135,15 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
                         materials.put(material);
                         homeworkChapter.put("name", "Homework " + c.getChapter());
                         homeworkChapter.put("materials", materials);
+                        homeworkChapters.put(homeworkChapter);
                     }
                 } else if (Objects.equals(c.getCategory(), "project")) {
                     if (projectChapters.length() == c.getChapter()) {
@@ -146,7 +151,8 @@ public class CoursewareService {
                         JSONArray materials = chapter.getJSONArray("materials");
 
                         JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -156,14 +162,15 @@ public class CoursewareService {
                         JSONArray materials = new JSONArray();
                         JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter(), version));
+                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
+                        material.put("coursewareId", c.getCoursewareId());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
                         materials.put(material);
                         projectChapter.put("name", "Project " + c.getChapter());
                         projectChapter.put("materials", materials);
-
+                        projectChapters.put(projectChapter);
                     }
                 }
             }
@@ -175,4 +182,33 @@ public class CoursewareService {
         return data.toString();
     }
 
+    public ResponseEntity<String> updateCourseware(UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
+        Courseware courseware = coursewareRepository.findById(updateCoursewareRequest.coursewareId()).get();
+        long courseId = updateCoursewareRequest.courseId();
+        String fileType = updateCoursewareRequest.fileType();
+        String category = updateCoursewareRequest.category();
+        boolean downloadable = updateCoursewareRequest.downloadable();
+        int chapter = updateCoursewareRequest.chapter();
+        int order = updateCoursewareRequest.order();
+        int version = updateCoursewareRequest.version();
+        long variant = updateCoursewareRequest.variant_of();
+        MultipartFile file = updateCoursewareRequest.file();
+
+        Course course = courseRepository.findById(courseId).get();
+        courseware.setFileType(fileType);
+        courseware.setCategory(category);
+        courseware.setDownloadable(downloadable);
+        courseware.setChapter(chapter);
+        courseware.setCoursewareOrder(order);
+        courseware.setVersion(version);
+        courseware.setVariantOf(variant);
+
+        if(file != null){
+            String url = resolveCoursewareLocation(course.getCourseName(), courseware.getUrl(), chapter);
+            CloudUtils.putStorageKey(file, fileType, url);
+        }
+        coursewareRepository.save(courseware);
+
+        return ResponseEntity.ok("Updated successfully");
+    }
 }
