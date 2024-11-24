@@ -9,6 +9,22 @@
     <h1>Notifications ({{ totalNotifications }})</h1>
   </div>
 
+  <!-- Toggle Between Received and Sent Messages -->
+  <div class="toggle-section">
+    <el-button
+      :type="activeTab === 'received' ? 'primary' : 'default'"
+      @click="switchTab('received')"
+    >
+      Received Messages
+    </el-button>
+    <el-button
+      :type="activeTab === 'sent' ? 'primary' : 'default'"
+      @click="switchTab('sent')"
+    >
+      Sent Messages
+    </el-button>
+  </div>
+
   <!-- Notifications List -->
   <div class="notifications-list">
     <div v-if="notifications.length === 0" class="no-notifications">
@@ -24,8 +40,13 @@
         <!-- Subject -->
         <h2 class="notification-title">{{ notification.subject }}</h2>
 
-        <!-- Sender Email -->
-        <p class="notification-sender"><strong>From:</strong> {{ notification.senderFullName }} ({{ notification.senderEmail }})</p>
+        <!-- Email Information -->
+        <p v-if="activeTab === 'received'" class="notification-sender">
+          <strong>From:</strong> {{ notification.senderFullName }} ({{ notification.senderEmail }})
+        </p>
+        <p v-else class="notification-sender">
+          <strong>To:</strong> {{ notification.receiverFullName }} ({{ notification.receiverEmail }})
+        </p>
 
         <!-- Message -->
         <p class="notification-message">{{ notification.text }}</p>
@@ -56,7 +77,6 @@
     </el-select>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -73,22 +93,34 @@ const currentPage = ref(1);
 const pageSize = ref(20); 
 const totalNotifications = ref(0);
 const notifications = ref([]);
+const activeTab = ref('received'); // Default to 'received' messages
 
 const fetchNotifications = async (page = 1) => {
   try {
     const userId = localStorage.getItem('userId'); 
-    const response = await axiosInstances.axiosInstance.get(`users/${userId}/mailbox`, {
+    const endpoint =
+      activeTab.value === 'received'
+        ? `users/${userId}/mailbox`
+        : `users/${userId}/sent`;
+
+    const response = await axiosInstances.axiosInstance.get(endpoint, {
       params: {
         page: page - 1, 
         size: pageSize.value,
       },
     });
+
     notifications.value = response.data.notifications;
     totalNotifications.value = response.data.totalNotifications;
     currentPage.value = page; 
   } catch (error) {
     console.error('Error fetching notifications:', error);
   }
+};
+
+const switchTab = (tab) => {
+  activeTab.value = tab; 
+  fetchNotifications(1); 
 };
 
 const formatDate = (isoDate) => {
@@ -134,6 +166,13 @@ onMounted(() => {
     margin-bottom: 10px;
   }
   
+  .toggle-section {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
   .notifications-list {
   margin-top: 20px;
   display: flex;

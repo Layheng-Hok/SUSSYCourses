@@ -220,4 +220,11 @@ VALUES (1, 2, 6, 4.0, 4.5, 4.0, 3.5, 'Good content, clear explanations.', NOW())
        (11, 6, 5, 4.5, 4.5, 4.5, 4.5, 'Interesting insights, well-structured.', NOW()),
        (12, 11, 3, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW());
 
+
+INSERT INTO notification (sender_email, receiver_email, subject, text, created_at) VALUES
+                                                                                       ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!', 'Thank you for joining my course! I hope you enjoy your learning experience.', '2023-10-01T12:00:00Z'),
+                                                                                       ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Important', 'You have a project deadline in 3 days.', '2023-10-01T12:00:00Z'),
+                                                                                       ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
+
+
 END;
