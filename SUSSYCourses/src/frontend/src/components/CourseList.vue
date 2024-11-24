@@ -5,25 +5,8 @@
   
     <!-- Main Content Section -->
     <div class="main-content">
-      <!-- Search and Filter Section -->
+      <!-- Sorting Section -->
       <div class="search-filter-section">
-        <el-input
-          placeholder="Search for courses..."
-          v-model="searchQuery"
-          clearable
-          prefix-icon="el-icon-search"
-        ></el-input>
-  
-        <!-- Category Dropdown -->
-        <el-select v-model="selectedCategory" placeholder="Select Category" clearable>
-          <el-option
-            v-for="topic in categories"
-            :key="topic"
-            :label="topic"
-            :value="topic"
-          />
-        </el-select>
-  
         <!-- Sorting Dropdown -->
         <el-select v-model="sortBy" placeholder="Sort By" clearable>
           <el-option label="Alphabetical (A to Z)" value="alphabetical-1" />
@@ -33,17 +16,10 @@
           <el-option label="By Ratings (from Low to High)" value="rating-1" />
           <el-option label="By Ratings (from High to Low)" value="rating-2" />
         </el-select>
-  
-        <!-- Course Type Filter -->
-        <el-select v-model="selectedCourseType" placeholder="Filter by Course Type" clearable>
-          <el-option label="All Course Types" value="all" />
-          <el-option label="Open" value="open" />
-          <el-option label="Semi-Open" value="semi-open" />
-        </el-select>
       </div>
   
       <!-- Course Boxes Section -->
-      <h2 class="section-heading">All available courses: </h2>
+      <h2 class="section-heading">All available courses ({{ totalCourses }}): </h2>
       <div class="course-boxes">
         <div
           v-for="(course, index) in filteredCourses"
@@ -58,8 +34,6 @@
           />
           <h3>{{ course.courseName }}</h3>
           <p class="course-instructor">Instructor: {{ course.teacherName }}</p>
-          <p class="course-topic">Category: {{ course.topic }}</p>
-          <p class="course-type">Type: {{ course.type }}</p>
           <p class="course-likes">Likes Count: {{ course?.likesCount || 0 }} ❤️</p>
           <p class="course-rating">Rating: {{ course?.averageRating || 0 }} ⭐</p>
         </div>
@@ -70,11 +44,19 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :page-size="20"
+          :page-size="pageSize"
           :total="totalCourses"
           @current-change="handlePageChange"
           :current-page="currentPage"
         ></el-pagination>
+  
+        <!-- Pagination Size Dropdown -->
+        <el-select v-model="pageSize" class="page-size-dropdown" placeholder="Courses Per Page">
+          <el-option label="5" :value="5" />
+          <el-option label="10" :value="10" />
+          <el-option label="20" :value="20" />
+          <el-option label="40" :value="40" />
+        </el-select>
       </div>
     </div>
   </template>
@@ -91,43 +73,28 @@
   const router = useRouter();
   const route = useRoute();
   
-  const categories = ref([
-    "All",
-    "Web Development",
-    "Marketing",
-    "Programming",
-    "Finance",
-    "Leadership",
-    "Data Science",
-    "Design",
-    "Hardware",
-    "Economics",
-  ]);
-  
-  const searchQuery = ref("");
-  const selectedCategory = ref("All");
   const sortBy = ref("");
-  const selectedCourseType = ref("all");
-  const currentPage = ref(1); 
-  const totalCourses = ref(0); 
+  const currentPage = ref(1);
+  const totalCourses = ref(0);
+  const pageSize = ref(10); // Default number of courses per page
   
   const goBack = () => router.back();
   
   const fetchCourseData = debounce(async () => {
     try {
       const backendPage = currentPage.value - 1;
-     
   
       const response = await axiosInstances.axiosInstance.get(`courses/approved`, {
         params: {
           page: backendPage,
-          pageSize: 20, 
+          size: pageSize.value, 
         },
       });
   
       courses.value = [...response.data.courses];
       totalCourses.value = response.data.totalApprovedCourses || 0;
-  
+      console.log("Courses fetched:", courses.value);
+      console.log("Total courses:", totalCourses.value);
     } catch (error) {
       console.error("Error fetching courses:", error);
       if (error.response && error.response.status === 403) {
@@ -136,79 +103,45 @@
     }
   }, 300);
   
-  const updateQueryParams = () => {
-    router.replace({
-      query: {
-        page: currentPage.value,
-        category: selectedCategory.value,
-        sortBy: sortBy.value,
-        search: searchQuery.value,
-        type: selectedCourseType.value,
-      },
-    });
-  };
-  
   onMounted(() => {
-    const query = route.query;
-  
-    currentPage.value = parseInt(query.page || "1");
-    selectedCategory.value = query.category || "All";
-    sortBy.value = query.sortBy || "";
-    searchQuery.value = query.search || "";
-    selectedCourseType.value = query.type || "all";
-  
+    currentPage.value = parseInt(route.query.page || "1");
+    pageSize.value = parseInt(route.query.pageSize || "10");
+    sortBy.value = route.query.sortBy || "";
     fetchCourseData();
   });
   
-  watch(
-    [selectedCategory, sortBy, selectedCourseType, searchQuery],
-    () => {
-      currentPage.value = 1; 
-      updateQueryParams();
-      fetchCourseData();
-    }
-  );
-  
-  watch([currentPage], () => {
-    updateQueryParams();
+  watch([currentPage, pageSize], () => {
     fetchCourseData();
   });
   
   const filteredCourses = computed(() => {
-    let filtered = courses.value.filter((course) => {
-      const matchesSearch = course.courseName
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase());
-      const matchesCategory =
-        selectedCategory.value === "All" || course.topic === selectedCategory.value;
-      const matchesStatus =
-        selectedCourseType.value === "all" || course.type === selectedCourseType.value;
-  
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
+    let sorted = [...courses.value];
   
     if (sortBy.value === "alphabetical-1") {
-      filtered.sort((a, b) => a.courseName.localeCompare(b.courseName));
+      sorted.sort((a, b) => a.courseName.localeCompare(b.courseName));
     } else if (sortBy.value === "alphabetical-2") {
-      filtered.sort((a, b) => b.courseName.localeCompare(a.courseName));
+      sorted.sort((a, b) => b.courseName.localeCompare(a.courseName));
     } else if (sortBy.value === "like-1") {
-      filtered.sort((a, b) => a.likesCount - b.likesCount);
+      sorted.sort((a, b) => a.likesCount - b.likesCount);
     } else if (sortBy.value === "like-2") {
-      filtered.sort((a, b) => b.likesCount - a.likesCount);
+      sorted.sort((a, b) => b.likesCount - a.likesCount);
     } else if (sortBy.value === "rating-1") {
-      filtered.sort((a, b) => (a.averageRating || 0) - (b.averageRating || 0));
+      sorted.sort((a, b) => (a.averageRating || 0) - (b.averageRating || 0));
     } else if (sortBy.value === "rating-2") {
-      filtered.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+      sorted.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
     }
   
-    return filtered;
+    return sorted;
   });
   
   const handlePageChange = (page) => {
     currentPage.value = page;
   };
+
+  const goToCourse = (courseId) => {
+  router.push({name: 'CoursePage', params: {courseId}});
+};
   </script>
-  
   
   <style scoped>
   
@@ -348,8 +281,9 @@ color: #0056b3;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.page-size-selector {
+.page-size-dropdown {
   margin-left: 20px;
+  max-width: 100px;
 }
 
 </style>
