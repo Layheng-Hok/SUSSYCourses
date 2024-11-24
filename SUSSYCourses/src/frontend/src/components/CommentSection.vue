@@ -246,27 +246,45 @@ const submitComment = async () => {
     alert("Comment cannot be empty.");
     return;
   }
+
   try {
     const formData = new FormData();
-    formData.append("userId", parseInt(userId.value));
     formData.append("message", newCommentMessage.value);
-    formData.append("replyId", null);
-    formData.append("courseId", courseId);
+
     if (attachment.value) {
-      formData.append("attachment", attachment.value);
+      formData.append(
+        "attachmentName",
+        stripFileExtension(attachmentName.value) || ""
+      );
+            formData.append(
+        "attachmentFileType",
+        attachment.value.type.split("/").pop()
+      );
+      formData.append("attachmentFile", attachment.value);
+    } else {
+      formData.append("attachmentName", "");
+      formData.append("attachmentFileType", "");
     }
-    
+
+    if (replyingTo.value) {
+      formData.append("replyToId", replyingTo.value.commentId);
+    } else {
+      formData.append("replyToId", "");
+    }
+
     await axiosInstances.axiosInstance.post(
-      "http://localhost:8081/api/comments",
+      `/users/${userId.value}/courses/${courseId}/comments/create`,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
       }
     );
-    await fetchComments(); // Refresh comments
+
+    await fetchComments(); // Refresh the comment list
     newCommentMessage.value = "";
     attachment.value = null;
     attachmentName.value = "";
+    replyingTo.value = null;
   } catch (error) {
     console.error("Error posting comment:", error);
   }
@@ -302,12 +320,16 @@ const addEmoji = (event) => {
   newCommentMessage.value += event.detail.unicode;
 };
 
+const stripFileExtension = (fileName) => {
+  if (!fileName) return "";
+  return fileName.split(".").slice(0, -1).join(".");
+};
+
 // Fetch comments on component mount
 onMounted(() => {
   fetchComments();
 });
 </script>
-
 
 <style scoped>
 .comment-section {
