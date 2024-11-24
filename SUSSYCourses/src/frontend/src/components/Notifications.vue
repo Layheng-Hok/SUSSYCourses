@@ -38,22 +38,27 @@
     >
       <div class="notification-content">
         <!-- Subject -->
-        <h2 class="notification-title">{{ notification.subject }}</h2>
+        <h2 class="notification-title">
+          <el-icon><Document /></el-icon> {{ notification.subject }}
+        </h2>
 
         <!-- Email Information -->
         <p v-if="activeTab === 'received'" class="notification-sender">
-          <strong>From:</strong> {{ notification.senderFullName }} ({{ notification.senderEmail }})
-        </p>
+          <el-icon><User /></el-icon> <strong>From:</strong> {{ notification.senderFullName }} ({{ notification.senderEmail }})        </p>
         <p v-else class="notification-sender">
           <strong>To:</strong> {{ notification.receiverFullName }} ({{ notification.receiverEmail }})
         </p>
 
         <!-- Message -->
-        <p class="notification-message">{{ notification.text }}</p>
+        <p class="notification-message">
+          <el-icon><Message /></el-icon> {{ notification.text }}
+        </p>
 
         <!-- Timestamp -->
         <div class="notification-footer">
-          <span class="notification-time">Sent: {{ formatDate(notification.createdAt) }}</span>
+          <span class="notification-time">
+            <el-icon><Clock /></el-icon> Sent: {{ formatDate(notification.createdAt) }}
+          </span>
         </div>
       </div>
     </el-card>
@@ -80,7 +85,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ArrowLeft } from '@element-plus/icons-vue';
+import { ArrowLeft, Document, User, Message, Clock } from '@element-plus/icons-vue';
 import axiosInstances from '@/services/axiosInstance';
 
 const router = useRouter();
@@ -179,6 +184,16 @@ onMounted(() => {
   flex-direction: column;
   gap: 20px; 
   margin: 0 120px;
+  animation: fade 0.5s ease-in-out;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .notification-card {
@@ -186,8 +201,19 @@ onMounted(() => {
   border-radius: 8px;
   border: 1px solid #e4e4e4;
   transition: box-shadow 0.3s;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .notification-card:hover {
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -234,5 +260,6 @@ onMounted(() => {
   margin-left: 20px;
   max-width: 100px;
 }
+
   </style>
   

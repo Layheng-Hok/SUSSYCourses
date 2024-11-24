@@ -44,13 +44,13 @@
       </div>
   
       <!-- Review Input -->
-      <el-input
+      <textarea
         type="textarea"
         class="review-input"
         v-model="userReview"
         placeholder="Write your review here..."
         rows="4"
-      ></el-input>
+      ></textarea>
   
       <!-- Submit Button -->
       <el-button
@@ -137,6 +137,21 @@ onMounted(fetchReview);
 
 
 <style scoped>
+
+textarea {
+  width: 90%;
+  height: 80px;
+  flex: 1;
+  padding: 10px;
+  margin-right: 20px;
+  resize: none;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  margin: 0 auto;
+}
+
 .ratings-section {
   margin-bottom: 20px;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;

@@ -280,6 +280,11 @@ onMounted(async () => {
   border-radius: 8px;
 }
 
+.course-image:hover {
+  transform: scale(1.05) translateY(-5px);
+  transition: transform 0.3s ease-out;
+}
+
 .instructor-image {
   width: 150ox;
   height: 150px;
