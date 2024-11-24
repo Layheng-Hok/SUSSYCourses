@@ -93,8 +93,6 @@
   
       courses.value = [...response.data.courses];
       totalCourses.value = response.data.totalApprovedCourses || 0;
-      console.log("Courses fetched:", courses.value);
-      console.log("Total courses:", totalCourses.value);
     } catch (error) {
       console.error("Error fetching courses:", error);
       if (error.response && error.response.status === 403) {

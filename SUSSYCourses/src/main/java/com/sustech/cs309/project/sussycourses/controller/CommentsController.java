@@ -29,11 +29,6 @@ public class CommentsController {
     private final WebAppUserRepository webAppUserRepository;
 
     private final CommentService commentService;
-    // Simulation data for get and post from frontend
-//    private final List<Comment> comments = new ArrayList<>(List.of(
-//        new Comment(1, 1, "This is a comment.", "2023-10-01T12:00:00Z", null, 1),
-//        new Comment(2, 2, "This is another comment.", "2023-10-02T12:00:00Z", 1, 1)
-//    ));
 
     // Fetch all comments for a specific course
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -68,10 +63,17 @@ public class CommentsController {
         long courseId = replyRequest.courseId();
         long userId = replyRequest.userId();
         long commentId = replyRequest.commentId();
-
-        Course course = courseRepository.findByCourseId(courseId).orElse(null);
-        WebAppUser user = webAppUserRepository.findById(userId).orElse(null);
-        String commentToReply = commentRepository.findById((int) commentId).orElse(null).getMessage();
+    
+        // Validate and fetch related entities
+        Course course = courseRepository.findByCourseId(courseId)
+            .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+        WebAppUser user = webAppUserRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        String commentToReply = commentRepository.findById((int) commentId)
+            .orElseThrow(() -> new RuntimeException("Comment not found with ID: " + commentId))
+            .getMessage();
+    
+        // Create and save the reply
         Comment comment = new Comment();
         comment.setCourse(course);
         comment.setUser(user);
@@ -81,4 +83,5 @@ public class CommentsController {
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
     }
+    
 }

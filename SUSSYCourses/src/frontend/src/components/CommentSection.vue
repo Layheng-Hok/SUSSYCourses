@@ -50,7 +50,7 @@
 
     <!-- New Comment Section -->
     <div class="new-comment-form" v-else>
-      <h3>Leave a Comment</h3>
+      <h2>Leave a Comment</h2>
       <textarea
           v-model="newCommentMessage"
           placeholder="Enter your comment here"
@@ -67,102 +67,102 @@
 import axiosInstances from "@/services/axiosInstance";
 
 export default {
-  props: {
-    studentId: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       comments: [],
       courseId: parseInt(this.$route.params.courseId),
-      replyingTo: null, // Will hold the comment object being replied to
+      replyingTo: null,
       newReplyMessage: "",
       newCommentMessage: "",
-      userMap: {}, // Cache for userId -> username mappings
+      userMap: {},
+      userId: localStorage.getItem("userId"),
     };
   },
   created() {
     this.fetchComments();
   },
   methods: {
-    replyToComment(comment) {
-      this.replyingTo = comment; // Store the comment being replied to
-    },
-    cancelReply() {
-      this.replyingTo = null; // Reset reply mode
-      this.newReplyMessage = ""; // Clear input area
-    },
-    async fetchComments() {
-      try {
-        const response = await axiosInstances.axiosInstance.get(`http://localhost:8081/api/comments/${this.courseId}`);
-        this.comments = response.data;
-        console.log("Hello", response.data)
-        // await this.fetchUsernames(); // Fetch usernames after loading comments
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    },
-    // async fetchUsernames() {
-    //   try {
-    //     // Extract unique userIds from comments
-    //     const userIds = [...new Set(this.comments.map((comment) => comment.userId))];
-    //
-    //     for (const userId of userIds) {
-    //       if (!this.userMap[userId]) {
-    //         const response = await axiosInstances.axiosInstance.get(`http://localhost:8081/api/users/${userId}`);
-    //         // Directly assign the username to userMap
-    //         this.userMap[userId] = response.data.fullName; // Assuming fullName is the field in the response
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching usernames:", error);
-    //   }
-    // },
-
-    async submitComment() {
-      try {
-        const newComment = {
-          userId: parseInt(this.studentId),
-          message: this.newCommentMessage,
-          replyId: null,
-          courseId: this.courseId,
-        };
-        const response = await axiosInstances.axiosInstance.post("http://localhost:8081/api/comments", newComment);
-        this.comments.push(response.data);
-        await this.fetchUsernames(); // Update usernames after adding a comment
-        this.newCommentMessage = "";
-      } catch (error) {
-        console.error("Error posting comment:", error);
-      }
-    },
-    async submitReply() {
-      try {
-        const newComment = {
-          commentId: this.replyingTo.commentId,
-          message: this.newReplyMessage,
-          userId: this.studentId,
-          courseId: this.courseId,
-        };
-        const response = await axiosInstances.axiosInstance.post("http://localhost:8081/api/comments/reply", newComment);
-        this.comments.push(response.data);
-        await this.fetchUsernames(); // Update usernames after adding a comment
-        this.newCommentMessage = "";
-      } catch (error) {
-        console.error("Error posting comment:", error);
-      }
-    },
-    getCommentById(commentId) {
-      return this.comments.find((comment) => comment.commentId === commentId);
-    },
-    getUsername(userId) {
-      return this.userMap[userId] || "Loading..."; // Return "Loading..." if username isn't ready
-    },
+  replyToComment(comment) {
+    this.replyingTo = comment;
   },
+  cancelReply() {
+    this.replyingTo = null;
+    this.newReplyMessage = "";
+  },
+
+  async fetchComments() {
+    try {
+      const response = await axiosInstances.axiosInstance.get(
+        `http://localhost:8081/api/comments/${this.courseId}`
+      );
+      this.comments = response.data.map((comment) => ({
+        ...comment,
+        fullName: comment.fullName || "Anonymous", // Ensure fullName fallback
+      }));
+      console.log("Fetched comments:", this.comments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  },
+
+  async submitComment() {
+    if (!this.newCommentMessage.trim()) {
+      alert("Comment cannot be empty.");
+      return;
+    }
+    try {
+      const newComment = {
+        userId: parseInt(this.userId),
+        message: this.newCommentMessage,
+        replyId: null,
+        courseId: this.courseId,
+      };
+      const response = await axiosInstances.axiosInstance.post(
+        "http://localhost:8081/api/comments",
+        newComment
+      );
+      const fullName = localStorage.getItem("usn") || "Anonymous";
+      this.comments.push({ ...response.data, fullName });
+      this.newCommentMessage = "";
+      await this.fetchComments(); // Refresh comments immediately
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  },
+
+  async submitReply() {
+    if (!this.newReplyMessage.trim()) {
+      alert("Reply cannot be empty.");
+      return;
+    }
+    try {
+      const newComment = {
+        commentId: this.replyingTo.commentId,
+        message: this.newReplyMessage,
+        userId: parseInt(this.userId),
+        courseId: this.courseId,
+      };
+      console.log("Posting reply:", newComment);
+      const response = await axiosInstances.axiosInstance.post(
+        "http://localhost:8081/api/comments/reply",
+        newComment
+      );
+      const fullName = localStorage.getItem("usn") || "Anonymous";
+      this.comments.push({ ...response.data, fullName });
+      this.replyingTo = null;
+      this.newReplyMessage = "";
+      await this.fetchComments(); // Refresh comments immediately
+    } catch (error) {
+      console.error("Error posting reply:", error);
+    }
+  },
+  getCommentById(commentId) {
+    return this.comments.find((comment) => comment.commentId === commentId);
+  },
+},
+
 };
 </script>
-
 
 <style scoped>
 .comment-section {
@@ -170,9 +170,8 @@ export default {
   width: 80%;
   margin: 0 auto;
   background: #f9f9f9;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 

@@ -41,8 +41,7 @@
 
         <!-- Comment Section -->
         <div class="comments-section">
-          <h2>Comments</h2>
-          <CommentSection :student-id="userId" />
+          <CommentSection />
         </div>
       </div>
 
@@ -52,11 +51,11 @@
         <el-card class="course-details" shadow="hover">
           <h2>Course Details</h2>
           <img :src="course?.coverImageUrl || defaultCoverPic" alt="Course Image" class="course-image" />
-          <p><strong>{{ course.courseName }}</strong></p>
-          <p class="description">{{ course.description }}</p>
+          <h3><strong>{{ course.courseName }}</strong></h3>
+          <p class="description">{{ course?.description || "No description for this course yet."}}</p>
           <p><strong>Category:</strong> {{ course.topic }}</p>
-          <p><strong>Rating:</strong> ⭐ {{ course.averageRating }}</p>
-          <p><strong>Likes Count:</strong> ❤️ {{ course.likesCount }}</p>
+          <p><strong>Rating:</strong> ⭐ {{ course?.averageRating || 0}}</p>
+          <p><strong>Likes Count:</strong> ❤️ {{ course?.likesCount || 0 }}</p>
            <!-- Like Button -->
           <el-button
               type="text"

@@ -145,7 +145,7 @@
         try {
           const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
           const coursesData = response.data
-          console.log(coursesData)
+          // console.log(coursesData)
           course.value = coursesData.find((c) => c.id === props.courseId);
 
           if (!course.value) {
