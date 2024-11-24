@@ -40,6 +40,12 @@ public class Courseware {
     @Column(name = "courseware_order", nullable = false, updatable = false)
     private int coursewareOrder;
 
+    @Column(name = "variant_of", updatable = false)
+    private long variantOf;
+
+    @Column(name = "version", nullable = false, updatable = false)
+    private int version;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

@@ -14,7 +14,7 @@
 <!--  <source th:src="${videoUrl}" type="video/mp4" >-->
 <!--  Your browser does not support the video tag.-->
 <!--</video>-->
-<video th:src="${videoUrl}" alt="ff">
+<!--<video th:src="${videoUrl}" alt="ff">-->
 <p>
 <form id="uploadForm" action="/my-handling-form-page" method="post" enctype="multipart/form-data">
   <p>
@@ -40,6 +40,7 @@
     }
 
     // Get the selected file
+
     const file = fileInput.files[0];
     const fileType = "video/mp4"
     console.log("Selected file:", file);
