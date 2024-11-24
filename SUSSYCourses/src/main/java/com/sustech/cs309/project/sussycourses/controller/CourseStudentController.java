@@ -24,6 +24,17 @@ public class CourseStudentController {
         return courseStudentService.joinCourse(userId, courseId);
     }
 
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @Transactional
+    @PostMapping("/instructors/{instructorId}/courses/{courseId}/add/{studentEmail}")
+    public ResponseEntity<String> addStudent
+            (@PathVariable Long instructorId,
+             @PathVariable Long courseId,
+             @PathVariable String studentEmail
+            ) {
+        return courseStudentService.addStudent(instructorId, courseId, studentEmail);
+    }
+
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/students/{userId}/courses")
     public StudentCourseListResponse getAllCoursesByStudentId(@PathVariable Long userId) {

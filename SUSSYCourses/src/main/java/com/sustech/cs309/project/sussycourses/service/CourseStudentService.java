@@ -208,4 +208,52 @@ public class CourseStudentService {
 
         return ResponseEntity.ok("Course registration successful");
     }
+
+    public ResponseEntity<String> addStudent(Long teacherId, Long courseId, String studentEmail) {
+        Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(teacherId, 3);
+        if (teacherOptional.isEmpty() || !teacherOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Instructor not found");
+        }
+
+        Optional<WebAppUser> studentOptional = webAppUserRepository.findByEmailAndRoleRoleId(studentEmail, 2);
+        if (studentOptional.isEmpty() || !studentOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Student not found");
+        }
+
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
+        if (courseOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("Course not found");
+        }
+        if (!courseOptional.get().getTeacher().getUserId().equals(teacherId)) {
+            return ResponseEntity.status(403).body("Teacher does not have permission to add a student to this course");
+        }
+
+        WebAppUser teacher = teacherOptional.get();
+        WebAppUser student = studentOptional.get();
+        Course course = courseOptional.get();
+
+        CourseStudent courseStudent = new CourseStudent();
+        courseStudent.setStudent(student);
+        courseStudent.setCourse(course);
+        courseStudent.setStatus("enrolled");
+        courseStudent.setLiked(false);
+        courseStudent.setCreatedAt(LocalDateTime.now());
+        courseStudentRepository.save(courseStudent);
+
+        Notification teacherToStudentNotification = new Notification();
+        teacherToStudentNotification.setSender(teacher);
+        teacherToStudentNotification.setReceiver(student);
+        teacherToStudentNotification.setSubject("You have been added to a course");
+        teacherToStudentNotification.setText(
+                String.format(
+                        "You have been successfully added to the course '%s' by %s. Please check your course dashboard for more details.",
+                        course.getCourseName(),
+                        teacher.getFullName()
+                )
+        );
+        teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(teacherToStudentNotification);
+
+        return ResponseEntity.ok().body("Student added successfully");
+    }
 }
