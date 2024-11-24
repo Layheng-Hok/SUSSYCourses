@@ -70,7 +70,7 @@ public class CourseStudentService {
     }
 
     public CourseStudentListResponse getAllStudentsByCourseId(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
         if (courseOptional.isEmpty() || !courseOptional.get().getStatus().equalsIgnoreCase("approved")) {
             return null;
         }
@@ -153,7 +153,7 @@ public class CourseStudentService {
             return ResponseEntity.status(404).body("Invalid user");
         }
 
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
         if (courseOptional.isEmpty() ||
                 !courseOptional.get().getStatus().equalsIgnoreCase("approved") ||
                 courseOptional.get().getType().equalsIgnoreCase("non-open")) {

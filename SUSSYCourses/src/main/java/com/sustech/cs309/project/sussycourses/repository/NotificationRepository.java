@@ -1,12 +1,16 @@
 package com.sustech.cs309.project.sussycourses.repository;
 
 import com.sustech.cs309.project.sussycourses.domain.Notification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findBySender_UserId(Long userId);
+    Page<Notification> findBySender_UserId(Long userId, Pageable pageable);
 
-    List<Notification> findByReceiver_UserId(Long userId);
+    Page<Notification> findByReceiver_UserId(Long userId, Pageable pageable);
+
+    Long countBySender_UserId(Long userId);
+
+    Long countByReceiver_UserId(Long userId);
 }

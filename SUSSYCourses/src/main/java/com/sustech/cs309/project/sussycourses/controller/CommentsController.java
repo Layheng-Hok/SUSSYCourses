@@ -51,7 +51,7 @@ public class CommentsController {
         long courseId = commentRequest.courseId();
         long userId = commentRequest.userId();
 
-        Course course = courseRepository.findById(courseId).orElse(null);
+        Course course = courseRepository.findByCourseId(courseId).orElse(null);
         WebAppUser user = webAppUserRepository.findById(userId).orElse(null);
         Comment comment = new Comment();
         comment.setCourse(course);
@@ -69,7 +69,7 @@ public class CommentsController {
         long userId = replyRequest.userId();
         long commentId = replyRequest.commentId();
 
-        Course course = courseRepository.findById(courseId).orElse(null);
+        Course course = courseRepository.findByCourseId(courseId).orElse(null);
         WebAppUser user = webAppUserRepository.findById(userId).orElse(null);
         String commentToReply = commentRepository.findById((int) commentId).orElse(null).getMessage();
         Comment comment = new Comment();

@@ -38,7 +38,7 @@ public class RatingService {
 
         Rating rating = new Rating();
         rating.setStudent(webAppUserRepository.findById(userId).orElse(null));
-        rating.setCourse(courseRepository.findById(courseId).orElse(null));
+        rating.setCourse(courseRepository.findByCourseId(courseId).orElse(null));
         rating.setOverallRating(overallRating);
         rating.setContentQuality(contentQuality);
         rating.setTeachingCompetence(teachingCompetence);

@@ -11,6 +11,9 @@ import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +29,10 @@ public class NotificationService {
     private final CourseStudentRepository courseStudentRepository;
     private final NotificationRepository notificationRepository;
 
-    public NotificationListResponse getUserMailbox(Long userId) {
-        List<Notification> notifications = notificationRepository.findByReceiver_UserId(userId);
+    public NotificationListResponse getUserMailboxPaginated(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Notification> notifications = notificationRepository.findByReceiver_UserId(userId, pageable);
+
         List<NotificationResponse> notificationResponses = notifications.stream()
                 .map(notification -> new NotificationResponse(
                         notification.getSender().getFullName(),
@@ -39,11 +44,16 @@ public class NotificationService {
                         notification.getCreatedAt()
                 ))
                 .toList();
-        return new NotificationListResponse(notificationResponses.size(), notificationResponses);
+
+        Long totalNotifications = notificationRepository.countByReceiver_UserId(userId);
+
+        return new NotificationListResponse(totalNotifications, notificationResponses);
     }
 
-    public NotificationListResponse getUserSentMails(Long userId) {
-        List<Notification> notifications = notificationRepository.findBySender_UserId(userId);
+    public NotificationListResponse getUserSentMailsPaginated(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Notification> notifications = notificationRepository.findBySender_UserId(userId, pageable);
+
         List<NotificationResponse> notificationResponses = notifications.stream()
                 .map(notification -> new NotificationResponse(
                         notification.getSender().getFullName(),
@@ -55,10 +65,13 @@ public class NotificationService {
                         notification.getCreatedAt()
                 ))
                 .toList();
-        return new NotificationListResponse(notificationResponses.size(), notificationResponses);
+
+        Long totalNotifications = notificationRepository.countBySender_UserId(userId);
+
+        return new NotificationListResponse(totalNotifications, notificationResponses);
     }
 
-    public ResponseEntity<String> getUserMailbox(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
+    public ResponseEntity<String> getUserMailboxPaginated(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
         Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(
                 teacherId, 3);
         if (teacherOptional.isEmpty()) {
@@ -97,7 +110,7 @@ public class NotificationService {
                     notificationCreationRequest.text()
             );
 
-            ResponseEntity<String> response = getUserMailbox(teacherId, courseId, newNotificationCreationRequest);
+            ResponseEntity<String> response = getUserMailboxPaginated(teacherId, courseId, newNotificationCreationRequest);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("Failed to notify student: " + courseStudent.getStudent().getEmail());
             }

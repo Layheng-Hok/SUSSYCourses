@@ -179,7 +179,7 @@ public class CourseService {
     }
 
     public ResponseEntity<String> approveCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
 
         if (courseOptional.isPresent()) {
             Course course = courseOptional.get();
@@ -197,7 +197,7 @@ public class CourseService {
     }
 
     public ResponseEntity<String> rejectCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
 
         if (courseOptional.isPresent()) {
             Course course = courseOptional.get();

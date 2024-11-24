@@ -16,14 +16,20 @@ public class NotificationController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STUDENT','ROLE_INSTRUCTOR')")
     @GetMapping("users/{userId}/mailbox")
-    public NotificationListResponse getUserMailbox(@PathVariable Long userId) {
-        return notificationService.getUserMailbox(userId);
+    public NotificationListResponse getUserMailbox(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return notificationService.getUserMailboxPaginated(userId, page, size);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STUDENT','ROLE_INSTRUCTOR')")
     @GetMapping("users/{userId}/sent")
-    public NotificationListResponse getUserSentMails(@PathVariable Long userId) {
-        return notificationService.getUserSentMails(userId);
+    public NotificationListResponse getUserSentMails(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return notificationService.getUserSentMailsPaginated(userId, page, size);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
@@ -33,7 +39,7 @@ public class NotificationController {
             @PathVariable Long userId,
             @PathVariable Long courseId,
             @RequestBody NotificationCreationRequest notificationCreationRequest) {
-        return notificationService.getUserMailbox(userId, courseId, notificationCreationRequest);
+        return notificationService.getUserMailboxPaginated(userId, courseId, notificationCreationRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
