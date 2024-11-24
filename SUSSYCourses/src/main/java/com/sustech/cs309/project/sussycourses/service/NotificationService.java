@@ -102,7 +102,7 @@ public class NotificationService {
     }
 
     public ResponseEntity<String> notifyAllStudents(Long teacherId, Long courseId, NotificationCreationRequest notificationCreationRequest) {
-        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseId(courseId);
+        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");
         for (CourseStudent courseStudent : courseStudents) {
             NotificationCreationRequest newNotificationCreationRequest = new NotificationCreationRequest(
                     courseStudent.getStudent().getEmail(),

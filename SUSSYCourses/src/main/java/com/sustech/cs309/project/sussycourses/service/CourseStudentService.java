@@ -69,20 +69,33 @@ public class CourseStudentService {
         );
     }
 
-    public CourseStudentListResponse getAllStudentsByCourseId(Long courseId) {
+    public CourseStudentListResponse getAllEnrolledStudentsByCourseId(Long courseId, String status) {
         Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
         if (courseOptional.isEmpty() || !courseOptional.get().getStatus().equalsIgnoreCase("approved")) {
             return null;
         }
 
-        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseId(courseId);
+        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, status);
         List<StudentDetailResponse> studentDetailResponses = courseStudents.stream()
-                .map(courseStudent -> new StudentDetailResponse(
-                        courseStudent.getStudent().getUserId(),
-                        courseStudent.getStudent().getFullName(),
-                        courseStudent.getStudent().getEmail(),
-                        null, null, null, null, null, null
-                ))
+                .map(courseStudent -> {
+                    try {
+                        return new StudentDetailResponse(
+                                courseStudent.getStudent().getUserId(),
+                                courseStudent.getStudent().getFullName(),
+                                courseStudent.getStudent().getEmail(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                                        courseStudent.getStudent().getUserId(),
+                                        courseStudent.getStudent().getProfilePicture())),
+                                courseStudent.getStudent().getGender(),
+                                courseStudent.getStudent().getRole().getRoleName(),
+                                courseStudent.getStudent().getPoints(),
+                                courseStudent.getStudent().getBio(),
+                                courseStudent.getStudent().getCreatedAt()
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
 
         return new CourseStudentListResponse(studentDetailResponses.size(), studentDetailResponses);

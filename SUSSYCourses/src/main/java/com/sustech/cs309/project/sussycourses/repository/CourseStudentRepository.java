@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseStudentRepository extends JpaRepository<CourseStudent, Long> {
-    List<CourseStudent> findByCourse_CourseId(Long courseId);
+    List<CourseStudent> findByCourse_CourseIdAndStatus(Long courseId, String status);
 
     List<CourseStudent> findByStudent_UserId(Long userId);
 

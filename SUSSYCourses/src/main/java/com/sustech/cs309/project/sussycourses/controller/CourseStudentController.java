@@ -35,6 +35,17 @@ public class CourseStudentController {
         return courseStudentService.addStudent(instructorId, courseId, studentEmail);
     }
 
+//    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+//    @Transactional
+//    @PostMapping("/instructors/{instructorId}/courses/{courseId}/accept/{studentEmail}")
+//    public ResponseEntity<String> addStudent
+//            (@PathVariable Long instructorId,
+//             @PathVariable Long courseId,
+//             @PathVariable String studentEmail
+//            ) {
+//        return courseStudentService.addStudent(instructorId, courseId, studentEmail);
+//    }
+
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/students/{userId}/courses")
     public StudentCourseListResponse getAllCoursesByStudentId(@PathVariable Long userId) {
@@ -42,9 +53,11 @@ public class CourseStudentController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @GetMapping("/courses/{courseId}/students")
-    public CourseStudentListResponse getAllStudentsByCourseId(@PathVariable Long courseId) {
-        return courseStudentService.getAllStudentsByCourseId(courseId);
+    @GetMapping("/courses/{courseId}/students/{status}")
+    public CourseStudentListResponse getAllEnrolledStudentsByCourseId(
+            @PathVariable Long courseId,
+            @PathVariable String status) {
+        return courseStudentService.getAllEnrolledStudentsByCourseId(courseId, status);
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
