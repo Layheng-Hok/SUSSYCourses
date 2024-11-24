@@ -190,6 +190,15 @@ public class CourseService {
 
             course.setStatus("approved");
             courseRepository.save(course);
+
+            Notification notification = new Notification();
+            notification.setSender(webAppUserRepository.findByUserId(2L).orElse(null));
+            notification.setReceiver(course.getTeacher());
+            notification.setSubject("Course Approved");
+            notification.setText(String.format("Your course \"%s\" has been approved by the admin.", course.getCourseName()));
+            notification.setCreatedAt(LocalDateTime.now());
+            notificationRepository.save(notification);
+
             return ResponseEntity.ok("Course approved successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
@@ -208,6 +217,15 @@ public class CourseService {
 
             course.setStatus("rejected");
             courseRepository.save(course);
+
+            Notification notification = new Notification();
+            notification.setSender(webAppUserRepository.findByUserId(2L).orElse(null));
+            notification.setReceiver(course.getTeacher());
+            notification.setSubject("Course Rejected");
+            notification.setText(String.format("Your course \"%s\" has been rejected by the admin.", course.getCourseName()));
+            notification.setCreatedAt(LocalDateTime.now());
+            notificationRepository.save(notification);
+
             return ResponseEntity.ok("Course rejected");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
