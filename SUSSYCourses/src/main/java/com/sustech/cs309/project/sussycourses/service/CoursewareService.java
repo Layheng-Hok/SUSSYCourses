@@ -31,7 +31,8 @@ public class CoursewareService {
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
     public String resolveCoursewareLocation(String courseName, String url, int chapter, int version) {
-        return "Courses/" + courseName + "/courseware/" + chapter + "/" + url + "/" + version;
+        System.out.println("Courses/" + courseName + "/courseware/" + chapter + "/" + url);
+        return "Courses/" + courseName + "/courseware/" + chapter + "/" + url;
     }
 
     public ResponseEntity<String> uploadCourseware(CoursewareRequest coursewareRequest) throws Exception {
@@ -42,6 +43,7 @@ public class CoursewareService {
         int chapter = coursewareRequest.chapter();
         int order = coursewareRequest.order();
         int version = coursewareRequest.version();
+        long variant = coursewareRequest.variant_of();
         MultipartFile file = coursewareRequest.file();
 
         Courseware courseware = new Courseware();
@@ -53,6 +55,8 @@ public class CoursewareService {
         courseware.setDownloadable(downloadable);
         courseware.setFileType(fileType);
         courseware.setUrl(file.getName());
+        courseware.setVersion(version);
+        courseware.setVariantOf(variant);
         courseware.setCreatedAt(LocalDateTime.now());
         String url = resolveCoursewareLocation(course.getCourseName(), file.getName(), chapter, version);
         CloudUtils.putStorageKey(file, fileType, url);
@@ -66,8 +70,7 @@ public class CoursewareService {
 
         for (Course course : courses) {
             JSONObject courseData = new JSONObject();
-            List<Courseware> courseware = coursewareRepository.findByCourse_CourseId(course.getCourseId());
-
+            List<Courseware> courseware = coursewareRepository.findOriginalOrLatestVersionByCourseId(course.getCourseId());
             String courseName = course.getCourseName();
             String coverPhotoName = course.getCoverImage();
             // Basic course information
