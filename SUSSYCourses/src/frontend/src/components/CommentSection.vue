@@ -12,7 +12,7 @@
       >
         <div class="comment-header">
           <p>
-            <img :src="`/assets/Courses/course.jpg`" class="head-shot" />
+            <img :src="comment?.profilePictureUrl || defaultProfilePic" class="head-shot" />
             <strong>{{ comment.fullName || "Loading..." }}:</strong>
             {{ comment.message }}
           </p>
@@ -76,6 +76,8 @@ export default {
       newCommentMessage: "",
       userMap: {},
       userId: localStorage.getItem("userId"),
+      defaultProfilePic: "/assets/Avatars/student.jpg",
+
     };
   },
   created() {
@@ -99,7 +101,7 @@ export default {
         ...comment,
         fullName: comment.fullName || "Anonymous", // Ensure fullName fallback
       }));
-      console.log("Fetched comments:", this.comments);
+      // console.log("Fetched comments:", this.comments);
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -230,7 +232,7 @@ h2 {
   border-radius: 50%;
   object-fit: cover;
   vertical-align: middle;
-  padding-right: 5px;
+  margin-right: 5px;
 }
 
 textarea {

@@ -96,7 +96,7 @@
         >
           <img :src="coverImageUrl?.image || defaultCoverPic" alt="Course Image" class="course-image"/>
           <h3>{{ course.courseName }}</h3>
-          <p class="course-instructor"> Intrusctor: {{ course.teacherName }} </p>
+          <p class="course-instructor"> Intrucstor: {{ course.teacherName }} </p>
           <p class="course-topic"> Category: {{ course.topic }}</p>
           
           <p class="course-type"> Type: {{ course.type }}</p>

@@ -43,10 +43,9 @@
   
   <script setup>
   import { defineProps, defineEmits } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  const route = useRoute();  
+  import { useRouter } from 'vue-router';
   const router = useRouter();
-  const userId = route.params.userId;
+  const userId = localStorage.getItem('userId');
   const defaultProfilePic = "/assets/Avatars/student.jpg";
 
   defineProps({
