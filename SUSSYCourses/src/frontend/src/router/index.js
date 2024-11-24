@@ -22,6 +22,7 @@ import TeacherDashboard from "@/components/TeacherDashboard.vue";
 import TeacherProfile from "@/components/TeacherProfile.vue";
 import Guideline from "@/components/Guideline.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
+import TeacherCourse from "@/components/TeacherCourse.vue";
 
 import NotFound from "@/components/404.vue";
 import ForbiddenPage from "@/components/403.vue";
@@ -121,6 +122,11 @@ const routes = [
       userId: route.params.userId,
       initialTab: route.query.tab, // Pass the tab query as a prop
     }),
+  },
+  {
+    path: "/instructor-dashboard/:userId/course/:courseId",
+    name: "TeacherCourse",
+    component: TeacherCourse,
   },
   {
     path: "/teacherprofile",
