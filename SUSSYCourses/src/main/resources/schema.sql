@@ -82,13 +82,14 @@ CREATE TABLE courseware_student
 
 CREATE TABLE comment
 (
-    comment_id BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT       NOT NULL REFERENCES web_app_user (user_id),
-    course_id  BIGINT       NOT NULL REFERENCES course (course_id),
-    message    VARCHAR(300) NOT NULL,
-    attachment VARCHAR(255),
-    reply_id   BIGINT REFERENCES comment,
-    created_at TIMESTAMP
+    comment_id      BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT       NOT NULL REFERENCES web_app_user (user_id),
+    course_id       BIGINT       NOT NULL REFERENCES course (course_id),
+    message         VARCHAR(300) NOT NULL,
+    attachment      VARCHAR(255),
+    attachment_type VARCHAR(10),
+    reply_id        BIGINT REFERENCES comment,
+    created_at      TIMESTAMP
 );
 
 CREATE TABLE rating
@@ -199,10 +200,10 @@ VALUES (1, 3, 'enrolled', TRUE),
        (1, 5, 'enrolled', TRUE),
        (1, 6, 'enrolled', TRUE);
 
-INSERT INTO comment (user_id, course_id, message, attachment, reply_id, created_at)
-VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, '2023-10-01T12:00:00Z'),
-       (5, 1, 'Wholeheartedly agree!', NULL, 1, '2023-10-02T09:30:00Z'),
-       (6, 1, 'I learned so much from this course. Check my notes!', 'note', NULL,
+INSERT INTO comment (user_id, course_id, message, attachment, attachment_type, reply_id, created_at)
+VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, NULL, '2023-10-01T12:00:00Z'),
+       (5, 1, 'Wholeheartedly agree!', NULL, NULL, 1, '2023-10-02T09:30:00Z'),
+       (6, 1, 'I learned so much from this course. Check my notes!', 'note', 'pdf', NULL,
         '2023-10-03T14:15:00Z');
 
 

@@ -33,6 +33,9 @@ public class Comment {
     @Column
     private String attachment;
 
+    @Column
+    String attachmentType;
+
     @ManyToOne
     @JoinColumn(name = "reply_id")
     private Comment reply;

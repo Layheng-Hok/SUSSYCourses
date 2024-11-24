@@ -64,6 +64,8 @@ public class CommentService {
                                         comment.getUser().getUserId(),
                                         comment.getUser().getProfilePicture())),
                                 comment.getMessage(),
+                                comment.getAttachment(),
+                                comment.getAttachmentType(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveCommentAttachmentLocation(
                                         comment.getCommentId(),
                                         comment.getAttachment()
@@ -75,6 +77,8 @@ public class CommentService {
                                         comment.getReply().getUser().getUserId(),
                                         comment.getReply().getUser().getProfilePicture())) : null,
                                 comment.getReply() != null ? comment.getReply().getMessage() : null,
+                                comment.getReply() != null ? comment.getReply().getAttachment() : null,
+                                comment.getReply() != null ? comment.getReply().getAttachmentType() : null,
                                 comment.getReply() != null ? CloudUtils.getStorageKey(CloudUtils.resolveCommentAttachmentLocation(
                                         comment.getReply().getCommentId(),
                                         comment.getReply().getAttachment())) : null,
@@ -116,6 +120,7 @@ public class CommentService {
         comment.setCourse(course);
         comment.setMessage(commentCreationRequest.message());
         comment.setAttachment(commentCreationRequest.attachmentName());
+        comment.setAttachmentType(commentCreationRequest.attachmentFileType());
         comment.setReply(commentCreationRequest.replyToId() != null ?
                 commentRepository.findById(commentCreationRequest.replyToId()).orElse(null) : null);
         comment.setCreatedAt(LocalDateTime.now());
@@ -129,6 +134,7 @@ public class CommentService {
                     comment.getAttachment());
             CloudUtils.putStorageKey(commentCreationRequest.attachmentFile(), commentCreationRequest.attachmentFileType(), fileLocation);
         }
+
         return ResponseEntity.ok().body("Comment created successfully");
     }
 }
