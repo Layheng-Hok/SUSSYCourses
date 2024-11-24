@@ -43,18 +43,25 @@ public class CloudUtils {
         CloudUtils.deleteObject(projectId, "sussycourses", fileLocation);
     }
 
-    public static String resolveUserProfilePictureLocation(String userId, String profilePicture) {
+    public static String resolveUserProfilePictureLocation(Long userId, String profilePicture) {
         if (profilePicture == null || profilePicture.trim().isEmpty()) {
             return null;
         }
         return "Users/" + userId + "/" + profilePicture;
     }
 
-    public static String resolveCourseCoverImageLocation(String courseId, String coverPhotoName) {
+    public static String resolveCourseCoverImageLocation(Long courseId, String coverPhotoName) {
         if (coverPhotoName == null || coverPhotoName.trim().isEmpty()) {
             return null;
         }
         return "Courses/" + courseId + "/" + coverPhotoName;
+    }
+
+    public static String resolveCommentAttachmentLocation(Long commentId, String attachmentName) {
+        if (attachmentName == null || attachmentName.trim().isEmpty()) {
+            return null;
+        }
+        return "Comments/" + commentId + "/" + attachmentName;
     }
 
     private static String generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName, String serviceAccountKeyPath) throws StorageException, IOException {

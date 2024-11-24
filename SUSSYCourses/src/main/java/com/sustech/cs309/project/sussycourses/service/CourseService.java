@@ -67,7 +67,7 @@ public class CourseService {
                                 course.getDescription(),
                                 course.getTopic(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
-                                        String.valueOf(course.getCourseId()), course.getCoverImage())),
+                                        course.getCourseId(), course.getCoverImage())),
                                 course.getTeacher().getUserId(),
                                 course.getTeacher().getFullName(),
                                 course.getTeacher().getEmail(),
@@ -97,7 +97,7 @@ public class CourseService {
                                 course.getDescription(),
                                 course.getTopic(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
-                                        String.valueOf(course.getCourseId()),
+                                        course.getCourseId(),
                                         course.getCoverImage())),
                                 course.getTeacher().getUserId(),
                                 course.getTeacher().getFullName(),
@@ -159,7 +159,7 @@ public class CourseService {
         adminToTeacherNotification.setCreatedAt(LocalDateTime.now());
 
         Long courseId = course.getCourseId();
-        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(String.valueOf(courseId), coverImageName);
+        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(courseId, coverImageName);
         CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
 
         return ResponseEntity.ok("Course created successfully");

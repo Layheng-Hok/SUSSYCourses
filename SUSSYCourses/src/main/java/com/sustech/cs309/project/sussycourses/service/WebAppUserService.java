@@ -171,7 +171,7 @@ public class WebAppUserService {
                 webAppUser.getFullName(),
                 webAppUser.getEmail(),
                 CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
-                        String.valueOf(userId),
+                        userId,
                         webAppUser.getProfilePicture())),
                 webAppUser.getGender(),
                 webAppUser.getRole().getRoleName(),
@@ -198,7 +198,7 @@ public class WebAppUserService {
                                 course.getDescription(),
                                 course.getTopic(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
-                                        String.valueOf(course.getCourseId()),
+                                        course.getCourseId(),
                                         course.getCoverImage())),
                                 course.getType(),
                                 course.getStatus(),
@@ -214,7 +214,7 @@ public class WebAppUserService {
                 webAppUser.getFullName(),
                 webAppUser.getEmail(),
                 CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
-                        String.valueOf(userId),
+                        userId,
                         webAppUser.getProfilePicture())),
                 webAppUser.getGender(),
                 webAppUser.getRole().getRoleName(),
@@ -251,14 +251,14 @@ public class WebAppUserService {
         if (profilePictureName != null && !profilePictureName.trim().isEmpty()) {
             if (webAppUser.getProfilePicture() != null) {
                 CloudUtils.deleteBlob(CloudUtils.resolveUserProfilePictureLocation(
-                        String.valueOf(webAppUser.getUserId()),
+                        webAppUser.getUserId(),
                         webAppUser.getProfilePicture()
                 ));
             }
 
             webAppUser.setProfilePicture(profilePictureName);
             String fileLocation = CloudUtils.resolveUserProfilePictureLocation(
-                    String.valueOf(webAppUser.getUserId()),
+                    webAppUser.getUserId(),
                     profilePictureName);
             CloudUtils.putStorageKey(profilePicture, fileType, fileLocation);
         }

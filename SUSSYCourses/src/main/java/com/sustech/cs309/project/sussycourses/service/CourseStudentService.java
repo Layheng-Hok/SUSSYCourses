@@ -45,7 +45,7 @@ public class CourseStudentService {
                                 courseStudent.getCourse().getDescription(),
                                 courseStudent.getCourse().getTopic(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
-                                        String.valueOf(courseStudent.getCourse().getCourseId()),
+                                        courseStudent.getCourse().getCourseId(),
                                         courseStudent.getCourse().getCoverImage())),
                                 courseStudent.getCourse().getTeacher().getUserId(),
                                 courseStudent.getCourse().getTeacher().getFullName(),
@@ -109,7 +109,7 @@ public class CourseStudentService {
                 courseStudent.getCourse().getTeacher().getFullName(),
                 courseStudent.getCourse().getTeacher().getBio(),
                 CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
-                        String.valueOf(courseStudent.getCourse().getTeacher().getUserId()),
+                        courseStudent.getCourse().getTeacher().getUserId(),
                         courseStudent.getCourse().getTeacher().getProfilePicture()
                 )),
                 courseStudent.getCourse().getType(),

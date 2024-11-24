@@ -26,18 +26,23 @@ public class CommentService {
                                 comment.getCommentId(),
                                 comment.getUser().getFullName(),
                                 CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
-                                        String.valueOf(comment.getUser().getUserId()),
+                                        comment.getUser().getUserId(),
                                         comment.getUser().getProfilePicture())),
                                 comment.getMessage(),
-                                comment.getAttachment(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCommentAttachmentLocation(
+                                        comment.getCommentId(),
+                                        comment.getAttachment()
+                                )),
                                 comment.getCreatedAt(),
                                 comment.getReply() != null ? comment.getReply().getCommentId() : null,
                                 comment.getReply() != null ? comment.getReply().getUser().getFullName() : null,
                                 comment.getReply() != null ? CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
-                                        String.valueOf(comment.getReply().getUser().getUserId()),
+                                        comment.getReply().getUser().getUserId(),
                                         comment.getReply().getUser().getProfilePicture())) : null,
                                 comment.getReply() != null ? comment.getReply().getMessage() : null,
-                                comment.getReply() != null ? comment.getReply().getAttachment() : null,
+                                comment.getReply() != null ? CloudUtils.getStorageKey(CloudUtils.resolveCommentAttachmentLocation(
+                                        comment.getReply().getCommentId(),
+                                        comment.getReply().getAttachment())) : null,
                                 comment.getReply() != null ? comment.getReply().getCreatedAt() : null
                         );
                     } catch (IOException e) {
