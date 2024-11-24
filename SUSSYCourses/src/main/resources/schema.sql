@@ -172,12 +172,13 @@ VALUES ('Course1', 'blank', 4, 'open', 'approved', 'Programming', NOW()),
        ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', NOW());
 
 
-INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,variant_of, version, created_at) VALUES
-(1,'mp4', 'lecture', 'chapter1', FALSE, 1,1, 1, 1, NOW()),
-(1,'pdf', 'lecture', 'intro_python.pdf', FALSE, 1,2, 2, 1,NOW()),
-(1,'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1,3, 3, 1,NOW()),
-(2,'md', 'assignment', 'datascience_overview.md', FALSE, 1,1, 4, 1,NOW()),
-(1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, NOW());
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
+                        version, created_at)
+VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, NOW()),
+       (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, NOW()),
+       (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, NOW()),
+       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, NOW()),
+       (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, NOW());
 
 INSERT INTO course_student (course_id, student_id, status, liked)
 VALUES (1, 3, 'enrolled', TRUE),
@@ -201,7 +202,7 @@ VALUES (1, 3, 'enrolled', TRUE),
 INSERT INTO comment (user_id, course_id, message, attachment, reply_id, created_at)
 VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, '2023-10-01T12:00:00Z'),
        (5, 1, 'Wholeheartedly agree!', NULL, 1, '2023-10-02T09:30:00Z'),
-       (6, 1, 'I learned so much from this course. Check my notes!', 'isec_2018_format', NULL,
+       (6, 1, 'I learned so much from this course. Check my notes!', 'note', NULL,
         '2023-10-03T14:15:00Z');
 
 
@@ -221,10 +222,12 @@ VALUES (1, 2, 6, 4.0, 4.5, 4.0, 3.5, 'Good content, clear explanations.', NOW())
        (12, 11, 3, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW());
 
 
-INSERT INTO notification (sender_email, receiver_email, subject, text, created_at) VALUES
-                                                                                       ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!', 'Thank you for joining my course! I hope you enjoy your learning experience.', '2023-10-01T12:00:00Z'),
-                                                                                       ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Important', 'You have a project deadline in 3 days.', '2023-10-01T12:00:00Z'),
-                                                                                       ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
+INSERT INTO notification (sender_email, receiver_email, subject, text, created_at)
+VALUES ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!',
+        'Thank you for joining my course! I hope you enjoy your learning experience.', '2023-10-01T12:00:00Z'),
+       ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Important', 'You have a project deadline in 3 days.',
+        '2023-10-01T12:00:00Z'),
+       ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
 
 
 END;
