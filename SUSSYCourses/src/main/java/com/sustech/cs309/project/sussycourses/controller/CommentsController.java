@@ -25,9 +25,9 @@ public class CommentsController {
     private final CommentService commentService;
 
     @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
-    @GetMapping("/courses/{courseId}/comments")
-    public List<CommentResponse> getCommentsByCourseId(@PathVariable Long courseId) {
-        return commentService.getCommentsByCourseId(courseId);
+    @GetMapping("/users/{userId}/courses/{courseId}/comments")
+    public List<CommentResponse> getCommentsByCourseId(@PathVariable Long userId, @PathVariable Long courseId) {
+        return commentService.getCommentsByCourseId(userId, courseId);
     }
 
     // Post a new comment
