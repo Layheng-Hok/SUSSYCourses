@@ -128,6 +128,8 @@
         :isVisible="isSidebarVisible"
         @menuSelect="handleMenuSelect"
     />
+
+    <Chat/>
   </div>
 </template>
 
@@ -136,6 +138,7 @@ import {computed, ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import CourseBreakdown from './CourseBreakdown.vue';
+import Chat from './Chat.vue';
 import axiosInstances from '@/services/axiosInstance';
 
 const user = ref(null); 
@@ -523,7 +526,7 @@ html {
 .course-breakdown-container {
   margin: 40px auto;
   padding: 20px;
-  background-color: #f0f8ff;
+  background: linear-gradient(to bottom right, #f3e5f5, #e1f5fe); 
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -534,7 +537,7 @@ html {
 .course-breakdown-container h2 {
   font-size: 32px;
   font-weight: bold;
-  color: #333;
+  color: #4a148c; 
   margin-bottom: 10px;
 }
 

@@ -65,16 +65,19 @@
             <span :class="{ liked: isLiked }">{{ isLiked ? '❤️ Unlike' : '🤍 Like' }}</span>
             </el-button>
         </el-card>
-        <!-- <p><strong>Enrolled Students:</strong> {{ course.numStudentsEnrolled }}</p> -->
         
         <!-- Instructor Information -->
         <el-card class="instructor-info" shadow="hover">
           <h2>Instructor Information</h2>
-          <div>  <img
-                :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
-                alt="Instructor Image"
-                class="instructor-image">
-              </div>
+          <div>
+      <!-- Teacher image with tilt effect -->
+      <img
+        ref="teacherImage"
+        :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
+        alt="Instructor Image"
+        class="instructor-image"
+      />
+    </div>
         <div>
            <p><strong>{{ course.teacherName }}</strong></p>
             <p class="bio">{{ course?.teacherBio || "The teacher doesn't want to introduce him/herself" }}</p>
@@ -107,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProfileSidebar from './ProfileSidebar.vue';
 import Courseware from './Courseware.vue';
@@ -115,7 +118,9 @@ import RatingAndReview from './RatingAndReview.vue';
 import DoughnutChart from './DoughnutChart.vue';
 import CommentSection from './CommentSection.vue';
 import axiosInstances from '@/services/axiosInstance';
+import VanillaTilt from "vanilla-tilt";
 
+const teacherImage = ref(null);
 const route = useRoute();
 const router = useRouter();
 const user = ref(null); 
@@ -231,6 +236,20 @@ const toggleSidebar = () => {
 onMounted(async () => {
   await fetchUserData();
   await fetchCourseDetails();
+  if (teacherImage.value) {
+    VanillaTilt.init(teacherImage.value, {
+      max: 25, 
+      speed: 400, 
+      scale: 1.1, 
+      glare: true, 
+      "max-glare": 0.5, 
+    });
+  }
+});
+onUnmounted(() => {
+  if (teacherImage.value && teacherImage.value.vanillaTilt) {
+    teacherImage.value.vanillaTilt.destroy();
+  }
 });
 </script>
 

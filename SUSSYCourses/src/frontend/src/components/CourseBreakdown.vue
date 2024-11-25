@@ -71,7 +71,7 @@ const categoryPercentages = computed(() => {
 
 const chartData = computed(() => ({
   labels: categoryPercentages.value
-    .filter((item) => item.percentage > 0) // Only show non-zero categories
+    .filter((item) => item.percentage > 0) 
     .map((item) => item.topic),
   datasets: [
     {
@@ -80,20 +80,21 @@ const chartData = computed(() => ({
         .filter((item) => item.percentage > 0)
         .map((item) => item.percentage),
       backgroundColor: [
-        "#4caf50",
-        "#03a9f4",
-        "#ff9800",
-        "#e91e63",
-        "#9c27b0",
-        "#3f51b5",
-        "#009688",
-        "#8bc34a",
-        "#ff5722",
+        "#A8D5BA", 
+        "#A2CFFE",  
+        "#F4D06F",  
+        "#F7A7C3",  
+        "#D9B9F1",  
+        "#A9B8D9",  
+        "#80CBC4",  
+        "#B6E5A8",  
+        "#FFCCBC",  
       ],
       hoverOffset: 8,
     },
   ],
 }));
+
 
 const chartOptions = {
   responsive: true,
