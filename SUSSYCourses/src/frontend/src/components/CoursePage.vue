@@ -22,8 +22,7 @@
       <div class="left-section">
         <!-- Courseware Section -->
         <div class="courseware-section">
-          <h2>Courseware</h2>
-          <Courseware :course-id="courseId" />
+          <Courseware />
         </div>
 
         <!-- Learning Progress Chart -->
@@ -72,12 +71,12 @@
           <div>
       <!-- Teacher image with tilt effect -->
       <img
-        ref="teacherImage"
-        :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
-        alt="Instructor Image"
-        class="instructor-image"
-      />
-    </div>
+          ref="teacherImage"
+          :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
+          alt="Instructor Image"
+          class="instructor-image"
+        />
+      </div>
         <div>
            <p><strong>{{ course.teacherName }}</strong></p>
             <p class="bio">{{ course?.teacherBio || "The teacher doesn't want to introduce him/herself" }}</p>
