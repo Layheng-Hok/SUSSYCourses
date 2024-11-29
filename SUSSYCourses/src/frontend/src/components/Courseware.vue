@@ -3,24 +3,37 @@
     <el-card class="course-content" shadow="hover">
       <h2>Course Content</h2>
       <el-collapse>
-        <el-collapse-item title="Teaching Chapters" name="1">
-          <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
-            <h3>{{ chapter.name }}</h3>
-            <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.url">
-                <div v-if="material.type === 'mp4'" class="video-container">
-                  <video controls :src="`${material.url}`" width="50%"></video>
-                </div>
-                <div v-else>
-                  <a :href="`${material.url}`" target="_blank">
-                    <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
-                    {{material.title}}
-                  </a>
-                </div>
-              </el-list-item>
-            </el-list>
-          </div>
-        </el-collapse-item>
+        <el-collapse v-model="outerActiveNames">
+          <el-collapse-item title="Teaching Chapters" name="1">
+            <el-collapse v-model="innerActiveNames" class="inner-collapse">
+              <el-collapse-item
+                  v-for="chapter in course.teachingChapters"
+                  :key="chapter.name"
+                  :name="chapter.name"
+                  class="inner-collapse-item"
+              >
+                <template #title>
+                  <div class="chapter-header">
+                    {{ chapter.name }}
+                  </div>
+                </template>
+                <el-list>
+                  <el-list-item v-for="material in chapter.materials" :key="material.url">
+                    <div v-if="material.type === 'mp4'" class="video-container">
+                      <video controls :src="`${material.url}`" width="50%"></video>
+                    </div>
+                    <div v-else>
+                      <a :href="`${material.url}`" target="_blank">
+                        <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
+                        {{ material.title }}
+                      </a>
+                    </div>
+                  </el-list-item>
+                </el-list>
+              </el-collapse-item>
+            </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
 
         <el-collapse-item title="Homework Chapters" name="2">
           <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
@@ -195,5 +208,24 @@
   .el-list-item a:hover {
     color: #66b1ff;
   }
+
+  /* Reduce the size of the inner collapse header */
+  .inner-collapse-item .el-collapse-item__header {
+    font-size: 12px; /* Smaller font size */
+    padding: 5px 10px; /* Reduce padding */
+    margin-left: -10px; /* Move further to the left */
+  }
+
+  /* Adjust arrow alignment for inner collapse */
+  .inner-collapse-item .el-collapse-item__header .el-icon-arrow-right {
+    font-size: 10px; /* Smaller arrow size */
+    margin-right: 5px; /* Adjust spacing from text */
+  }
+
+  /* Add spacing between outer and inner collapse */
+  .inner-collapse {
+    margin-top: 10px; /* Separate inner collapse from outer header */
+  }
+
   </style>
   

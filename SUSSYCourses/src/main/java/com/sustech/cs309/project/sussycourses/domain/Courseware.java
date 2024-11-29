@@ -46,6 +46,9 @@ public class Courseware {
     @Column(name = "version", nullable = false, updatable = false)
     private int version;
 
+    @Column(name = "display_version", nullable = false)
+    private boolean displayVersion;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

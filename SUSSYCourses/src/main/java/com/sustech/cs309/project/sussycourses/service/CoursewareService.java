@@ -2,7 +2,9 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareListResponse;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareVersionResponse;
 import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
@@ -99,6 +101,7 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -110,6 +113,7 @@ public class CoursewareService {
 
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -126,6 +130,7 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -137,6 +142,7 @@ public class CoursewareService {
 
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -153,6 +159,7 @@ public class CoursewareService {
                         JSONObject material = new JSONObject();
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -164,6 +171,7 @@ public class CoursewareService {
 
                         String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(courseName, url, c.getChapter()));
                         material.put("coursewareId", c.getCoursewareId());
+                        material.put("variantOf", c.getVariantOf());
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
@@ -211,5 +219,17 @@ public class CoursewareService {
         coursewareRepository.save(courseware);
 
         return ResponseEntity.ok("Updated successfully");
+    }
+
+
+    public List<CoursewareVersionResponse> retrieveCoursewareVersions(Long variantOf) throws IOException {
+        List<Courseware> list = coursewareRepository.findByVariantOf(variantOf);
+        List<CoursewareVersionResponse> coursewareVersionResponseList = new ArrayList<>();
+        for (Courseware courseware : list) {
+            String url = CloudUtils.getStorageKey(resolveCoursewareLocation(courseware.getCourse().getCourseName(), courseware.getUrl(), courseware.getChapter()));
+            CoursewareVersionResponse c = new CoursewareVersionResponse(courseware.getCoursewareId(), courseware.getCategory(), url, courseware.getDownloadable(), courseware.getChapter(), courseware.getCoursewareOrder(), courseware.getVariantOf(), courseware.getVersion(), courseware.isDisplayVersion(), courseware.getCreatedAt());
+            coursewareVersionResponseList.add(c);
+        }
+        return coursewareVersionResponseList;
     }
 }

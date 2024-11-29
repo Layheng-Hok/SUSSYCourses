@@ -59,6 +59,7 @@ CREATE TABLE courseware
     courseware_order INT          NOT NULL,
     variant_of       BIGINT,
     version          INT          NOT NULL,
+    display_version BOOLEAN NOT NULL,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -173,14 +174,12 @@ VALUES ('Course1', 'blank', 4, 'open', 'approved', 'Programming', NOW()),
        ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', NOW());
 
 
-INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
-                        version, created_at)
-VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, NOW()),
-       (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, NOW()),
-       (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, NOW()),
-       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, NOW()),
-       (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, NOW());
-
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,variant_of, version, display_version, created_at) VALUES
+(1,'mp4', 'lecture', 'chapter1', FALSE, 1,1, 1, 1, TRUE, NOW()),
+(1,'pdf', 'lecture', 'intro_python.pdf', FALSE, 1,2, 2, 1, TRUE,NOW()),
+(1,'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1,3, 3, 1, TRUE,NOW()),
+(2,'md', 'assignment', 'datascience_overview.md', FALSE, 1,1, 4, 1, TRUE, NOW()),
+(1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE,NOW());
 INSERT INTO course_student (course_id, student_id, status, liked)
 VALUES (1, 3, 'enrolled', TRUE),
        (2, 3, 'pending', FALSE),
