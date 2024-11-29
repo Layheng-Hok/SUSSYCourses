@@ -294,17 +294,24 @@ public class CourseStudentService {
             return ResponseEntity.status(404).body("No pending enrollment request found for this student in the course");
         }
 
+        WebAppUser teacher = teacherOptional.get();
+        WebAppUser student = studentOptional.get();
+        Course course = courseOptional.get();
+
         courseStudentOptional.get().setStatus(decision);
-        String responseMsg = decision.equalsIgnoreCase("enrolled") ? "Student accepted" : "Student rejected";
+
+        if (decision.equalsIgnoreCase("enrolled")) {
+            decision = "accepted";
+        }
 
         Notification teacherToStudentNotification = new Notification();
-        teacherToStudentNotification.setSender(teacherOptional.get());
-        teacherToStudentNotification.setReceiver(studentOptional.get());
-        teacherToStudentNotification.setSubject("Course Enrollment Decision");
-        teacherToStudentNotification.setText("Your enrollment request for the course has been " + decision.toLowerCase() + " by the instructor.");
+        teacherToStudentNotification.setSender(teacher);
+        teacherToStudentNotification.setReceiver(student);
+        teacherToStudentNotification.setSubject(String.format("Course Enrollment Decision for '%s'", courseOptional.get().getCourseName()));
+        teacherToStudentNotification.setText(String.format("Your enrollment request for the course '%s' has been %s by instructor %s.", course.getCourseName(), decision, teacher.getFullName()));
         teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
         notificationRepository.save(teacherToStudentNotification);
 
-        return ResponseEntity.ok(responseMsg);
+        return ResponseEntity.ok(String.format("Student %s", decision));
     }
 }
