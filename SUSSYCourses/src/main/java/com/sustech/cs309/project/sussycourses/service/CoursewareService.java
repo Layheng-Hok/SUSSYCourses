@@ -123,7 +123,7 @@ public class CoursewareService {
                         teachingChapters.put(teachingChapter);
                     }
                 } else if (Objects.equals(c.getCategory(), "assignment")) {
-                    if (teachingChapters.length() == c.getChapter()) {
+                    if (homeworkChapters.length() == c.getChapter()) {
                         JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter() - 1);
                         JSONArray materials = chapter.getJSONArray("materials");
 
