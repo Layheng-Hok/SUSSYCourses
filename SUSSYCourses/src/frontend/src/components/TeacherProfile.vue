@@ -11,26 +11,13 @@
             {{ user.initials }}
           </template>
         </el-avatar>
-        <div class="overlay" @click="isModalVisible = true">
+        <div class="overlay" @click="triggerFileInput">
           <el-icon>
             <picture-filled/>
           </el-icon>
         </div>
+        <input ref="fileInput" type="file" accept="image/*" @change="handleImageChange" hidden/>
       </div>
-      <!-- Modal for Image Upload -->
-      <el-dialog v-model="isModalVisible" title="Upload Profile Picture">
-        <!-- File Input -->
-        <input type="file" @change="previewImage" accept="image/*"/>
-        <div v-if="newProfilePic" class="preview">
-          <img :src="newProfilePic" alt="New Profile Preview"/>
-        </div>
-
-        <!-- Modal Footer -->
-        <template #footer>
-          <el-button @click="cancelUpload">Cancel</el-button>
-          <el-button type="primary" @click="saveProfilePicture">Save</el-button>
-        </template>
-      </el-dialog>
 
       <!-- Basic Info -->
       <div class="basic-info">
@@ -66,7 +53,7 @@
     </div>
   </div>
   <el-button @click="cancelChanges" class="cancel-button">Cancel</el-button>
-  <el-button type="primary" :loading="isSaving" @click="saveChanges" class="save-button">Save</el-button>
+  <el-button type="primary" :loading="isSaving" @click="checkChanges" class="save-button">Save</el-button>
 </template>
 
 <script setup>
@@ -98,8 +85,24 @@ const user = ref({
   initials: computed(() => user.value.name.charAt(0).toUpperCase()),
 });
 
-// edit profile logic
 const backupUser = ref({...user.value});
+const hasChanges = computed(() => {
+  return (
+      user.value.name !== backupUser.value.name ||
+      user.value.bio !== backupUser.value.bio ||
+      user.value.gender !== backupUser.value.gender ||
+      user.value.profilePic !== backupUser.value.profilePic // add more checks for other fields as needed
+  );
+});
+
+const checkChanges = () => {
+  if (hasChanges.value) {
+    saveChanges();
+  } else {
+    ElMessage.info('No changes made');
+  }
+};
+
 const cancelChanges = () => {
   user.value = JSON.parse(JSON.stringify(backupUser.value));
   newProfilePic.value = null;
@@ -108,106 +111,80 @@ const cancelChanges = () => {
 
   const userId = localStorage.getItem("userId");
   console.log('Redirecting to TeacherDashboard with userId:', userId);
-
   router.push({name: 'TeacherDashboard', params: {userId: userId}, query: {tab: 'courses', _r: Date.now()}});
 
 };
 
+const userId = localStorage.getItem('userId');
 const isSaving = ref(false);
+const profileImage = ref(null);
+const fileNameWithoutExtension = ref('');
+const fileType = ref('');
 
-const saveChanges = async () => {
-  try {
-    isSaving.value = true;
+const fileInput = ref(null);
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
 
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      ElMessage.error("User ID is missing. Cannot save changes.");
-      return;
-    }
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    profileImage.value = file;
+    user.value.profilePic = URL.createObjectURL(file);
 
-    if (!user.value.name || user.value.name.trim() === "") {
-      ElMessage.error("Name cannot be empty. Please provide a valid name.");
-      return;
-    }
-
-    const formData = new FormData();
-    let hasChanges = false;
-
-    if (user.value.bio !== backupUser.value.bio) {
-      formData.append("bio", user.value.bio);
-      hasChanges = true;
-    }
-
-    if (user.value.gender !== backupUser.value.gender) {
-      formData.append("gender", user.value.gender);
-      hasChanges = true;
-    }
-
-    if (user.value.name !== backupUser.value.name) {
-      formData.append("fullName", user.value.name);
-      hasChanges = true;
-    } else {
-      formData.fullName = backupUser.value.name;
-    }
-
-    if (user.value.profilePicFile) {
-      formData.append("profilePicture", user.value.profilePicFile);
-      hasChanges = true;
-    }
-
-    if (!hasChanges) {
-      ElMessage.info("No changes to save.");
-      return;
-    }
-
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-
-    await axiosInstances.axiosInstance.put(`/users/update/${userId}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    backupUser.value = JSON.parse(JSON.stringify(user.value));
-    newProfilePic.value = null;
-    ElMessage.success("Profile updated successfully!");
-
-    // Redirect to dashboard/courses
-    router.push({name: 'TeacherDashboard', params: {userId: userId}, query: {tab: 'courses', _r: Date.now()}});
-
-  } catch (error) {
-    ElMessage.error("Failed to save changes. Please try again.");
-  } finally {
-    isSaving.value = false;
+    const fullFileName = file.name;
+    fileNameWithoutExtension.value = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
+    fileType.value = fullFileName.substring(fullFileName.lastIndexOf('.') + 1);
   }
 };
+
+const saveChanges = async () => {
+      try {
+        isSaving.value = true;
+        if (!user.value.name || !user.value.gender || !user.value.bio) {
+          ElMessage.error('Please fill in all the required fields.')
+          return;
+        }
+
+        const formData = new FormData();
+
+        formData.append('fullName', user.value.name);
+        formData.append('gender', user.value.gender);
+        formData.append('bio', user.value.bio);
+
+        if (profileImage.value) {
+          formData.append('profilePictureName', fileNameWithoutExtension.value);
+          formData.append('fileType', fileType.value);
+          formData.append('profilePicture', profileImage.value);
+        }
+
+        const response = await axiosInstances.axiosInstance.put(`users/update/${userId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        if (response.status === 200) {
+
+          backupUser.value = JSON.parse(JSON.stringify(user.value));
+          newProfilePic.value = null;
+          ElMessage.success("Profile updated successfully!");
+
+          router.push({name: 'TeacherDashboard', params: {userId: userId}, query: {tab: 'courses', _r: Date.now()}});
+        } else {
+          throw new Error(response.data.message || 'Failed to update profile.');
+        }
+      } catch
+          (error) {
+        ElMessage.error("Failed to save changes. Please try again.");
+      } finally {
+        isSaving.value = false;
+      }
+    }
+;
 
 const isModalVisible = ref(false);
 const newProfilePic = ref(null);
-
-const previewImage = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    newProfilePic.value = URL.createObjectURL(file); // Show preview
-    user.value.profilePic = newProfilePic.value; // Temporarily set it in the user object
-    user.value.profilePicFile = file; // Store the actual file for backend submission
-  }
-
-};
-
-const cancelUpload = () => {
-  newProfilePic.value = null;
-  isModalVisible.value = false;
-};
-
-const saveProfilePicture = () => {
-  if (newProfilePic.value) {
-    user.value.profilePic = newProfilePic.value; // Temporarily update profile picture
-    isModalVisible.value = false; // Close modal
-    ElMessage.success("Profile picture updated locally!");
-  }
-};
 
 onMounted(async () => {
   try {

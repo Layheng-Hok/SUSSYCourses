@@ -51,7 +51,7 @@
 
       <!-- Profile Avatar -->
       <el-menu-item index="0" @click="toggleSidebar">
-        <el-avatar :size="50" shape="circle">
+        <el-avatar :size="50" shape="circle" class="profile-avatar">
           <template v-if="user.profilePic">
             <img :src="user.profilePic" alt="Profile Picture"/>
           </template>
@@ -445,5 +445,12 @@ onMounted(async () => {
   height: 125%;
   width: 4px;
   background-color: #74B3E3;
+}
+
+.profile-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  margin-right: -10px;
 }
 </style>
