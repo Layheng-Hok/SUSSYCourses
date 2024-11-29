@@ -295,7 +295,16 @@ public class CourseStudentService {
         }
 
         courseStudentOptional.get().setStatus(decision);
+        String responseMsg = decision.equalsIgnoreCase("enrolled") ? "Student accepted" : "Student rejected";
 
-        return ResponseEntity.ok("Student accepted successfully");
+        Notification teacherToStudentNotification = new Notification();
+        teacherToStudentNotification.setSender(teacherOptional.get());
+        teacherToStudentNotification.setReceiver(studentOptional.get());
+        teacherToStudentNotification.setSubject("Course Enrollment Decision");
+        teacherToStudentNotification.setText("Your enrollment request for the course has been " + decision.toLowerCase() + " by the instructor.");
+        teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(teacherToStudentNotification);
+
+        return ResponseEntity.ok(responseMsg);
     }
 }
