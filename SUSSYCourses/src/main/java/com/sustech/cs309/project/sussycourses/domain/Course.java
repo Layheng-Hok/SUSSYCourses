@@ -46,6 +46,9 @@ public class Course {
     @Column(nullable = false)
     private Integer numEvaluations;
 
+    @Column(nullable = false)
+    private Long likeCount;
+
     @OneToMany(mappedBy = "course")
     private List<Courseware> coursewares;
 

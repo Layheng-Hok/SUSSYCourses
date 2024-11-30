@@ -46,6 +46,7 @@ CREATE TABLE course
     topic                  VARCHAR(50)  NOT NULL,
     total_evaluation_score FLOAT        NOT NULL,
     num_evaluations        INTEGER      NOT NULL,
+    like_count             BIGINT       NOT NULL,
     created_at             TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -161,34 +162,34 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
 
 
 INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
-                    created_at)
-VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programming', 5.0, 1, NOW()),
-       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, NOW()),
-       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, NOW()),
-       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, NOW()),
-       ('Connecting frontend to backend', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, NOW()),
-       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, NOW()),
-       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, NOW()),
-       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, NOW()),
-       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', 7.0, 2, NOW()),
-       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, NOW()),
-       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, NOW()),
-       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, NOW()),
+                    like_count, created_at)
+VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programming', 5.0, 1, 3, NOW()),
+       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, 1, NOW()),
+       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, 0, NOW()),
+       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, 2, NOW()),
+       ('Connecting frontend to backend', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, 0, NOW()),
+       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, 1, NOW()),
+       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, 1, NOW()),
+       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, 1, NOW()),
+       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', 7.0, 2, 1, NOW()),
+       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, 0, NOW()),
+       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, 2, NOW()),
+       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, 0, NOW()),
        ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0,
-        NOW());
+        0, NOW());
 
 
-INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,variant_of, version, display_version, created_at) VALUES
-(1,'mp4', 'lecture', 'chapter1', FALSE, 1,1, 1, 1, TRUE, NOW()),
-(1,'pdf', 'lecture', 'intro_python.pdf', FALSE, 1,2, 2, 1, TRUE,NOW()),
-(1,'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1,3, 3, 1, TRUE,NOW()),
-(2,'md', 'assignment', 'datascience_overview.md', FALSE, 1,1, 4, 1, TRUE, NOW()),
-(1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE,NOW()),
-(1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, TRUE,NOW()),
-(1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE,NOW()),
-(1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, TRUE,NOW()),
-(1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, TRUE,NOW())
-
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
+                        version, display_version, created_at)
+VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
+       (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, TRUE, NOW()),
+       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, TRUE, NOW()),
+       (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE, NOW()),
+       (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE, NOW()),
+       (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, TRUE, NOW())
 ;;
 
 INSERT INTO course_student (course_id, student_id, status, liked)

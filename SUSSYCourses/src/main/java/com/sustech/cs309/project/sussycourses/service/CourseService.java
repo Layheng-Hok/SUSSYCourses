@@ -78,7 +78,7 @@ public class CourseService {
                                 course.getTeacher().getFullName(),
                                 course.getTeacher().getEmail(),
                                 course.getType(),
-                                courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                course.getLikeCount(),
                                 course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
                                 course.getCreatedAt());
                     } catch (IOException e) {
@@ -144,6 +144,7 @@ public class CourseService {
         course.setTopic(topic);
         course.setTotalEvaluationScore(0F);
         course.setNumEvaluations(0);
+        course.setLikeCount(0L);
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
@@ -255,7 +256,7 @@ public class CourseService {
                                 course.getTeacher().getFullName(),
                                 course.getTeacher().getEmail(),
                                 course.getType(),
-                                courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                course.getLikeCount(),
                                 course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
                                 course.getCreatedAt()
                         );
@@ -329,7 +330,7 @@ public class CourseService {
                                     course.getTeacher().getFullName(),
                                     course.getTeacher().getEmail(),
                                     course.getType(),
-                                    courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                    course.getLikeCount(),
                                     course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
                                     course.getCreatedAt()
                             );

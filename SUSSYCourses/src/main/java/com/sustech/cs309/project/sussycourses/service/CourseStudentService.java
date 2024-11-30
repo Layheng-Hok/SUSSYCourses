@@ -8,7 +8,10 @@ import com.sustech.cs309.project.sussycourses.dto.CourseStudentListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
-import com.sustech.cs309.project.sussycourses.repository.*;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
+import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
+import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +30,6 @@ public class CourseStudentService {
     private final CourseStudentRepository courseStudentRepository;
     private final WebAppUserRepository webAppUserRepository;
     private final CourseRepository courseRepository;
-    private final RatingRepository ratingRepository;
     private final NotificationRepository notificationRepository;
 
     public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
@@ -49,13 +51,15 @@ public class CourseStudentService {
                                         courseStudent.getCourse().getCoverImage())),
                                 courseStudent.getCourse().getTeacher().getUserId(),
                                 courseStudent.getCourse().getTeacher().getFullName(),
-                                null,
-                                null,
+                                courseStudent.getCourse().getTeacher().getBio(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                                        courseStudent.getCourse().getTeacher().getUserId(),
+                                        courseStudent.getCourse().getTeacher().getProfilePicture())),
                                 courseStudent.getCourse().getType(),
                                 courseStudent.getStatus(),
                                 courseStudent.getLiked(),
-                                null,
-                                null,
+                                courseStudent.getCourse().getLikeCount(),
+                                courseStudent.getCourse().getNumEvaluations() != 0 ? courseStudent.getCourse().getTotalEvaluationScore() / courseStudent.getCourse().getNumEvaluations() : 0,
                                 courseStudent.getCourse().getCreatedAt());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -128,8 +132,8 @@ public class CourseStudentService {
                 courseStudent.getCourse().getType(),
                 "enrolled",
                 courseStudent.getLiked(),
-                courseStudentRepository.countLikesByCourseId(courseStudent.getCourse().getCourseId()),
-                ratingRepository.findAverageRatingByCourseId(courseStudent.getCourse().getCourseId()),
+                courseStudent.getCourse().getLikeCount(),
+                courseStudent.getCourse().getNumEvaluations() != 0 ? courseStudent.getCourse().getTotalEvaluationScore() / courseStudent.getCourse().getNumEvaluations() : 0,
                 courseStudent.getCourse().getCreatedAt()
         );
     }
@@ -148,9 +152,17 @@ public class CourseStudentService {
         courseStudent.setLiked(!isLiked);
         courseStudentRepository.save(courseStudent);
 
-        String message = isLiked
-                ? "Course unliked successfully"
-                : "Course liked successfully";
+        Course course = courseRepository.findById(courseId).orElse(null);
+        String message;
+
+        assert course != null;
+        if (isLiked) {
+            course.setLikeCount(course.getLikeCount() - 1);
+            message = "Course unliked successfully";
+        } else {
+            course.setLikeCount(course.getLikeCount() + 1);
+            message = "Course liked successfully";
+        }
 
         return ResponseEntity.ok(message);
     }
