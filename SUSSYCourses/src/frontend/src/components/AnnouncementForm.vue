@@ -107,15 +107,16 @@
 }
 
 .form-item {
-  margin-bottom: 20px;
+  margin: 10px 0;
 }
 
 input, textarea {
-  width: 100%;
+  width: 85%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin: 0 auto;
 }
 
 .input-error {

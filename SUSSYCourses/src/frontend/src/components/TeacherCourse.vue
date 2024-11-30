@@ -27,9 +27,9 @@
         </div>
 
         <!-- Rating and Review Section -->
-        <div class="ratings-section">
-          Change this to list of students
-          <RatingAndReview />
+        <div class="students-section">
+          <h2>Enrolled students</h2>
+          <StudentsList />
         </div>
 
         <!-- Learning Progress Chart -->
@@ -106,11 +106,11 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProfileSidebar from './ProfileSidebar.vue';
 import TeacherCourseware from "@/components/TeacherCourseware.vue";
-import RatingAndReview from './RatingAndReview.vue';
 import DoughnutChart from './DoughnutChart.vue';
 import CommentSection from './CommentSection.vue';
 import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
+import StudentsList from './StudentsList.vue';
 
 
 const route = useRoute();
@@ -233,7 +233,8 @@ onMounted(async () => {
 
 .courseware-section,
 .comments-section,
-.learning-progress-section {
+.learning-progress-section,
+.students-section {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -264,8 +265,7 @@ onMounted(async () => {
 }
 
 .comments-section h2,
-.ratings-section h2,
-.courseware-section h2,
+.students-secLware-section h2,
 .course-details h2,
 .instructor-info h2,
 .learning-progress-section h2,
