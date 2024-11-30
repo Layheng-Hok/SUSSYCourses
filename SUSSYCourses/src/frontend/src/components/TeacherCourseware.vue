@@ -129,7 +129,7 @@
               </template>
               <el-list>
                 <el-list-item
-                    v-for="material in chapter.materials"
+                    v-for="material in chapter.materials.sort((a, b) => a.order - b.order)"
                     :key="material.url"
                     class="material-item"
                 >
@@ -140,7 +140,7 @@
                         <div class="courseware-icons">
                           <el-icon class="archive-icon" @click="openArchiveModal(material)"><MessageBox /></el-icon>
                           <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)"><Edit /></el-icon>
-                        <el-icon class="delete-icon"><Delete /></el-icon>
+                          <el-icon class="delete-icon"><Delete /></el-icon>
                         </div>
                         <div class="courseware-information">
                           <div class="courseware-information-header">Courseware Information</div>
@@ -167,7 +167,7 @@
                           </div>
                         </div>
                       </div>
-                      </div>
+                    </div>
                     <div v-else class="non-video-container">
                       <div class="iframe-container">
                         <iframe
@@ -208,7 +208,6 @@
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </el-list-item>
@@ -403,6 +402,7 @@ export default {
       try {
         const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
         const coursesData = response.data
+        console.log(coursesData)
         course.value = coursesData.find((c) => c.id === props.courseId);
 
         if (!course.value) {

@@ -141,6 +141,7 @@ public class CoursewareService {
                         material.put("title", c.getUrl());
                         material.put("url", getMaterial);
                         material.put("type", c.getFileType());
+                        material.put("order", c.getCoursewareOrder());
                         materials.put(material);
                     } else if (homeworkChapters.length() < c.getChapter()) {
                         JSONObject homeworkChapter = new JSONObject();
