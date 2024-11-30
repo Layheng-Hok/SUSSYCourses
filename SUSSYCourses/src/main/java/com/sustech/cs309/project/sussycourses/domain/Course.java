@@ -37,11 +37,17 @@ public class Course {
     @Column
     private String coverImage;
 
-    @OneToMany(mappedBy = "course")
-    private List<Courseware> coursewares;
-
     @Column(length = 50, nullable = false)
     private String topic;
+
+    @Column(nullable = false)
+    private Float totalEvaluationScore;
+
+    @Column(nullable = false)
+    private Integer numEvaluations;
+
+    @OneToMany(mappedBy = "course")
+    private List<Courseware> coursewares;
 
     @OneToMany(mappedBy = "course")
     private List<Rating> ratings;

@@ -36,15 +36,17 @@ CREATE TABLE web_app_user
 
 CREATE TABLE course
 (
-    course_id   BIGSERIAL PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    description VARCHAR(300),
-    teacher_id  BIGINT       NOT NULL REFERENCES web_app_user (user_id),
-    type        VARCHAR(20)  NOT NULL CHECK (type IN ('open', 'non-open', 'semi-open')),
-    status      VARCHAR(20)  NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')),
-    cover_image VARCHAR(255),
-    topic       VARCHAR(50)  NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    course_id              BIGSERIAL PRIMARY KEY,
+    course_name            VARCHAR(100) NOT NULL,
+    description            VARCHAR(300),
+    teacher_id             BIGINT       NOT NULL REFERENCES web_app_user (user_id),
+    type                   VARCHAR(20)  NOT NULL CHECK (type IN ('open', 'non-open', 'semi-open')),
+    status                 VARCHAR(20)  NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')),
+    cover_image            VARCHAR(255),
+    topic                  VARCHAR(50)  NOT NULL,
+    total_evaluation_score FLOAT        NOT NULL,
+    num_evaluations        INTEGER      NOT NULL,
+    created_at             TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE courseware
@@ -59,7 +61,7 @@ CREATE TABLE courseware
     courseware_order INT          NOT NULL,
     variant_of       BIGINT,
     version          INT          NOT NULL,
-    display_version BOOLEAN NOT NULL,
+    display_version  BOOLEAN      NOT NULL,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -158,29 +160,32 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
         '2024-11-17 20:24:48.799666', 'kisuke');
 
 
-INSERT INTO course (course_name, description, teacher_id, type, status, topic, created_at)
-VALUES ('Course1', 'blank', 4, 'open', 'approved', 'Programming', NOW()),
-       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', NOW()),
-       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', NOW()),
-       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', NOW()),
-       ('Connecting frontend to backend', 'blank', 7, 'non-open', 'approved', 'Web Development', NOW()),
-       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', NOW()),
-       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', NOW()),
-       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', NOW()),
-       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', NOW()),
-       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', NOW()),
-       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', NOW()),
-       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', NOW()),
-       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', NOW());
+INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
+                    created_at)
+VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programming', 5.0, 1, NOW()),
+       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, NOW()),
+       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, NOW()),
+       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, NOW()),
+       ('Connecting frontend to backend', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, NOW()),
+       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, NOW()),
+       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, NOW()),
+       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, NOW()),
+       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', 7.0, 2, NOW()),
+       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, NOW()),
+       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, NOW()),
+       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, NOW()),
+       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0,
+        NOW());
 
 
-INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,variant_of, version, display_version, created_at) VALUES
-(1,'mp4', 'lecture', 'chapter1', FALSE, 1,1, 1, 1, TRUE, NOW()),
-(1,'pdf', 'lecture', 'intro_python.pdf', FALSE, 1,2, 2, 1, TRUE,NOW()),
-(1,'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1,3, 3, 1, TRUE,NOW()),
-(2,'md', 'assignment', 'datascience_overview.md', FALSE, 1,1, 4, 1, TRUE, NOW()),
-(1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE,NOW()),
-(1, 'pdf', 'assignment', 'Unsupervised Learning.pdf', FALSE, 1, 1, 6, 1, TRUE,NOW());
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
+                        version, display_version, created_at)
+VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
+       (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, TRUE, NOW()),
+       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, TRUE, NOW()),
+       (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE, NOW()),
+       (1, 'pdf', 'assignment', 'Unsupervised Learning.pdf', FALSE, 1, 1, 6, 1, TRUE, NOW());
 
 INSERT INTO course_student (course_id, student_id, status, liked)
 VALUES (1, 3, 'enrolled', TRUE),
@@ -223,7 +228,8 @@ VALUES (1, 2, 6, 4.0, 4.5, 4.0, 3.5, 'Good content, clear explanations.', NOW())
        (9, 8, 3, 4.0, 4.5, 3.5, 4.0, 'Good structure, some room for improvement.', NOW()),
        (10, 2, 5, 3.0, 3.0, 3.5, 2.5, 'Average experience overall.', NOW()),
        (11, 6, 5, 4.5, 4.5, 4.5, 4.5, 'Interesting insights, well-structured.', NOW()),
-       (12, 11, 3, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW());
+       (12, 11, 3, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW()),
+       (13, 1, 3, 5.0, 5.0, 5.0, 5.0, 'Literally the best Java course out there!', NOW());
 
 
 INSERT INTO notification (sender_email, receiver_email, subject, text, created_at)
@@ -232,6 +238,5 @@ VALUES ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!
        ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Important', 'You have a project deadline in 3 days.',
         '2023-10-01T12:00:00Z'),
        ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
-
 
 END;

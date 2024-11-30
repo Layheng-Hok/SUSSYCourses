@@ -4,10 +4,7 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
-import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.ApprovedCoursesResponse;
-import com.sustech.cs309.project.sussycourses.dto.BasicCourseResponse;
-import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,6 +134,8 @@ public class CourseService {
         course.setStatus("pending");
         course.setCoverImage(coverImageName);
         course.setTopic(topic);
+        course.setTotalEvaluationScore(0F);
+        course.setNumEvaluations(0);
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
@@ -230,5 +230,41 @@ public class CourseService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
         }
+    }
+
+    public List<TopRatedCourseResponse> getTopRatedCourses() throws IOException {
+        List<Object[]> rawResults = courseRepository.findTopRatedCoursesByWeightedRatingNative();
+        List<TopRatedCourseResponse> topRatedCourseResponses = new ArrayList<>();
+
+        for (Object[] rawResult : rawResults) {
+            Long courseId = (Long) rawResult[0];
+            Double totalEvaluationScore = (Double) rawResult[1];
+            Integer numEvaluations = (Integer) rawResult[2];
+            Double averageRating = (Double) rawResult[3];
+            Double weightedRating = (Double) rawResult[4];
+            Course course = courseRepository.findByCourseId(courseId).orElse(null);
+
+            assert course != null;
+            TopRatedCourseResponse topRatedCourseResponse = new TopRatedCourseResponse(
+                    courseId,
+                    course.getCourseName(),
+                    course.getDescription(),
+                    course.getTopic(),
+                    CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(courseId, course.getCoverImage())),
+                    course.getTeacher().getUserId(),
+                    course.getTeacher().getFullName(),
+                    course.getTeacher().getEmail(),
+                    CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(course.getTeacher().getUserId(), course.getTeacher().getProfilePicture())),
+                    course.getType(),
+                    totalEvaluationScore.floatValue(),
+                    numEvaluations,
+                    averageRating.floatValue(),
+                    weightedRating.floatValue(),
+                    course.getCreatedAt()
+            );
+            topRatedCourseResponses.add(topRatedCourseResponse);
+        }
+
+        return topRatedCourseResponses;
     }
 }

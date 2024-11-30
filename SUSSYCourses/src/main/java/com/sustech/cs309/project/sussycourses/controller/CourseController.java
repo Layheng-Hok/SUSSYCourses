@@ -4,12 +4,14 @@ package com.sustech.cs309.project.sussycourses.controller;
 import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.ApprovedCoursesResponse;
 import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
+import com.sustech.cs309.project.sussycourses.dto.TopRatedCourseResponse;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -60,5 +62,11 @@ public class CourseController {
     @PutMapping("/{courseId}/reject")
     public ResponseEntity<String> rejectCourse(@PathVariable Long courseId) {
         return courseService.rejectCourse(courseId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_PUBLIC')")
+    @GetMapping("/top-rated")
+    public List<TopRatedCourseResponse> getTopRatedCourses() throws IOException {
+        return courseService.getTopRatedCourses();
     }
 }
