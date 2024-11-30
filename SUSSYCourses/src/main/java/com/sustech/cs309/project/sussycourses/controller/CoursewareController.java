@@ -1,10 +1,7 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
-import com.sustech.cs309.project.sussycourses.dto.CoursewareListResponse;
-import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
-import com.sustech.cs309.project.sussycourses.dto.CoursewareVersionResponse;
-import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.service.CoursewareService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +35,19 @@ public class CoursewareController {
     }
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PutMapping("/update")
-    public ResponseEntity<String> updateCourseware(@RequestBody UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
+    public ResponseEntity<String> updateCourseware(@ModelAttribute UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
         return coursewareService.updateCourseware(updateCoursewareRequest);
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @GetMapping("/{coursewareId}")
+    public CoursewareResponse findByCoursewareId(@PathVariable long coursewareId) throws Exception {
+        return coursewareService.findByCoursewareId(coursewareId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @PutMapping("/{coursewareId}/setActive")
+    public ResponseEntity<String> setActiveVersion(@PathVariable Long coursewareId) throws Exception {
+        return coursewareService.setActive(coursewareId);
     }
 }

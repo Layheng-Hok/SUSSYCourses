@@ -10,86 +10,103 @@
       </slot>
 
       <slot name="body">
-        <div v-for="(courseware, index) in this.selectedCourseware" :key="index" class="courseware-item">
+        <div v-for="(courseware, index) in selectedCourseware" :key="index"
+             :class="['courseware-item', { 'selected-version': courseware.coursewareId === selectedCoursewareId }]">
           <div class="modal-item-left">
             <video controls :src="`${courseware.url}`" width="60%" class="modal-video-frame"></video>
           </div>
           <div class="modal-item-middle">
-          <h3>Courseware {{ index + 1 }}</h3>
-          <p><strong>Category:</strong> {{ courseware.category }}</p>
-          <p><strong>Chapter:</strong> {{ courseware.chapter }}</p>
-          <p><strong>Courseware ID:</strong> {{ courseware.coursewareId }}</p>
-          <p><strong>Courseware Order:</strong> {{ courseware.coursewareOrder }}</p>
-          <p><strong>Creation Time:</strong> {{ courseware.createTime }}</p>
-          <p><strong>Display Version:</strong> {{ courseware.displayVersion }}</p>
-          <p><strong>Downloadable:</strong> {{ courseware.downloadable }}</p>
-          <p><strong>Variant Of:</strong> {{ courseware.variantOf }}</p>
+            <h3>Courseware {{ index + 1 }}</h3>
+            <p><strong>Category:</strong> {{ courseware.category }}</p>
+            <p><strong>Chapter:</strong> {{ courseware.chapter }}</p>
+            <p><strong>Courseware ID:</strong> {{ courseware.coursewareId }}</p>
+            <p><strong>Courseware Order:</strong> {{ courseware.coursewareOrder }}</p>
+            <p><strong>Creation Time:</strong> {{ courseware.createTime }}</p>
+            <p><strong>Display Version:</strong> {{ courseware.displayVersion }}</p>
+            <p><strong>Downloadable:</strong> {{ courseware.downloadable }}</p>
+            <p><strong>Variant Of:</strong> {{ courseware.variantOf }}</p>
           </div>
           <div class="modal-item-right">
-            <button class="modal-delete-button" @click="deleteVersion(courseware)">Delete Version</button>
-            <button class="modal-update-button" @click="openEditDialog()">Update Version</button>
             <button class="modal-set-button" @click="setActiveVersion(courseware)">Set as Active Version</button>
+            <button class="modal-update-button" @click="openEditDialog(courseware.coursewareId)">Update Version</button>
+            <button class="modal-delete-button" @click="deleteVersion(courseware)">Delete Version</button>
           </div>
         </div>
       </slot>
     </div>
   </div>
 
+
+
+  <!--Update Courseware Form -->
   <div class="update-form-modal-backdrop" v-if="editDialogVisible">
     <div class="update-form-modal">
       <div class="update-form-top">
-      <slot name="header">
-        <h2>Edit Courseware</h2>
-      </slot>
+        <slot name="header">
+          <h2>Edit Courseware</h2>
+        </slot>
       </div>
 
       <div class="update-form-bottom">
-      <slot name="body">
-        <form @submit.prevent="submitUpdate">
-          <div class="form-group">
-            <label for="category">Category:</label>
-            <select id="category" v-model="updateData.category">
-              <option :value="`Lecture`">Lecture</option>
-              <option :value="`Assignment`">Assignment</option>
-            <option :value="`Project`">Project</option>
-            </select>
-          </div>
+        <slot name="body">
+          <form @submit.prevent="submitUpdate">
+            <!-- Category Field -->
+            <div class="form-group">
+              <label for="category">Category:</label>
+              <select id="category" v-model="updateData.category" required>
+                <option :value="'assignment'">Assignment</option>
+                <option :value="'lecture'">Lecture</option>
+                <option :value="'project'">Project</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="downloadable">Downloadable:</label>
-            <select id="downloadable" v-model="updateData.downloadable">
-              <option :value="true">Yes</option>
-              <option :value="false">No</option>
-            </select>
-          </div>
 
-          <div class="form-group">
-            <label for="chapter">Chapter:</label>
-            <input type="number" id="chapter" v-model="updateData.chapter" required />
-          </div>
 
-          <div class="form-group">
-            <label for="order">Order:</label>
-            <input type="number" id="order" v-model="updateData.order" required />
-          </div>
+            <!-- Downloadable Field -->
+            <div class="form-group">
+              <label for="downloadable">Downloadable:</label>
+              <select id="downloadable" v-model="updateData.downloadable" placeholder="Select if downloadable">
+                <option :value="true">Yes</option>
+                <option :value="false">No</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="changeFile">Change File:</label>
-            <input type="checkbox" id="changeFile" v-model="updateData.changeFile" />
-          </div>
+            <!-- Chapter Field -->
+            <div class="form-group">
+              <label for="chapter">Chapter:</label>
+              <input type="number" id="chapter" v-model="updateData.chapter" required placeholder="Enter chapter number" />
+            </div>
 
-          <div class="form-group">
-            <label for="file">Upload New File:</label>
-            <input type="file" id="file" @change="handleFileChange" />
-          </div>
+            <!-- Order Field -->
+            <div class="form-group">
+              <label for="order">Order:</label>
+              <select id="order" v-model="updateData.order" placeholder="Select order">
+                <option :value="1">1</option>
+                <option :value="2">2</option>
+              </select>
+            </div>
 
-          <button type="submit" class="save-button">Save</button>
-          <button type="button" class="close-button" @click="editDialogVisible = false">Cancel</button>
-        </form>
-      </slot>
+            <!-- Change File Checkbox -->
+            <div class="form-group">
+              <label for="changeFile">Change File:</label>
+              <input type="checkbox" id="changeFile" v-model="updateData.changeFile" />
+            </div>
+
+            <!-- File Upload Field -->
+            <div class="form-group">
+              <label for="file">Upload New File:</label>
+              <input type="file" id="file" @change="handleFileChange" />
+            </div>
+
+            <button type="submit" class="save-button">Save</button>
+            <button type="button" class="close-button" @click="editDialogVisible = false">Cancel</button>
+          </form>
+        </slot>
       </div>
     </div>
+
   </div>
+
 
   <!-- Course Content Section with Interactive Media -->
   <el-card class="course-content" shadow="hover">
@@ -121,8 +138,8 @@
                       <video controls :src="`${material.url}`" width="60%" class="video-frame"></video>
                       <div class="courseware-right-side">
                         <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(chapter.materials[0])"><MessageBox /></el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog()"><Edit /></el-icon>
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)"><MessageBox /></el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)"><Edit /></el-icon>
                         <el-icon class="delete-icon"><Delete /></el-icon>
                         </div>
                         <div class="courseware-information">
@@ -162,8 +179,8 @@
                       </div>
                       <div class="courseware-right-side">
                         <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(chapter.materials[0])"><MessageBox /></el-icon>
-                          <el-icon class="edit-icon"><Edit /></el-icon>
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)"><MessageBox /></el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)"><Edit /></el-icon>
                           <el-icon class="delete-icon"><Delete /></el-icon>
                         </div>
                         <div class="courseware-information">
@@ -260,14 +277,15 @@ import axiosInstances from "@/services/axiosInstance";
 export default {
   data() {
     return {
+      selectedCoursewareId: null,
       archiveDialogVisible: false, // Controls the visibility of the archive modal
       editDialogVisible: false,
       updateData: {
         coursewareId: null,
         courseId: null,
         fileType: '',
-        category: '',
-        downloadable: false,
+        category: null,
+        downloadable: null,
         chapter: null,
         order: null,
         variant_of: null,
@@ -283,6 +301,8 @@ export default {
     async openArchiveModal(courseware) {
       const variantOf = courseware.variantOf;
       const variants = await axiosInstances.axiosInstance.get(`courseware/${variantOf}/allVersions`);
+      const activeVariant = variants.data.find(coursewareVersion => coursewareVersion.displayVersion === true);
+      this.selectedCoursewareId = activeVariant.coursewareId
       this.selectedCourseware = variants.data;  // Pass the correct courseware object
       this.archiveDialogVisible = !(this.archiveDialogVisible);      // Show the modal
     },
@@ -290,9 +310,21 @@ export default {
       console.log(`Delete version with ID: ${coursewareId}`);
       // Add your delete logic here
     },
-    openEditDialog(courseware) {
-      this.updateData = { ...courseware }; // Clone selected courseware data into updateData
+    async openEditDialog(coursewareId) {
+      const data = await axiosInstances.axiosInstance.get(`courseware/${coursewareId}`);
+      const courseware = data.data
+      this.updateData.coursewareId= coursewareId;
+      this.updateData.courseId= courseware.courseId;
+      this.updateData.fileType= courseware.fileType;
+      this.updateData.downloadable= courseware.downloadable;
+      this.updateData.category = courseware.category;
+      this.updateData.chapter= courseware.chapter;
+      this.updateData.order= courseware.order;
+      this.updateData.variant_of= courseware.variant_of;
+      this.updateData.version= courseware.version;
+      this.updateData.changeFile= false;
       this.editDialogVisible = true;
+      console.log(this.updateData.coursewareId)
     },
     handleFileChange(event) {
       this.selectedFile = event.target.files[0];
@@ -300,25 +332,35 @@ export default {
     async submitUpdate() {
       const formData = new FormData();
 
-      // Append form data
-      Object.keys(this.updateData).forEach((key) => {
-        formData.append(key, this.updateData[key]);
-      });
+      formData.append("coursewareId", this.updateData.coursewareId)
+      formData.append("courseId", this.updateData.courseId)
+      formData.append("fileType", this.updateData.fileType)
+      formData.append("category", this.updateData.category)
+      formData.append("downloadable", this.updateData.downloadable)
+      formData.append("chapter", this.updateData.chapter)
+      formData.append("order", this.updateData.order)
+      formData.append("variant_of", this.updateData.variant_of)
+      formData.append("version", this.updateData.version)
+      formData.append("changeFile", this.updateData.changeFile)
 
-      // Add the file if it has been updated
-      if (this.selectedFile) {
-        formData.append('file', this.selectedFile);
+      if (this.updateData.changeFile) {
+        formData.append('file', this.selectedFile || null);
+      } else {
+        formData.append('file', new Blob([], { type: 'application/octet-stream' }));
       }
 
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
       await axiosInstances.axiosInstance.put(`courseware/update`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
     },
-    setActiveVersion(coursewareId) {
-      console.log(`Set active version with ID: ${coursewareId}`);
-      // Add your set active logic here
+    async setActiveVersion(courseware) {
+      this.selectedCoursewareId = courseware.coursewareId;
+      await axiosInstances.axiosInstance.put(`courseware/${courseware.coursewareId}/setActive`);
     },
     // Closes the modal
     handleCloseArchiveModal() {
@@ -413,6 +455,7 @@ export default {
 }
 
 .video-frame{
+  height:300px;
   border-radius: 8px; /* Rounded video corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle shadow for video */
 }
@@ -583,7 +626,7 @@ export default {
   background: #ffffff;
   padding: 20px;
   border-radius: 8px;
-  width: 80%;
+  width: 100%;
   max-width: 1000px;
   max-height: 90%; /* Set maximum height */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -614,7 +657,7 @@ export default {
 }
 
 .modal-item-left {
-  width: auto;
+  width: 50%;
   height: auto;
   border-radius: 0.3em;
   border-color: black;
@@ -622,6 +665,7 @@ export default {
 
 .modal-item-middle {
   margin-left: 10px;
+  width: 25%;
   padding: 20px; /* Add internal padding */
   background-color: #ffffff; /* White background */
   border: 1px solid #e0e0e0; /* Subtle border */
@@ -633,10 +677,11 @@ export default {
 
 .modal-item-right {
   display: flex;
+  width: 30%;
   flex-direction: column;
   gap:50px;
   align-content: space-around;
-  margin-left: 10px;
+  margin-left: 50px;
   padding: 20px; /* Add internal padding */
   font-family: 'Arial', sans-serif; /* Clean font */
   max-width: 600px; /* Limit the container width */
@@ -677,7 +722,8 @@ export default {
 .modal-set-button {
   display: inline-block;
   padding: 16px 40px;
-  font-size: 14px;
+  width:220px;
+  font-size:12px;
   font-weight: bold;
   color: #ffffff;
   text-align: center;
@@ -773,7 +819,7 @@ hr {
 
 .form-group {
   margin-bottom: 15px;
-  width: 20%;
+  width: 40%;
 }
 
 .form-group label {
@@ -803,6 +849,17 @@ hr {
 }
 .save-button:hover {
   background-color: #45a049;
+}
+
+/* Add shadow effect or highlight when a version is displayed */
+.selected-version {
+  box-shadow: 0px 4px 8px rgba(0, 128, 0, 0.7);  /* Green shadow for selected version */
+  border: 2px solid green;  /* Optional: add border for better emphasis */
+  background-color: rgba(0, 128, 0, 0.1); /* Optional: slightly change background color */
+}
+
+.courseware-item {
+  transition: all 0.3s ease; /* Smooth transition for shadow and background */
 }
 
 

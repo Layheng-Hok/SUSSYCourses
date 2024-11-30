@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.repository;
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,10 @@ public interface CoursewareRepository extends JpaRepository<Courseware, Long> {
 
     @Query
     List<Courseware> findByVariantOf(Long variantOf);
+
+    @Query("SELECT c FROM Courseware c WHERE c.course.courseId = :courseId AND c.category = :category AND c.chapter = :chapter ORDER BY c.chapter ASC")
+    List<Courseware> findByCourseIdAndCategoryAndChapter(Long courseId, String category, Integer chapter);
+
+    @Query("SELECT c FROM Courseware c WHERE c.variantOf = :variantOf AND c.displayVersion = true")
+    Courseware findActiveCourseware(Long variantOf);
 }

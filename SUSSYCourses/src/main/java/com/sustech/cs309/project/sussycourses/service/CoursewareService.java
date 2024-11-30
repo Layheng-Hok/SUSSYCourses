@@ -2,8 +2,8 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Courseware;
-import com.sustech.cs309.project.sussycourses.dto.CoursewareListResponse;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareResponse;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareVersionResponse;
 import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
@@ -29,6 +29,13 @@ import java.util.Objects;
 public class CoursewareService {
     private final CoursewareRepository coursewareRepository;
     private final CourseRepository courseRepository;
+
+    public CoursewareResponse findByCoursewareId(Long coursewareId) throws IOException {
+        Courseware c = coursewareRepository.findById(coursewareId).get();
+        String url = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseName(), c.getUrl(), c.getChapter()));
+
+        return new CoursewareResponse(c.getCourse().getCourseId(), c.getFileType(), c.getCategory(), c.getDownloadable(), c.getChapter(), c.getCoursewareOrder(), c.getVariantOf(), c.getVersion(), url);
+    }
 
     public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
         return "Courses/" + courseName + "/" + coverPhotoName;
@@ -211,12 +218,21 @@ public class CoursewareService {
         courseware.setCoursewareOrder(order);
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
-
         if(changeFile){
             String url = resolveCoursewareLocation(course.getCourseName(), courseware.getUrl(), chapter);
+            String urlToStore = url.split("/")[url.split("/").length - 1];
+            courseware.setUrl(urlToStore);
             CloudUtils.putStorageKey(file, fileType, url);
         }
-        coursewareRepository.save(courseware);
+
+        //Sort Order Logic
+        List<Courseware> coursewareOrders = coursewareRepository.findByCourseIdAndCategoryAndChapter(courseId, category, chapter);
+        coursewareOrders.add(courseware.getCoursewareOrder()-1, courseware);
+        for (int i = 0; i < coursewareOrders.size(); i++) {
+            coursewareOrders.get(i).setCoursewareOrder(i+1);
+        }
+
+        coursewareRepository.saveAll(coursewareOrders);
 
         return ResponseEntity.ok("Updated successfully");
     }
@@ -231,5 +247,16 @@ public class CoursewareService {
             coursewareVersionResponseList.add(c);
         }
         return coursewareVersionResponseList;
+    }
+
+    public ResponseEntity<String> setActive(Long coursewareId) {
+        Courseware coursewareToChange = coursewareRepository.findById(coursewareId).get();
+        Courseware activeCourseware = coursewareRepository.findActiveCourseware(coursewareToChange.getVariantOf());
+
+        activeCourseware.setDisplayVersion(false);
+        coursewareToChange.setDisplayVersion(true);
+        coursewareRepository.save(coursewareToChange);
+        coursewareRepository.save(activeCourseware);
+        return ResponseEntity.ok("Updated Successfully");
     }
 }
