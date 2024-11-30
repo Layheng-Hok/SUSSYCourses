@@ -327,6 +327,7 @@ public class CourseStudentService {
                 coursewareStudent.setCourseware(courseware);
                 coursewareStudent.setStudent(student);
                 coursewareStudent.setCompleted(false);
+                coursewareStudent.setDisplayVersion(courseware.getDisplayVersion());
                 coursewareStudentRepository.save(coursewareStudent);
             }
         }
