@@ -34,12 +34,11 @@
 
         <!-- Learning Progress Chart -->
         <div class="learning-progress-section">
-          <h2>Change this to course rating stats</h2>
+          <h2>Course rating statistics</h2>
           <slot name="learning-progress">
             <DoughnutChart/>
           </slot>
         </div>
-
 
         <!-- Comment Section -->
         <div class="comments-section">
@@ -58,29 +57,9 @@
           <p><strong>Category:</strong> {{ course.topic }}</p>
           <p><strong>Rating:</strong> ⭐ {{ course?.averageRating || 0}}</p>
           <p><strong>Likes Count:</strong> ❤️ {{ course?.likesCount || 0 }}</p>
-          <!-- Like Button -->
-          <el-button
-              type="text"
-              class="like-button"
-              @click="incrementLikes"
-          >
-            <span :class="{ liked: isLiked }">{{ isLiked ? '❤️ Unlike' : '🤍 Like' }}</span>
-          </el-button>
+  
         </el-card>
 
-        <!-- Instructor Information -->
-        <el-card class="instructor-info" shadow="hover">
-          <h2>Instructor Information</h2>
-          <div>  <img
-              :src="course?.teacherProfilePictureUrl || defaultTeacherProfilePic"
-              alt="Instructor Image"
-              class="instructor-image">
-          </div>
-          <div>
-            <p><strong>{{ course.teacherName }}</strong></p>
-            <p class="bio">{{ course?.teacherBio || "null" }}</p>
-          </div>
-        </el-card>
         <el-card class="announcement" shadow="hover">
           <AnnouncementForm/>
     </el-card>
@@ -112,25 +91,37 @@ import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
 import StudentsList from './StudentsList.vue';
 
-
 const route = useRoute();
 const router = useRouter();
 const user = ref(null);
 const course = ref(null);
 const courseId = route.params.courseId;
-const isLiked = ref(false);
+const userId = localStorage.getItem('userId');
 
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
-const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
+
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`instructors/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
 
 const fetchCoursewareDetails = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`courseware/coursewarePage`);
     course.value = response.data;
-    isLiked.value = course.value.liked;
   } catch (error) {
 
     console.log("Error Details:", error);
@@ -147,6 +138,7 @@ const toggleSidebar = () => {
 };
 
 onMounted(async () => {
+  await fetchUserData();
   await fetchCoursewareDetails();
 });
 </script>
@@ -243,7 +235,6 @@ onMounted(async () => {
 }
 
 .course-details,
-.instructor-info,
 .announcement {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   background-color: #ffffff;
@@ -258,52 +249,15 @@ onMounted(async () => {
   border-radius: 8px;
 }
 
-.instructor-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
-}
-
 .comments-section h2,
 .students-secLware-section h2,
 .course-details h2,
-.instructor-info h2,
 .learning-progress-section h2,
 .announcement h2 {
   margin-bottom: 10px;
   font-size: 24px;
   font-weight: bold;
   color: black !important;
-}
-
-.description, .bio {
-  margin: 20px 100px;
-  text-align: justify;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.like-button span {
-  font-size: 20px;
-  cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.like-button span.liked {
-  color: #ff5a5f;
-  animation: heart-pop 0.3s ease;
-}
-
-@keyframes heart-pop {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 </style>

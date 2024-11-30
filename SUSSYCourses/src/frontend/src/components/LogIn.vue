@@ -156,6 +156,7 @@ const handleLogin = async () => {
         let userId = response2.data.userId;
         let userRole = response2.data.roleName;
         localStorage.setItem('userId', userId);
+        localStorage.setItem('roleName', userRole);
 
         if (userRole === 'ADMIN') {
           await router.push(`admin-dashboard`);
