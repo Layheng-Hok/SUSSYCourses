@@ -66,6 +66,7 @@ public class WebAppUserService {
         webAppUser.setEnabled(false);
         webAppUser.setVerificationToken(UUID.randomUUID().toString());
         webAppUser.setGender(registrationRequest.gender());
+        webAppUser.setPoints(0);
         webAppUser.setCreatedAt(LocalDateTime.now());
 
         webAppUserRepository.save(webAppUser);

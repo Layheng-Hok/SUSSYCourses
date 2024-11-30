@@ -46,7 +46,7 @@ public class WebAppUser {
     private String bio;
 
     @Column
-    private int points = 0;
+    private Integer points = 0;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

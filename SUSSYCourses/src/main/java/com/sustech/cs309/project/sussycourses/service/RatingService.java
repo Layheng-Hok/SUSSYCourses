@@ -1,5 +1,6 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Rating;
 import com.sustech.cs309.project.sussycourses.dto.RatingRequest;
@@ -46,6 +47,11 @@ public class RatingService {
         rating.setFeedback(ratingRequest.feedback());
         rating.setCreatedAt(LocalDateTime.now());
         ratingRepository.save(rating);
+
+        Course course = courseStudent.get().getCourse();
+        course.setTotalEvaluationScore(course.getTotalEvaluationScore() + overallRating);
+        course.setNumEvaluations(course.getNumEvaluations() + 1);
+        courseRepository.save(course);
 
         return ResponseEntity.ok("Rating submitted successfully");
     }

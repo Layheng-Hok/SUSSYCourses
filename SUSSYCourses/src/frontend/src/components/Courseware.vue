@@ -1,5 +1,4 @@
 <template>
-    <!-- Course Content Section with Interactive Media -->
     <el-card class="course-content" shadow="hover">
       <h2>Course Content</h2>
       <el-collapse>
@@ -10,30 +9,10 @@
               <el-list-item v-for="material in chapter.materials" :key="material.url">
               <!-- Video content -->
               <div v-if="material.type === 'mp4'" class="video-container">
-                <video controls :src="`${material.url}`" width="50%"></video>
-              </div>
-  
-              <!-- PDF File Preview -->
-              <div v-else-if="material.type === 'pdf'" class="attachment-box">
-                <div class="icon-container">
-                  <img src="/assets/Icons/pdf-icon.svg" alt="PDF Icon" class="pdf-icon" />
-                </div>
-                <div class="file-info">
-                  <p>{{ material.title || "PDF File" }}</p>
-                </div>
-                <div class="expand-container">
-                  <button @click="openInNewTab(material.url)" class="expand-button">
-                    View
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Other materials -->
+            <video controls :src="`${material.url}`" controlsList="nodownload" class="video-player"></video>
+            </div>
               <div v-else>
-                <a :href="`${material.url}`" target="_blank">
-                  <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
-                  {{ material.title }}
-                </a>
+                  <FilePreview :type="material.type" :title="material.title" :url="material.url" :isNonDownloadable="material.isNonDownloadable" />
               </div>
             </el-list-item>
 
@@ -46,28 +25,7 @@
             <h3>{{ chapter.name }}</h3>
             <el-list>
               <el-list-item v-for="material in chapter.materials" :key="material.url">
-                  <!-- PDF File Preview -->
-              <div v-if="material.type === 'pdf'" class="attachment-box">
-                <div class="icon-container">
-                  <img src="/assets/Icons/pdf-icon.svg" alt="PDF Icon" class="pdf-icon" />
-                </div>
-                <div class="file-info">
-                  <p>{{ material.title || "PDF File" }}</p>
-                </div>
-                <div class="expand-container">
-                  <button @click="openInNewTab(material.url)" class="expand-button">
-                    View
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Other materials -->
-              <div v-else>
-                <a :href="`${material.url}`" target="_blank">
-                  <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
-                  {{ material.title }}
-                </a>
-              </div>
+                <FilePreview :type="material.type" :title="material.title" :url="material.url" />
               </el-list-item>
             </el-list>
           </div>
@@ -78,28 +36,7 @@
             <h3>{{ chapter.name }}</h3>
             <el-list>
               <el-list-item v-for="material in chapter.materials" :key="material.url">
-               <!-- PDF File Preview -->
-               <div v-if="material.type === 'pdf'" class="attachment-box">
-                <div class="icon-container">
-                  <img src="/assets/Icons/pdf-icon.svg" alt="PDF Icon" class="pdf-icon" />
-                </div>
-                <div class="file-info">
-                  <p>{{ material.title || "PDF File" }}</p>
-                </div>
-                <div class="expand-container">
-                  <button @click="openInNewTab(material.url)" class="expand-button">
-                    View
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Other materials -->
-              <div v-else>
-                <a :href="`${material.url}`" target="_blank">
-                  <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
-                  {{ material.title }}
-                </a>
-              </div>
+                <FilePreview :type="material.type" :title="material.title" :url="material.url" />
               </el-list-item>
             </el-list>
           </div>
@@ -108,12 +45,11 @@
     </el-card>
   </template>
   
-
   <script setup>
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
-  import { Document, DataBoard, VideoCamera, Files } from '@element-plus/icons-vue';
   import axiosInstances from "@/services/axiosInstance";
+  import FilePreview from './FilePreview.vue';
   
   const route = useRoute();
   const courseId = route.params.courseId;
@@ -124,29 +60,11 @@
     projectChapters: []
   });
   
-  const openInNewTab = (url) => {
-  window.open(url, "_blank");
-};
-
-  const materialIcon = (type) => {
-    switch (type) {
-      case "pdf":
-        return Document;
-      case "pptx":
-        return DataBoard;
-      case "mp4":
-        return VideoCamera;
-      default:
-        return Files;
-    }
-  };
-  
   onMounted(async () => {
     try {
       const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
       const coursesData = response.data;
       course.value = coursesData.find((c) => c.id === courseId);
-      console.log("courseware:", course.value);
   
       if (!course.value) {
         console.error("Course not found!");
@@ -211,55 +129,18 @@ h2 {
 }
 
 .video-container {
-  margin: 20px 0;
-}
-
-.attachment-box {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid #ddd;
-  border-radius: 12px; 
-  padding: 10px 15px;
-  height: 50px;
+  margin: 10px 0;
+  max-width: 100%;
   width: 100%;
-  max-width: 270px; 
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
+  
 }
 
-.pdf-icon {
-  width: 30px;
-  height: 30px;
+.video-player {
+  width: 80%;
+  height: 80%;
 }
-
-.file-info {
-  flex: 1;
-  padding: 0 10px;
-  font-size: 16px;
-  color: #333;
-}
-
-.expand-container {
-  flex: 0 0 auto;
-}
-
-.expand-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: 'Arial', sans-serif;
-  transition: all 0.3s ease;
-}
-
-.expand-button:hover {
-  background: #0056b3;
-}
-
   </style>
   
