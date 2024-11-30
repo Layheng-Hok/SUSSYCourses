@@ -106,7 +106,7 @@
       </el-menu-item>
       <el-menu-item index="5">
         <i class="el-icon-close"></i>
-        <span>Log Out</span>
+        <router-link to="/" @click.prevent="logout">Log Out</router-link>
       </el-menu-item>
     </el-menu>
 
@@ -119,7 +119,7 @@
       <HelpSupport v-if="activeTab === 'help'"/>
       <TeacherProfile v-if="activeTab === 'profile'"/>
       <Security v-if="activeTab === 'security'"/>
-      <TeacherNotifications v-if="activeTab === 'notifications' "/>
+      <Notifications v-if="activeTab === 'notifications' "/>
     </div>
   </div>
 </template>
@@ -132,12 +132,22 @@ import HelpSupport from "@/components/HelpSupport.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 import TeacherProfile from "@/components/TeacherProfile.vue";
 import Security from "@/components/Security.vue";
-import TeacherNotifications from "@/components/TeacherNotifications.vue";
+import Notifications from "@/components/Notifications.vue";
 import axiosInstances from "@/services/axiosInstance";
+import {useRouter} from "vue-router";
 
 const props = defineProps({
   initialTab: String,
 });
+
+const router = useRouter();
+const logout = () => {
+  localStorage.setItem('usn',''); 
+  localStorage.setItem('pwd',''); 
+  localStorage.setItem('userId', ''); 
+  alert("You have successfully logged out");
+  router.push('/login');
+};
 
 const activeTab = ref('courses'); // Default to 'courses'
 onMounted(() => {
