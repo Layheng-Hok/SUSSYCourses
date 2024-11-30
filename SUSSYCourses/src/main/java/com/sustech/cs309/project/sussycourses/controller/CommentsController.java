@@ -2,9 +2,6 @@ package com.sustech.cs309.project.sussycourses.controller;
 
 import com.sustech.cs309.project.sussycourses.dto.CommentCreationRequest;
 import com.sustech.cs309.project.sussycourses.dto.CommentResponse;
-import com.sustech.cs309.project.sussycourses.repository.CommentRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.service.CommentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class CommentsController {
-    private final CommentRepository commentRepository;
-
-    private final CourseRepository courseRepository;
-
-    private final WebAppUserRepository webAppUserRepository;
 
     private final CommentService commentService;
 
