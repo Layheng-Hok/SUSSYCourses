@@ -72,4 +72,10 @@ public class CourseController {
     public List<TopRatedCourseResponse> getTopRatedCourses() throws IOException {
         return courseService.getTopRatedCourses();
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_PUBLIC')")
+    @GetMapping("/instructors/top-rated")
+    public List<TopRatedInstructorResponse> getTopRatedInstructors() throws IOException {
+        return courseService.getTopRatedInstructors();
+    }
 }

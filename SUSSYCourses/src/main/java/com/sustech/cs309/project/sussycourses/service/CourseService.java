@@ -38,17 +38,23 @@ public class CourseService {
     public List<AdminCourseDetailResponse> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
         return courses.stream()
-                .map(course -> new AdminCourseDetailResponse(
-                        course.getCourseId(),
-                        course.getCourseName(),
-                        course.getDescription(),
-                        course.getTopic(),
-                        course.getCoverImage(),
-                        course.getTeacher().getUserId(),
-                        course.getTeacher().getFullName(),
-                        course.getType(),
-                        course.getStatus(),
-                        course.getCreatedAt()))
+                .map(course -> {
+                    try {
+                        return new AdminCourseDetailResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getDescription(),
+                                course.getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(course.getCourseId(), course.getCoverImage())),
+                                course.getTeacher().getUserId(),
+                                course.getTeacher().getFullName(),
+                                course.getType(),
+                                course.getStatus(),
+                                course.getCreatedAt());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
     }
 
@@ -237,20 +243,26 @@ public class CourseService {
     public List<BasicCourseResponse> getCoursesByInstructorId(Long instructorId) {
         List<Course> courses = courseRepository.findByTeacher_UserId(instructorId);
         return courses.stream()
-                .map(course -> new BasicCourseResponse(
-                        course.getCourseId(),
-                        course.getCourseName(),
-                        course.getDescription(),
-                        course.getTopic(),
-                        course.getCoverImage(),
-                        course.getTeacher().getUserId(),
-                        course.getTeacher().getFullName(),
-                        course.getTeacher().getEmail(),
-                        course.getType(),
-                        courseStudentRepository.countLikesByCourseId(course.getCourseId()),
-                        course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
-                        course.getCreatedAt()
-                ))
+                .map(course -> {
+                    try {
+                        return new BasicCourseResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getDescription(),
+                                course.getTopic(),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(course.getCourseId(), course.getCoverImage())),
+                                course.getTeacher().getUserId(),
+                                course.getTeacher().getFullName(),
+                                course.getTeacher().getEmail(),
+                                course.getType(),
+                                courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                                course.getCreatedAt()
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .sorted((course1, course2) -> {
                     double avgRating1 = course1.averageRating();
                     double avgRating2 = course2.averageRating();
@@ -260,7 +272,7 @@ public class CourseService {
     }
 
     public List<TopRatedCourseResponse> getTopRatedCourses() throws IOException {
-        List<Object[]> rawResults = courseRepository.findTopRatedCoursesByWeightedRatingNative();
+        List<Object[]> rawResults = courseRepository.findTopRatedCoursesByWeightedRating();
         List<TopRatedCourseResponse> topRatedCourseResponses = new ArrayList<>();
 
         for (Object[] rawResult : rawResults) {
@@ -293,5 +305,65 @@ public class CourseService {
         }
 
         return topRatedCourseResponses;
+    }
+
+    public List<TopRatedInstructorResponse> getTopRatedInstructors() throws IOException {
+        List<Object[]> rawResults = courseRepository.findTopRatedInstructorsByWeightedRating();
+        List<TopRatedInstructorResponse> topRatedInstructorResponses = new ArrayList<>();
+
+        for (Object[] rawResult : rawResults) {
+            Long instructorId = (Long) rawResult[0];
+            Double instructorWeightedRating = (Double) rawResult[1];
+            WebAppUser instructor = webAppUserRepository.findByUserId(instructorId).orElse(null);
+            List<Course> courses = courseRepository.findByTeacher_UserId(instructorId);
+            List<BasicCourseResponse> topRatedCourses = courses.stream()
+                    .map(course -> {
+                        try {
+                            return new BasicCourseResponse(
+                                    course.getCourseId(),
+                                    course.getCourseName(),
+                                    course.getDescription(),
+                                    course.getTopic(),
+                                    CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(course.getCourseId(), course.getCoverImage())),
+                                    course.getTeacher().getUserId(),
+                                    course.getTeacher().getFullName(),
+                                    course.getTeacher().getEmail(),
+                                    course.getType(),
+                                    courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                                    course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                                    course.getCreatedAt()
+                            );
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .sorted((course1, course2) -> {
+                        double avgRating1 = course1.averageRating();
+                        double avgRating2 = course2.averageRating();
+                        return Double.compare(avgRating2, avgRating1);
+                    })
+                    .toList();
+
+            assert instructor != null;
+            TopRatedInstructorResponse topRatedInstructorResponse = new TopRatedInstructorResponse(
+                    instructorId,
+                    instructor.getFullName(),
+                    instructor.getEmail(),
+                    CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(instructorId, instructor.getProfilePicture())),
+                    instructor.getGender(),
+                    instructor.getRole().getRoleName(),
+                    instructor.getBio(),
+                    courseRepository.getInstructorAverageRating(instructorId).floatValue(),
+                    instructorWeightedRating.floatValue(),
+                    courseStudentRepository.countStudentsByTeacherId(instructorId),
+                    courseRepository.countByTeacher_UserId(instructorId),
+                    topRatedCourses,
+                    instructor.getCreatedAt()
+            );
+
+            topRatedInstructorResponses.add(topRatedInstructorResponse);
+        }
+
+        return topRatedInstructorResponses;
     }
 }
