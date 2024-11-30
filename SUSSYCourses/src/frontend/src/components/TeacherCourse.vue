@@ -67,7 +67,6 @@
             <span :class="{ liked: isLiked }">{{ isLiked ? '❤️ Unlike' : '🤍 Like' }}</span>
           </el-button>
         </el-card>
-        <!-- <p><strong>Enrolled Students:</strong> {{ course.numStudentsEnrolled }}</p> -->
 
         <!-- Instructor Information -->
         <el-card class="instructor-info" shadow="hover">
@@ -82,6 +81,9 @@
             <p class="bio">{{ course?.teacherBio || "null" }}</p>
           </div>
         </el-card>
+        <el-card class="announcement" shadow="hover">
+          <AnnouncementForm/>
+    </el-card>
       </div>
     </div>
 
@@ -107,7 +109,9 @@ import TeacherCourseware from "@/components/TeacherCourseware.vue";
 import RatingAndReview from './RatingAndReview.vue';
 import DoughnutChart from './DoughnutChart.vue';
 import CommentSection from './CommentSection.vue';
+import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -121,7 +125,6 @@ const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
-
 
 const fetchCoursewareDetails = async () => {
   try {
@@ -239,7 +242,8 @@ onMounted(async () => {
 }
 
 .course-details,
-.instructor-info {
+.instructor-info,
+.announcement {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   background-color: #ffffff;
   border-radius: 8px;
@@ -264,7 +268,8 @@ onMounted(async () => {
 .courseware-section h2,
 .course-details h2,
 .instructor-info h2,
-.learning-progress-section h2 {
+.learning-progress-section h2,
+.announcement h2 {
   margin-bottom: 10px;
   font-size: 24px;
   font-weight: bold;

@@ -135,7 +135,6 @@ h2 {
   margin: 10px 0;
   max-width: 100%;
   width: 100%;
-  
 }
 
 .video-player {

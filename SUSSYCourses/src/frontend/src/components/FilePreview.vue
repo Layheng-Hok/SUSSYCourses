@@ -132,7 +132,7 @@ const viewMarkdownInNewTab = (url) => {
   flex: 0 0 auto;
 }
 
-.expand-button  {
+.expand-button, .download-button {
   background: #007bff;
   color: white;
   border: none;
@@ -145,27 +145,16 @@ const viewMarkdownInNewTab = (url) => {
   margin: 0 5px;
 }
 
-.expand-button:hover  {
+.expand-button:hover, .download-button:hover {
   background: #0056b3;
 }
 
 .download-button {
   background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: 'Arial', sans-serif;
-  transition: all 0.3s ease;
-  margin: 0 5px;
-
 }
 
 .download-button:hover {
   background: #218838;
 }
-
   </style>
   
