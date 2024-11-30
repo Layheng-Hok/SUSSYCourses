@@ -1,17 +1,11 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.domain.Course;
-import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
-import com.sustech.cs309.project.sussycourses.domain.Notification;
-import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.domain.*;
 import com.sustech.cs309.project.sussycourses.dto.CourseStudentListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseDetailResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentCourseListResponse;
 import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
-import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +25,8 @@ public class CourseStudentService {
     private final WebAppUserRepository webAppUserRepository;
     private final CourseRepository courseRepository;
     private final NotificationRepository notificationRepository;
+    private final CoursewareRepository coursewareRepository;
+    private final CoursewareStudentRepository coursewareStudentRepository;
 
     public StudentCourseListResponse getAllCoursesByStudentId(Long userId) {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserIdAndRoleRoleId(userId, 2);
@@ -323,6 +319,17 @@ public class CourseStudentService {
         teacherToStudentNotification.setText(String.format("Your enrollment request for the course '%s' has been %s by instructor %s.", course.getCourseName(), decision, teacher.getFullName()));
         teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
         notificationRepository.save(teacherToStudentNotification);
+
+        if (decision.equalsIgnoreCase("accepted")) {
+            List<Courseware> coursewares = coursewareRepository.findByCourse_CourseId(courseId);
+            for (Courseware courseware : coursewares) {
+                CoursewareStudent coursewareStudent = new CoursewareStudent();
+                coursewareStudent.setCourseware(courseware);
+                coursewareStudent.setStudent(student);
+                coursewareStudent.setCompleted(false);
+                coursewareStudentRepository.save(coursewareStudent);
+            }
+        }
 
         return ResponseEntity.ok(String.format("Student %s", decision));
     }

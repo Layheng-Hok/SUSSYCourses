@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,41 +16,44 @@ import java.time.LocalDateTime;
 public class Courseware {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "courseware_id")
+    @Column()
     private Long coursewareId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private Course course;
 
-    @Column(name = "file_type", nullable = false)
+    @Column(nullable = false)
     private String fileType;
 
-    @Column(name = "category", nullable = false)
+    @Column(nullable = false)
     private String category;
 
-    @Column(name = "url", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String url;
 
-    @Column(name = "downloadable", nullable = false)
+    @Column(nullable = false)
     private Boolean downloadable;
 
-    @Column(name = "chapter", nullable = false)
-    private int chapter;
+    @Column(nullable = false)
+    private Integer chapter;
 
-    @Column(name = "courseware_order", nullable = false, updatable = false)
-    private int coursewareOrder;
+    @Column(nullable = false, updatable = false)
+    private Integer coursewareOrder;
 
-    @Column(name = "variant_of", updatable = false)
-    private long variantOf;
+    @Column(updatable = false)
+    private Long variantOf;
 
-    @Column(name = "version", nullable = false, updatable = false)
-    private int version;
+    @Column(nullable = false, updatable = false)
+    private Integer version;
 
-    @Column(name = "display_version", nullable = false)
-    private boolean displayVersion;
+    @Column(nullable = false)
+    private Boolean displayVersion;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @OneToMany(mappedBy = "courseware")
+    private List<CoursewareStudent> coursewareStudents;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
 

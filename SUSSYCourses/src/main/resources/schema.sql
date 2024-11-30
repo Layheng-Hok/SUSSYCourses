@@ -8,9 +8,9 @@ DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS course CASCADE;
 DROP TABLE IF EXISTS courseware CASCADE;
 DROP TABLE IF EXISTS notification CASCADE;
+DROP TABLE IF EXISTS courses CASCADE;
 DROP TABLE IF EXISTS web_app_user CASCADE;
 DROP TABLE IF EXISTS role CASCADE;
-DROP TABLE IF EXISTS courses CASCADE;
 
 CREATE TABLE role
 (
@@ -79,6 +79,7 @@ CREATE TABLE course_student
 
 CREATE TABLE courseware_student
 (
+    id            BIGSERIAL PRIMARY KEY,
     courseware_id BIGINT REFERENCES courseware (courseware_id),
     student_id    BIGINT REFERENCES web_app_user (user_id),
     completed     BOOLEAN NOT NULL
@@ -181,15 +182,15 @@ VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programm
 
 INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
                         version, display_version, created_at)
-VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
-       (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
+VALUES (13, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (13, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
        (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, TRUE, NOW()),
        (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, TRUE, NOW()),
        (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE, NOW()),
        (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, TRUE, NOW()),
        (1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE, NOW()),
        (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, TRUE, NOW()),
-       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, TRUE, NOW())
+       (13, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, TRUE, NOW())
 ;;
 
 INSERT INTO course_student (course_id, student_id, status, liked)

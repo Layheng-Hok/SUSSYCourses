@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,6 +48,9 @@ public class WebAppUser {
 
     @Column
     private Integer points = 0;
+
+    @OneToMany(mappedBy = "student")
+    private List<CoursewareStudent> coursewareStudents;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

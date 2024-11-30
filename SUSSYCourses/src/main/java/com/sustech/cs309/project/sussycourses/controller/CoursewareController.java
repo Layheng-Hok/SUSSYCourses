@@ -1,7 +1,9 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.domain.Courseware;
-import com.sustech.cs309.project.sussycourses.dto.*;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareResponse;
+import com.sustech.cs309.project.sussycourses.dto.CoursewareVersionResponse;
+import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
 import com.sustech.cs309.project.sussycourses.service.CoursewareService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +27,16 @@ public class CoursewareController {
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @GetMapping("/{variantOf}/allVersions")
-        public List<CoursewareVersionResponse> coursewareVersions(@PathVariable long variantOf) throws IOException {
-            return coursewareService.retrieveCoursewareVersions(variantOf);
-        }
+    public List<CoursewareVersionResponse> coursewareVersions(@PathVariable long variantOf) throws IOException {
+        return coursewareService.retrieveCoursewareVersions(variantOf);
+    }
+
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")
     public ResponseEntity<String> createCourseware(CoursewareRequest coursewareRequest) throws Exception {
         return coursewareService.uploadCourseware(coursewareRequest);
     }
+
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PutMapping("/update")
     public ResponseEntity<String> updateCourseware(@ModelAttribute UpdateCoursewareRequest updateCoursewareRequest) throws Exception {

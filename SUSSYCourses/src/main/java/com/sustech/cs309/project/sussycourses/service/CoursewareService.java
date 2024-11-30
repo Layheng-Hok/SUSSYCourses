@@ -245,7 +245,7 @@ public class CoursewareService {
         List<CoursewareVersionResponse> coursewareVersionResponseList = new ArrayList<>();
         for (Courseware courseware : list) {
             String url = CloudUtils.getStorageKey(resolveCoursewareLocation(courseware.getCourse().getCourseName(), courseware.getUrl(), courseware.getChapter()));
-            CoursewareVersionResponse c = new CoursewareVersionResponse(courseware.getCoursewareId(), courseware.getCategory(), url, courseware.getDownloadable(), courseware.getChapter(), courseware.getCoursewareOrder(), courseware.getVariantOf(), courseware.getVersion(), courseware.isDisplayVersion(), courseware.getCreatedAt());
+            CoursewareVersionResponse c = new CoursewareVersionResponse(courseware.getCoursewareId(), courseware.getCategory(), url, courseware.getDownloadable(), courseware.getChapter(), courseware.getCoursewareOrder(), courseware.getVariantOf(), courseware.getVersion(), courseware.getDisplayVersion(), courseware.getCreatedAt());
             coursewareVersionResponseList.add(c);
         }
         return coursewareVersionResponseList;
