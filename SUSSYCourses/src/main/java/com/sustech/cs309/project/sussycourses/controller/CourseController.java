@@ -1,10 +1,7 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
 
-import com.sustech.cs309.project.sussycourses.dto.AdminCourseDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.ApprovedCoursesResponse;
-import com.sustech.cs309.project.sussycourses.dto.CourseCreationRequest;
-import com.sustech.cs309.project.sussycourses.dto.TopRatedCourseResponse;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +59,12 @@ public class CourseController {
     @PutMapping("/{courseId}/reject")
     public ResponseEntity<String> rejectCourse(@PathVariable Long courseId) {
         return courseService.rejectCourse(courseId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_PUBLIC')")
+    @GetMapping("/instructors/{instructorId}")
+    public List<BasicCourseResponse> getCoursesByInstructorId(@PathVariable Long instructorId) {
+        return courseService.getCoursesByInstructorId(instructorId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_PUBLIC')")

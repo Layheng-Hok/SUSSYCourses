@@ -5,7 +5,10 @@ import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
-import com.sustech.cs309.project.sussycourses.repository.*;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
+import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
+import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +34,6 @@ public class CourseService {
     private final CourseStudentRepository courseStudentRepository;
     private final WebAppUserRepository webAppUserRepository;
     private final NotificationRepository notificationRepository;
-    private final RatingRepository ratingRepository;
 
     public List<AdminCourseDetailResponse> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
@@ -71,7 +73,7 @@ public class CourseService {
                                 course.getTeacher().getEmail(),
                                 course.getType(),
                                 courseStudentRepository.countLikesByCourseId(course.getCourseId()),
-                                ratingRepository.findAverageRatingByCourseId(course.getCourseId()),
+                                course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
                                 course.getCreatedAt());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -230,6 +232,31 @@ public class CourseService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
         }
+    }
+
+    public List<BasicCourseResponse> getCoursesByInstructorId(Long instructorId) {
+        List<Course> courses = courseRepository.findByTeacher_UserId(instructorId);
+        return courses.stream()
+                .map(course -> new BasicCourseResponse(
+                        course.getCourseId(),
+                        course.getCourseName(),
+                        course.getDescription(),
+                        course.getTopic(),
+                        course.getCoverImage(),
+                        course.getTeacher().getUserId(),
+                        course.getTeacher().getFullName(),
+                        course.getTeacher().getEmail(),
+                        course.getType(),
+                        courseStudentRepository.countLikesByCourseId(course.getCourseId()),
+                        course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                        course.getCreatedAt()
+                ))
+                .sorted((course1, course2) -> {
+                    double avgRating1 = course1.averageRating();
+                    double avgRating2 = course2.averageRating();
+                    return Double.compare(avgRating2, avgRating1);
+                })
+                .toList();
     }
 
     public List<TopRatedCourseResponse> getTopRatedCourses() throws IOException {

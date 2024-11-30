@@ -18,10 +18,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Long countByStatus(String status);
 
-    @Query("SELECT c FROM Course c JOIN c.teacher u WHERE u.userId = c.teacher.userId")
-    List<Course> findCoursesWithTeacherInfo();
-
     List<Course> findByTeacher_UserId(Long userId);
+
+    List<Course> findByTeacher_UserIdOrderByTotalEvaluationScoreDesc(Long userId);
 
     @Query(value = """
                 SELECT c.course_id AS courseId,
@@ -34,5 +33,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                 LIMIT 8
             """, nativeQuery = true)
     List<Object[]> findTopRatedCoursesByWeightedRatingNative();
-
 }

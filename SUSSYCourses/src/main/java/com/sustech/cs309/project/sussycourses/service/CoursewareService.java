@@ -40,6 +40,7 @@ public class CoursewareService {
     public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
         return "Courses/" + courseName + "/" + coverPhotoName;
     }
+
     public String resolveCoursewareLocation(String courseName, String url, int chapter) {
         return "Courses/" + courseName + "/courseware/" + chapter + "/" + url;
     }
@@ -75,7 +76,7 @@ public class CoursewareService {
 
     public String retrieveCoursewareData() throws IOException {
         List<JSONObject> data = new ArrayList<>();
-        List<Course> courses = courseRepository.findCoursesWithTeacherInfo();
+        List<Course> courses = courseRepository.findAll();
 
         for (Course course : courses) {
             JSONObject courseData = new JSONObject();
@@ -219,7 +220,7 @@ public class CoursewareService {
         courseware.setCoursewareOrder(order);
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
-        if(changeFile){
+        if (changeFile) {
             String url = resolveCoursewareLocation(course.getCourseName(), courseware.getUrl(), chapter);
             String urlToStore = url.split("/")[url.split("/").length - 1];
             courseware.setUrl(urlToStore);
@@ -228,9 +229,9 @@ public class CoursewareService {
 
         //Sort Order Logic
         List<Courseware> coursewareOrders = coursewareRepository.findByCourseIdAndCategoryAndChapter(courseId, category, chapter);
-        coursewareOrders.add(courseware.getCoursewareOrder()-1, courseware);
+        coursewareOrders.add(courseware.getCoursewareOrder() - 1, courseware);
         for (int i = 0; i < coursewareOrders.size(); i++) {
-            coursewareOrders.get(i).setCoursewareOrder(i+1);
+            coursewareOrders.get(i).setCoursewareOrder(i + 1);
         }
 
         coursewareRepository.saveAll(coursewareOrders);
