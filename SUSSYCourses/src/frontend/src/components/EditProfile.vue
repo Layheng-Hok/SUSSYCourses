@@ -68,17 +68,31 @@ const profileImage = ref(null);
 const profileImagePreview = ref(null);
 const fileNameWithoutExtension = ref('');
 const fileType = ref('');
+const roleName = localStorage.getItem('roleName');
 
 const fetchUserData = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
+    console.log("Role Name:", roleName);
+    let endpoint = '';
+    
+    if (roleName === 'INSTRUCTOR') {
+      endpoint = `instructors/${userId}`;
+    } else if (roleName === 'STUDENT') {
+      endpoint = `students/${userId}`;
+    } else {
+      console.error("Unknown role:", roleName);
+      return;
+    }
+
+    const response = await axiosInstances.axiosInstance.get(endpoint);
     user.value = response.data;
   } catch (error) {
-    console.error('Error fetching user data:', error);
-    if (error.response?.status === 403) {
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
       router.push({ name: 'ForbiddenPage' });
-    }
-  }
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }  }
 };
 
 const handleImageChange = (event) => {

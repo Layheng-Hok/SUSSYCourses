@@ -34,12 +34,11 @@
 
         <!-- Learning Progress Chart -->
         <div class="learning-progress-section">
-          <h2>Change this to course rating stats</h2>
+          <h2>Course rating statistics</h2>
           <slot name="learning-progress">
             <DoughnutChart/>
           </slot>
         </div>
-
 
         <!-- Comment Section -->
         <div class="comments-section">
@@ -112,12 +111,12 @@ import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
 import StudentsList from './StudentsList.vue';
 
-
 const route = useRoute();
 const router = useRouter();
 const user = ref(null);
 const course = ref(null);
 const courseId = route.params.courseId;
+const userId = localStorage.getItem('userId');
 const isLiked = ref(false);
 
 const activeIndex = ref('1');
@@ -125,6 +124,21 @@ const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
+
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`instructors/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
+  }
+};
 
 const fetchCoursewareDetails = async () => {
   try {
@@ -147,6 +161,7 @@ const toggleSidebar = () => {
 };
 
 onMounted(async () => {
+  await fetchUserData();
   await fetchCoursewareDetails();
 });
 </script>
