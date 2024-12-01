@@ -96,7 +96,7 @@
     </div>
 
     <div v-else>
-      <p>Loading course information...</p>
+      <p>You are not accepted to enroll the course yet. Be patient.</p>
     </div>
     
     <!-- Sidebar Component -->
@@ -400,7 +400,7 @@ onUnmounted(() => {
 }
 
 .description, .bio {
-  margin: 20px 100px;
+  margin: 10px 10px;
   text-align: justify;
   font-size: 16px;
   line-height: 1.6;

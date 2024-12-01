@@ -122,7 +122,7 @@ const submitReview = async () => {
       ratingRequest
     );
 
-    alert("Thank you for your review!");
+    alert("Thanks for the review! You've gained 20 points for your review.");
     hasSubmittedReview.value = true;
 
     previousReview.value = ratingRequest;

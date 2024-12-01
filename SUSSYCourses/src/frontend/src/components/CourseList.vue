@@ -36,6 +36,7 @@
           <p class="course-instructor">Instructor: {{ course.teacherName }}</p>
           <p class="course-likes">Likes Count: {{ course?.likesCount || 0 }} ❤️</p>
           <p class="course-rating">Rating: {{ course?.averageRating || 0 }} ⭐</p>
+          <!-- <button @click.stop="enrollInCourse(course.courseId)" class="enroll-button">Enroll</button> -->
         </div>
       </div>
   
@@ -84,10 +85,11 @@
     try {
       const backendPage = currentPage.value - 1;
   
-      const response = await axiosInstances.axiosInstance.get(`courses/approved`, {
+      const response = await axiosInstances.axiosInstance2.get(`courses/approved`, {
         params: {
           page: backendPage,
           size: pageSize.value, 
+          userId: localStorage.getItem("userId") || 1,
         },
       });
   
@@ -101,6 +103,21 @@
     }
   }, 300);
   
+//   const enrollInCourse = async (courseId) => {
+//   try {
+//     if (!userId || userId === 1) {
+//     alert('Please log in first to enroll in a course.');
+//     return; // Prevent further execution if the condition is true
+//   }
+//     const response = await axiosInstances.axiosInstance.post(`/students/${userId}/courses/${courseId}/enroll`);
+//     console.log('Enrollment successful:', response.data);
+//     alert('You have been successfully enrolled in the course!');
+//   } catch (error) {
+//     console.error('Error enrolling in course:', error);
+//     alert('There was an error enrolling in the course. Please try again.');
+//   }
+// };
+
   onMounted(() => {
     currentPage.value = parseInt(route.query.page || "1");
     pageSize.value = parseInt(route.query.pageSize || "10");
@@ -269,6 +286,23 @@ color: #0056b3;
   .course-image:hover {
     transform: scale(1.1); 
   }
+
+  .enroll-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.enroll-button:hover {
+  background-color: #45a049;
+}
 
   .pagination-section {
   display: flex;

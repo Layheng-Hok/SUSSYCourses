@@ -21,8 +21,8 @@ const axiosInstance2 = axios.create({
 });
 
 axiosInstance2.interceptors.request.use(config => {
-    const usn = localStorage.getItem('public_usn');
-    const pwd = localStorage.getItem('public_pwd');
+    const usn = "sussycourses@gmail.com";
+    const pwd = "1";
     if (usn && pwd) {
         const auth = btoa(`${usn}:${pwd}`);
         config.headers.Authorization = `Basic ${auth}`;

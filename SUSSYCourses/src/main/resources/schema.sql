@@ -163,11 +163,12 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
 
 INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
                     like_count, created_at, cover_image)
-VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programming', 5.0, 1, 3, NOW(), 'java.jpg'),
+VALUES ('Java - Beginner to Advanced', 'Java is a multiplatform, object-oriented programming language that runs on billions of devices worldwide. It powers applications, smartphone operating systems, enterprise software, and many well-known programs.',
+        4, 'open', 'approved', 'Programming', 5.0, 1, 3, NOW(), 'java.jpg'),
        ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, 1, NOW(), 'data_management.webp'),
        ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, 0, NOW(), 'springboot.jpg'),
        ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, 2, NOW(), 'axios.jpg'),
-       ('Why Reach is better than Vue and Angular', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, 0, NOW(), 'react.jpg'),
+       ('Why React is better than Vue and Angular', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, 0, NOW(), 'react.jpg'),
        ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, 1, NOW(), 'web_development.png'),
        ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, 1, NOW(), 'sell_book.jpg'),
        ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, 1, NOW(), 'interior_design.jpg'),
