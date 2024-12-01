@@ -164,18 +164,18 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
 INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
                     like_count, created_at, cover_image)
 VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programming', 5.0, 1, 3, NOW(), 'java.jpg'),
-       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, 1, NOW(), null),
-       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, 0, NOW(), null),
-       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, 2, NOW(), null),
-       ('Connecting frontend to backend', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, 0, NOW(), null),
-       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, 1, NOW(), null),
-       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, 1, NOW(), null),
-       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, 1, NOW(), null),
-       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', 7.0, 2, 1, NOW(), null),
-       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, 0, NOW(), null),
-       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, 2, NOW(), null),
-       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, 0, NOW(), null),
-       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0,0, NOW(), null);
+       ('Data Management', 'blank.', 8, 'open', 'approved', 'Data Science', 7.0, 2, 1, NOW(), 'data_management.webp'),
+       ('Spring Boot', 'blank', 4, 'semi-open', 'pending', 'Web Development', 0, 0, 0, NOW(), 'springboot.jpg'),
+       ('Learn Axios', 'blank', 8, 'open', 'approved', 'Web Development', 3.5, 1, 2, NOW(), 'axios.jpg'),
+       ('Why Reach is better than Vue and Angular', 'blank', 7, 'non-open', 'approved', 'Web Development', 0, 0, 0, NOW(), 'react.jpg'),
+       ('Intro to web development', 'blank', 4, 'open', 'approved', 'Web Development', 9.5, 2, 1, NOW(), 'web_development.png'),
+       ('How to sell a book', 'blank', 4, 'open', 'approved', 'Marketing', 4.5, 1, 1, NOW(), 'sell_book.jpg'),
+       ('Interior Design', 'blank', 7, 'open', 'approved', 'Design', 8.5, 2, 1, NOW(), 'interior_design.jpg'),
+       ('FPGA changes your life', 'blank', 4, 'open', 'approved', 'Hardware', 7.0, 2, 1, NOW(), 'fpga.png'),
+       ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, 0, NOW(), 'billionaire.jpg'),
+       ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, 2, NOW(), 'inflation.webp'),
+       ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, 0, NOW(), 'leadership.webp'),
+       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0,0, NOW(), 'business.jpg');
 
 
 INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,

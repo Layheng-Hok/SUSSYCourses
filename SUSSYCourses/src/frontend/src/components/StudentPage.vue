@@ -97,7 +97,7 @@
           <p class="course-topic"> Category: {{ course.topic }}</p>
           
           <p class="course-type"> Type: {{ course.type }}</p>
-          <p class="course-status"> Status: {{ course.enrollmentStatus }}</p>
+          <p class="course-status"> Status: <b> {{ course.enrollmentStatus }}</b></p>
           <p class="course-progress"> Learning progress: NA %</p>
         </div>
       </div>
