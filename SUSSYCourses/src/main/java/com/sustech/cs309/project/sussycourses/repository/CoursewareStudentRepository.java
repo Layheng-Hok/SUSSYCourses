@@ -6,22 +6,30 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CoursewareStudentRepository extends JpaRepository<CoursewareStudent, Long> {
-    @Query("SELECT COUNT(cs) FROM CoursewareStudent cs " +
-            "WHERE cs.student.userId = :studentId " +
-            "AND cs.courseware.course.courseId = :courseId " +
-            "AND cs.displayVersion = true")
-    Integer countAllCoursewaresByStudentIdAndCourseIdWithDisplayVersion(
+    @Query("""
+            SELECT COUNT(cs) FROM CoursewareStudent cs \
+            WHERE cs.student.userId = :studentId \
+            AND cs.courseware.course.courseId = :courseId \
+            AND cs.courseware.category = :category \
+            AND cs.courseware.displayVersion = true
+            """)
+    Integer countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(
             @Param("studentId") Long studentId,
-            @Param("courseId") Long courseId
+            @Param("courseId") Long courseId,
+            @Param("category") String category
     );
 
-    @Query("SELECT COUNT(cs) FROM CoursewareStudent cs " +
-            "WHERE cs.student.userId = :studentId " +
-            "AND cs.courseware.course.courseId = :courseId " +
-            "AND cs.completed = true " +
-            "AND cs.displayVersion = true")
-    Integer countCompletedCoursewaresByStudentIdAndCourseIdWithDisplayVersion(
+    @Query("""
+            SELECT COUNT(cs) FROM CoursewareStudent cs \
+            WHERE cs.student.userId = :studentId \
+            AND cs.courseware.course.courseId = :courseId \
+            AND cs.courseware.category = :category \
+            AND cs.completed = true \
+            AND cs.courseware.displayVersion = true
+            """)
+    Integer countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(
             @Param("studentId") Long studentId,
-            @Param("courseId") Long courseId
+            @Param("courseId") Long courseId,
+            @Param("category") String category
     );
 }

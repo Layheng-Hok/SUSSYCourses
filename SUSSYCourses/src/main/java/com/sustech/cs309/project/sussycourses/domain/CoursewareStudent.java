@@ -26,7 +26,4 @@ public class CoursewareStudent {
 
     @Column(nullable = false)
     private Boolean completed;
-
-    @Column(nullable = false)
-    private Boolean displayVersion;
 }

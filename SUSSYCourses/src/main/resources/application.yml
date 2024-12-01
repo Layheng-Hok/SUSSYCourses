@@ -20,10 +20,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
+  #  sql:
+  #    init:
+  #      mode: always
+  #      schema-locations: classpath:schema.sql
   mail:
     host: smtp.gmail.com
     port: 587
@@ -38,4 +38,3 @@ logging:
     org:
       springframework:
         security: DEBUG
-

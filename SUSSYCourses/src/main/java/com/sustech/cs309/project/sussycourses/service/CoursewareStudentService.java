@@ -24,8 +24,10 @@ public class CoursewareStudentService {
         }
 
         return new CourseProgressResponse(
-                coursewareStudentRepository.countAllCoursewaresByStudentIdAndCourseIdWithDisplayVersion(studentId, courseId),
-                coursewareStudentRepository.countCompletedCoursewaresByStudentIdAndCourseIdWithDisplayVersion(studentId, courseId)
+                coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "lecture"),
+                coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "lecture"),
+                coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "assignment") + coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "project"),
+                coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "assignment") + coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(studentId, courseId, "project")
         );
     }
 }

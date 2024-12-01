@@ -2,7 +2,6 @@ BEGIN;
 
 DROP TABLE IF EXISTS courseware_student CASCADE;
 DROP TABLE IF EXISTS course_student CASCADE;
-DROP TABLE IF EXISTS course_courseware CASCADE;
 DROP TABLE IF EXISTS comment CASCADE;
 DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS course CASCADE;
@@ -79,11 +78,10 @@ CREATE TABLE course_student
 
 CREATE TABLE courseware_student
 (
-    id              BIGSERIAL PRIMARY KEY,
-    courseware_id   BIGINT  NOT NULL REFERENCES courseware (courseware_id),
-    student_id      BIGINT  NOT NULL REFERENCES web_app_user (user_id),
-    completed       BOOLEAN NOT NULL,
-    display_version BOOLEAN NOT NULL
+    id            BIGSERIAL PRIMARY KEY,
+    courseware_id BIGINT  NOT NULL REFERENCES courseware (courseware_id),
+    student_id    BIGINT  NOT NULL REFERENCES web_app_user (user_id),
+    completed     BOOLEAN NOT NULL
 );
 
 CREATE TABLE comment
@@ -183,26 +181,26 @@ VALUES ('Java - Beginner to Advanced', 'blank', 4, 'open', 'approved', 'Programm
 
 INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
                         version, display_version, created_at)
-VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, FALSE, NOW()),
        (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
        (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, TRUE, NOW()),
-       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, TRUE, NOW()),
+       (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, FALSE, NOW()),
        (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE, NOW()),
-       (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, TRUE, NOW()),
+       (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, FALSE, NOW()),
        (1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE, NOW()),
-       (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, TRUE, NOW()),
-       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, TRUE, NOW())
+       (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, FALSE, NOW()),
+       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, FALSE, NOW())
 ;
 
-INSERT INTO courseware_student(courseware_id, student_id, completed, display_version)
-VALUES (1, 3, TRUE, FALSE),
-       (2, 3, TRUE, TRUE),
-       (3, 3, FALSE, TRUE),
-       (5, 3, FALSE, FALSE),
-       (6, 3, TRUE, FALSE),
-       (7, 3, FALSE, FALSE),
-       (8, 3, FALSE, TRUE),
-       (9, 3, FALSE, FALSE)
+INSERT INTO courseware_student(courseware_id, student_id, completed)
+VALUES (1, 3, TRUE),
+       (2, 3, TRUE),
+       (3, 3, FALSE),
+       (5, 3, FALSE),
+       (6, 3, TRUE),
+       (7, 3, FALSE),
+       (8, 3, FALSE),
+       (9, 3, FALSE)
 ;
 
 INSERT INTO course_student (course_id, student_id, status, liked)
