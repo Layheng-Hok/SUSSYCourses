@@ -52,6 +52,7 @@
   import FilePreview from './FilePreview.vue';
   
   const route = useRoute();
+  const userId = localStorage.getItem('userId');
   const courseId = route.params.courseId;
   
   const course = ref({
@@ -59,19 +60,34 @@
     homeworkChapters: [],
     projectChapters: []
   });
+
+  const getCoursewares = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`users/${userId}/courses/${courseId}/coursewares`);
+    if (response.data && response.data.length > 0) {
+      const courseData = response.data[0]; 
+
+      course.value = {
+        image: courseData.image, 
+        teachingChapters: courseData.teachingChapters || [],  
+        homeworkChapters: courseData.homeworkChapters || [],
+        projectChapters: courseData.projectChapters || []
+      };
+      
+      
+      if (!course.value || !course.value.teachingChapters.length) {
+        console.error("No chapters found!");
+      }
+    } else {
+      console.error('No course data returned!');
+    }
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+  }
+};
   
   onMounted(async () => {
-    try {
-      const response = await axiosInstances.axiosInstance.get(`courseware/coursewarePage/${courseId}`);
-      const coursesData = response.data;
-      course.value = coursesData.find((c) => c.id === courseId);
-  
-      if (!course.value) {
-        console.error("Course not found!");
-      }
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-    }
+    await getCoursewares();
   });
   </script>
 
