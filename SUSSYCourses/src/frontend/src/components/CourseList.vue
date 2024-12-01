@@ -28,7 +28,7 @@
           @click="goToCourse(course.courseId)"
         >
           <img
-            :src="course.coverImageUrl?.image || defaultCoverPic"
+            :src="course?.coverImageUrl || defaultCoverPic"
             alt="Course Image"
             class="course-image"
           />
@@ -76,7 +76,7 @@
   const sortBy = ref("");
   const currentPage = ref(1);
   const totalCourses = ref(0);
-  const pageSize = ref(10); // Default number of courses per page
+  const pageSize = ref(10); 
   
   const goBack = () => router.back();
   

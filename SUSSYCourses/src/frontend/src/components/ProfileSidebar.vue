@@ -91,6 +91,7 @@
     transform: translateX(100%);
     transition: transform 0.3s ease;
     z-index: 1000;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   }
   
   .profile-sidebar.visible {

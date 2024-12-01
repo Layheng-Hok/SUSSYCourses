@@ -7,23 +7,20 @@
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src=" user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
-    </el-menu-item>
+    <div class="user-info">
+      <div class="user-details">
+        <span class="user-points">Points: {{ user?.points ||0}}</span>
+        <span class="user-level">Level: {{ user?.level || 0 }}</span>
+      </div>
+      <img class="profile-pic-small" :src="user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
+    </div>
+  </el-menu-item>
   </el-menu>
 
   <!-- Hero Banner Section -->
   <div class="hero-banner">
-  <div class="hero-content">
-    <div class="hero-text">
-      <h1 class="typing-text">Welcome back, {{ user?.fullName || 'Student' }}</h1>
-      <p>Discover your next adventure in learning!</p>
-    </div>
+    <HeroBanner :userFullName="user?.fullName"/>
   </div>
-  <div class="hero-image">
-    <img src="@/assets/Banner/whale.png" alt="Whale Image" class="whale-image" />
-  </div>
-</div>
-
 
   <div class="page-container">
     <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
@@ -137,10 +134,12 @@
 import {computed, ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import Chat from './Chat.vue';
+import HeroBanner from './HeroBanner.vue';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import CourseBreakdown from './CourseBreakdown.vue';
 import axiosInstances from '@/services/axiosInstance';
 
+const router = useRouter();
 const user = ref(null); 
 const courses = ref([]);
 const userId = localStorage.getItem('userId');
@@ -149,7 +148,6 @@ const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
-const router = useRouter();
 
 const categories = ref(['All', 'Web Development','Marketing', 'Programming','Finance','Leadership','Data Science', 'Design','Hardware','Economics']);
 const searchQuery = ref('');
@@ -266,6 +264,25 @@ html {
   background-color: transparent !important;
 }
 
+.user-info {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.user-details {
+  margin-right: 20px;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.2; 
+}
+
+.user-points,
+.user-level {
+  display: block;
+}
+
 .sidebar-toggle {
   margin-left: auto;
   cursor: pointer;
@@ -318,73 +335,6 @@ html {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.typing-text {
-  display: inline-block;
-  border-right: 2px solid #4caf50;
-  white-space: nowrap;
-  overflow: hidden;
-  animation: typing 3s steps(30, end), blink 0.5s step-end infinite;
-}
-
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes blink {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #4caf50;
-  }
-}
-
-.hero-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; 
-  gap: 10px;
-  margin-left: 200px;
-  margin-top: 30px;
-  /* margin-right: -200px; */
-}
-.hero-text h1 {
-  font-size: 40px;
-  font-family: 'Poppins', sans-serif; 
-  font-weight: 600;
-  margin: 0;
-  color: #4a148c; 
-}
-
-.hero-text p {
-  font-size: 24px;
-  font-family: 'Roboto', sans-serif; 
-  margin-top: 10px;
-  color: #00695c; 
-}
-
-.hero-image {
-  margin-top: 38px;
-  flex: 1;
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-  margin-left: -100px;
-}
-
-.whale-image {
-  max-width: 100%;
-  height: auto;
-  max-height: 340px; 
 }
 
 .main-content {
