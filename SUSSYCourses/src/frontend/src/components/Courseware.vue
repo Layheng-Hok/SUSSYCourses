@@ -62,7 +62,7 @@
   
   onMounted(async () => {
     try {
-      const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
+      const response = await axiosInstances.axiosInstance.get(`courseware/coursewarePage/${courseId}`);
       const coursesData = response.data;
       course.value = coursesData.find((c) => c.id === courseId);
   

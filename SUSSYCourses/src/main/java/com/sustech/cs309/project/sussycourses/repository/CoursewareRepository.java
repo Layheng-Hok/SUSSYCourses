@@ -17,6 +17,8 @@ public interface CoursewareRepository extends JpaRepository<Courseware, Long> {
 
     List<Courseware> findByCourse_CourseId(Long courseId);
 
+    List<Courseware> findByCourse_CourseIdAndDisplayVersion(Long courseId, Boolean displayVersion);
+
     @Query("SELECT cw " +
             "FROM Courseware cw " +
             "WHERE cw.course.courseId = :courseId AND cw.displayVersion = TRUE")

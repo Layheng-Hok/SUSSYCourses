@@ -15,43 +15,56 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/courseware")
 public class CoursewareController {
     private final CoursewareService coursewareService;
 
     @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
-    @GetMapping("/coursewarePage")
-    public String coursePage() throws IOException {
-        return coursewareService.retrieveCoursewareData();
+    @GetMapping("/users/{userId}/courses/{courseId}/coursewares")
+    public String getDisplayedCoursewaresByUserIdAndCourseId(
+            @PathVariable Long userId,
+            @PathVariable Long courseId) throws IOException {
+        return coursewareService.getDisplayedCoursewaresByUserIdAndCourseId(userId, courseId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
+    @GetMapping("/courseware/coursewarePage/{courseId}")
+    public String coursePage(@PathVariable Long courseId) throws IOException {
+        return coursewareService.retrieveCoursewareData(courseId);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @GetMapping("/{variantOf}/allVersions")
+    @GetMapping("/courseware/{variantOf}/allVersions")
     public List<CoursewareVersionResponse> coursewareVersions(@PathVariable long variantOf) throws IOException {
         return coursewareService.retrieveCoursewareVersions(variantOf);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PostMapping("/create")
+    @PostMapping("/courseware/create")
     public ResponseEntity<String> createCourseware(CoursewareRequest coursewareRequest) throws Exception {
         return coursewareService.uploadCourseware(coursewareRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PutMapping("/update")
+    @PutMapping("/courseware/update")
     public ResponseEntity<String> updateCourseware(@ModelAttribute UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
         return coursewareService.updateCourseware(updateCoursewareRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @GetMapping("/{coursewareId}")
+    @GetMapping("/courseware/{coursewareId}")
     public CoursewareResponse findByCoursewareId(@PathVariable long coursewareId) throws Exception {
         return coursewareService.findByCoursewareId(coursewareId);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PutMapping("/{coursewareId}/setActive")
+    @PutMapping("/courseware/{coursewareId}/setActive")
     public ResponseEntity<String> setActiveVersion(@PathVariable Long coursewareId) throws Exception {
         return coursewareService.setActive(coursewareId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @DeleteMapping("/courseware/delete/{coursewareId}")
+    public ResponseEntity<String> deleteCourseware(@PathVariable Long coursewareId) throws Exception {
+        return coursewareService.deleteCourseware(coursewareId);
     }
 }
