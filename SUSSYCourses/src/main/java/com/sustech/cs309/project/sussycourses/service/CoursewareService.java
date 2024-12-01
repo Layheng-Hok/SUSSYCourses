@@ -38,8 +38,9 @@ public class CoursewareService {
         String url = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
 
         return new CoursewareResponse(
-                c.getCoursewareId(),
                 c.getCourse().getCourseId(),
+                c.getCourse().getType(),
+                c.getCoursewareId(),
                 c.getUrl(),
                 c.getFileType(),
                 c.getCategory(),
@@ -91,6 +92,7 @@ public class CoursewareService {
                     try {
                         return new CoursewareResponse(
                                 courseId,
+                                courseware.getCourse().getType(),
                                 courseware.getCoursewareId(),
                                 courseware.getUrl(),
                                 courseware.getFileType(),

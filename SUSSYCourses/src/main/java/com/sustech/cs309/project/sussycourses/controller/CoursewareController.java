@@ -18,11 +18,17 @@ import java.util.List;
 public class CoursewareController {
     private final CoursewareService coursewareService;
 
+    @PreAuthorize("hasAnyRole('ROLE_PUBLIC')")
+    @GetMapping("/courses/{courseId}/coursewares")
+    public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForPublicUser(@PathVariable Long courseId) {
+        return coursewareService.getDisplayedCoursewaresByUserIdAndCourseIdForPublicUser(courseId);
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_STUDENT')")
     @GetMapping("/students/{studentId}/courses/{courseId}/coursewares")
     public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForStudent(
             @PathVariable Long studentId,
-            @PathVariable Long courseId) throws IOException {
+            @PathVariable Long courseId) {
         return coursewareService.getDisplayedCoursewaresByUserIdAndCourseIdForStudent(studentId, courseId);
     }
 
