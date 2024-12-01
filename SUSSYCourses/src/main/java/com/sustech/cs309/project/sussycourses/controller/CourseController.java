@@ -38,6 +38,11 @@ public class CourseController {
         return courseService.getAllPendingCourses();
     }
 
+    @PreAuthorize("hasRole('ROLE_PUBLIC')")
+    @GetMapping("/{courseId}")
+    public StudentCourseDetailResponse getCourseDetail(@PathVariable Long courseId) throws IOException {
+        return courseService.getCourseDetail(courseId);
+    }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")

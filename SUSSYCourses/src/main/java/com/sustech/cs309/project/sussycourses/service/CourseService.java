@@ -61,6 +61,38 @@ public class CourseService {
                 .toList();
     }
 
+    public StudentCourseDetailResponse getCourseDetail(Long courseId) throws IOException {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            return null;
+        }
+
+        Course course = courseOptional.get();
+
+        return new StudentCourseDetailResponse(
+                courseId,
+                course.getCourseName(),
+                course.getDescription(),
+                course.getTopic(),
+                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                        course.getCourseId(),
+                        course.getCoverImage()
+                )),
+                course.getTeacher().getUserId(),
+                course.getTeacher().getFullName(),
+                course.getTeacher().getBio(),
+                CloudUtils.getStorageKey(CloudUtils.resolveUserProfilePictureLocation(
+                        course.getTeacher().getUserId(),
+                        course.getTeacher().getProfilePicture()
+                )),
+                course.getType(),
+                null,
+                null,
+                course.getLikeCount(),
+                course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                course.getCreatedAt()
+        );
+    }
 
     public ApprovedCoursesResponse getApprovedCoursesPaginated(Integer page, Integer size, Long userId) {
         Pageable pageable = PageRequest.of(page, size);
