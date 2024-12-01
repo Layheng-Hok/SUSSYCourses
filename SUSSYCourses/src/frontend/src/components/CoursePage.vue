@@ -96,7 +96,7 @@
     </div>
 
     <div v-else>
-      <p>You are not accepted to enroll the course yet. Be patient.</p>
+      <p>You might be rejected to join the course or your application is still on pending. Please wait.</p>
     </div>
     
     <!-- Sidebar Component -->

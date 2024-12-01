@@ -1,49 +1,52 @@
 <template>
-    <el-card class="course-content" shadow="hover">
-      <h2>Course Content</h2>
-      <el-collapse>
-        <el-collapse-item title="Teaching Chapters" name="1">
-          <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
-            <h3>{{ chapter.name }}</h3>
-            <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.url">
+  <el-card class="course-content" shadow="hover">
+    <h2>Course Content</h2>
+    <el-collapse>
+      <!-- Teaching Chapters -->
+      <el-collapse-item title="Teaching Chapters" name="1">
+        <div v-for="(material, index) in filteredMaterials('lecture')" :key="index" class="material">
+          <h3>Chapter {{ material.chapter }}</h3>
+          <el-list>
+            <el-list-item :key="material.coursewareId">
               <!-- Video content -->
-              <div v-if="material.type === 'mp4'" class="video-container">
-            <video controls :src="`${material.url}`" controlsList="nodownload" class="video-player"></video>
-            </div>
+              <div v-if="material.fileType === 'mp4'" class="video-container">
+                <video controls :src="material.url" controlsList="nodownload" class="video-player"></video>
+              </div>
               <div v-else>
-                  <FilePreview :type="material.type" :title="material.title" :url="material.url" :isNonDownloadable="material.isNonDownloadable" />
+                <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" :isNonDownloadable="material.downloadable" />
               </div>
             </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
 
-            </el-list>
-          </div>
-        </el-collapse-item>
+      <!-- Homework Chapters -->
+      <el-collapse-item title="Homework Chapters" name="2">
+        <div v-for="(material, index) in filteredMaterials('homework')" :key="index" class="material">
+          <h3>Chapter {{ material.chapter }}</h3>
+          <el-list>
+            <el-list-item :key="material.coursewareId">
+              <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" />
+            </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
 
-        <el-collapse-item title="Homework Chapters" name="2">
-          <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
-            <h3>{{ chapter.name }}</h3>
-            <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.url">
-                <FilePreview :type="material.type" :title="material.title" :url="material.url" />
-              </el-list-item>
-            </el-list>
-          </div>
-        </el-collapse-item>
+      <!-- Project Chapters -->
+      <el-collapse-item title="Project Chapters" name="3">
+        <div v-for="(material, index) in filteredMaterials('project')" :key="index" class="material">
+          <h3>Chapter {{ material.chapter }}</h3>
+          <el-list>
+            <el-list-item :key="material.coursewareId">
+              <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" />
+            </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
+    </el-collapse>
+  </el-card>
+</template>
 
-        <el-collapse-item title="Project Chapters" name="3">
-          <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
-            <h3>{{ chapter.name }}</h3>
-            <el-list>
-              <el-list-item v-for="material in chapter.materials" :key="material.url">
-                <FilePreview :type="material.type" :title="material.title" :url="material.url" />
-              </el-list-item>
-            </el-list>
-          </div>
-        </el-collapse-item>
-      </el-collapse>
-    </el-card>
-  </template>
   
   <script setup>
   import { ref, onMounted } from 'vue';
@@ -55,35 +58,25 @@
   const userId = localStorage.getItem('userId');
   const courseId = route.params.courseId;
   
-  const course = ref({
-    teachingChapters: [],
-    homeworkChapters: [],
-    projectChapters: []
-  });
+  const courseMaterials = ref([]);
 
   const getCoursewares = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`users/${userId}/courses/${courseId}/coursewares`);
-    if (response.data && response.data.length > 0) {
-      const courseData = response.data[0]; 
-
-      course.value = {
-        image: courseData.image, 
-        teachingChapters: courseData.teachingChapters || [],  
-        homeworkChapters: courseData.homeworkChapters || [],
-        projectChapters: courseData.projectChapters || []
-      };
-      
-      
-      if (!course.value || !course.value.teachingChapters.length) {
-        console.error("No chapters found!");
-      }
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses/${courseId}/coursewares`);
+    
+    if (response.data && Array.isArray(response.data)) {
+      courseMaterials.value = response.data;
+      console.log('Fetched Courseware Materials:', courseMaterials.value);
     } else {
-      console.error('No course data returned!');
+      console.error('Invalid data format');
     }
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    console.error('Error fetching courseware materials:', error);
   }
+};
+
+const filteredMaterials = (category) => {
+  return courseMaterials.value.filter(material => material.category === category);
 };
   
   onMounted(async () => {

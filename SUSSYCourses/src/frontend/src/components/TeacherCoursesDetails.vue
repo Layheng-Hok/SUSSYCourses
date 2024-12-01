@@ -598,8 +598,8 @@ export default {
 }
 
 .course-image {
-  width: 150px;
-  height: 150px;
+  width: 369px;
+  height: auto;
   object-fit: cover;
   border-radius: 6px;
   margin-right: 20px;
