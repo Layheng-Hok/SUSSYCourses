@@ -2,6 +2,7 @@ package com.sustech.cs309.project.sussycourses.service;
 
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
+import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,37 +62,51 @@ public class CourseService {
     }
 
 
-    public ApprovedCoursesResponse getApprovedCoursesPaginated(Integer page, Integer size) {
+    public ApprovedCoursesResponse getApprovedCoursesPaginated(Integer page, Integer size, Long userId) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Course> coursesPage = courseRepository.findByStatus("approved", pageable);
+        List<CourseStudent> registeredCourses = courseStudentRepository.findByStudent_UserId(userId);
+        Set<Long> enrolledCourseIds = registeredCourses.stream()
+                .map(courseStudent -> courseStudent.getCourse().getCourseId())
+                .collect(Collectors.toSet());
 
-        List<BasicCourseResponse> courses = coursesPage.stream()
-                .map(course -> {
-
-                    try {
-                        return new BasicCourseResponse(
+        List<BasicCourseResponse> basicCourseResponses = new ArrayList<>();
+        for (Course course : coursesPage) {
+            if (enrolledCourseIds.contains(course.getCourseId())) {
+                continue;
+            }
+            try {
+                BasicCourseResponse basicCourseResponse = new BasicCourseResponse(
+                        course.getCourseId(),
+                        course.getCourseName(),
+                        course.getDescription(),
+                        course.getTopic(),
+                        CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
                                 course.getCourseId(),
-                                course.getCourseName(),
-                                course.getDescription(),
-                                course.getTopic(),
-                                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
-                                        course.getCourseId(), course.getCoverImage())),
-                                course.getTeacher().getUserId(),
-                                course.getTeacher().getFullName(),
-                                course.getTeacher().getEmail(),
-                                course.getType(),
-                                course.getLikeCount(),
-                                course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
-                                course.getCreatedAt());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .toList();
+                                course.getCoverImage())),
+                        course.getTeacher().getUserId(),
+                        course.getTeacher().getFullName(),
+                        course.getTeacher().getEmail(),
+                        course.getType(),
+                        course.getLikeCount(),
+                        course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                        course.getCreatedAt()
+                );
+                basicCourseResponses.add(basicCourseResponse);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        Long totalApprovedCourses = courseRepository.countByStatus("approved");
+        List<Course> courses = courseRepository.findByStatus("approved");
+        List<Long> newCourseIds = new ArrayList<>();
+        for (Course course : courses) {
+            if (!enrolledCourseIds.contains(course.getCourseId())) {
+                newCourseIds.add(course.getCourseId());
+            }
+        }
 
-        return new ApprovedCoursesResponse(totalApprovedCourses, courses);
+        return new ApprovedCoursesResponse((long) newCourseIds.size(), basicCourseResponses);
     }
 
     public List<AdminCourseDetailResponse> getAllPendingCourses() {

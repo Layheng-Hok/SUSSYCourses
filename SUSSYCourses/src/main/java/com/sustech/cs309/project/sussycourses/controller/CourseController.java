@@ -23,11 +23,13 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
+    @PreAuthorize("hasRole('ROLE_PUBLIC')")
     @GetMapping("/approved")
     public ApprovedCoursesResponse getApprovedCoursesPaginated(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "20") Integer size) {
-        return courseService.getApprovedCoursesPaginated(page, size);
+            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "1") Long userId) {
+        return courseService.getApprovedCoursesPaginated(page, size, userId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

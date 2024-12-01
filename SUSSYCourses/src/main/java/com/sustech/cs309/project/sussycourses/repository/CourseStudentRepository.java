@@ -13,6 +13,8 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
 
     List<CourseStudent> findByStudent_UserId(Long userId);
 
+    List<CourseStudent> findByStudent_UserIdAndStatus(Long userId, String enrolled);
+
     Optional<CourseStudent> findCourseStudentByStudent_UserIdAndCourse_CourseId(Long userId, Long courseId);
 
     Optional<CourseStudent> findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(Long userId, Long courseId, String status);
