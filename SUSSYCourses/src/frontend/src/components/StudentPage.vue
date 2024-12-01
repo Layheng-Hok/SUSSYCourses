@@ -94,7 +94,7 @@
             class="course-box"
             @click="goToCourse(course.courseId)"
         >
-          <img :src="coverImageUrl?.image || defaultCoverPic" alt="Course Image" class="course-image"/>
+          <img :src="course?.coverImageUrl || defaultCoverPic" alt="Course Image" class="course-image"/>
           <h3>{{ course.courseName }}</h3>
           <p class="course-instructor"> Intrucstor: {{ course.teacherName }} </p>
           <p class="course-topic"> Category: {{ course.topic }}</p>
@@ -136,9 +136,9 @@
 <script setup>
 import {computed, ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
+import Chat from './Chat.vue';
 import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import CourseBreakdown from './CourseBreakdown.vue';
-import Chat from './Chat.vue';
 import axiosInstances from '@/services/axiosInstance';
 
 const user = ref(null); 
@@ -176,6 +176,7 @@ const fetchCourseData = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses`);
     courses.value = response.data.courses;
+    // console.log("c:"+ courses.value.coverImageUrl)
   } catch (error) {
 
     console.log("Error Details:", error);

@@ -117,7 +117,10 @@ public class CourseStudentService {
                 courseStudent.getCourse().getCourseName(),
                 courseStudent.getCourse().getDescription(),
                 courseStudent.getCourse().getTopic(),
-                courseStudent.getCourse().getCoverImage(),
+                CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(
+                        courseStudent.getCourse().getCourseId(),
+                        courseStudent.getCourse().getCoverImage()
+                )),
                 courseStudent.getCourse().getTeacher().getUserId(),
                 courseStudent.getCourse().getTeacher().getFullName(),
                 courseStudent.getCourse().getTeacher().getBio(),

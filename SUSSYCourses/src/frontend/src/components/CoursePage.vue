@@ -119,6 +119,7 @@ import DoughnutChart from './DoughnutChart.vue';
 import CommentSection from './CommentSection.vue';
 import axiosInstances from '@/services/axiosInstance';
 import VanillaTilt from "vanilla-tilt";
+import axios from 'axios';
 
 const teacherImage = ref(null);
 const route = useRoute();
@@ -135,7 +136,6 @@ const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 
-import axios from 'axios';
 
 const readBio = async (language) => {
   const bioText = course.value?.teacherBio || "No bio available for this instructor.";
