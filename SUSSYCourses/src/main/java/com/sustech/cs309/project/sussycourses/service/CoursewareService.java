@@ -161,11 +161,11 @@ public class CoursewareService {
         courseware.setCreatedAt(LocalDateTime.now());
         coursewareRepository.save(courseware);
 
+        courseware.setVariantOf(courseware.getCoursewareId());
+        coursewareRepository.save(courseware);
         String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
         CloudUtils.putStorageKey(file, fileType, url);
 
-        courseware.setVariantOf(courseware.getCoursewareId());
-        coursewareRepository.save(courseware);
 
         List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");
         for (CourseStudent courseStudent : courseStudents) {

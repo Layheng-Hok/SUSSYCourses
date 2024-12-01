@@ -47,11 +47,11 @@
 
       <div class="update-form-bottom">
         <slot name="body">
-          <form @submit.prevent="submitCourseware">
+          <form @submit.prevent="submitCourseware($props)">
             <!-- Category Field -->
             <div class="form-group">
               <label for="category">Category:</label>
-              <select id="category" v-model="updateData.category" required>
+              <select id="category" v-model="coursewareData.category" required>
                 <option :value="'assignment'">Assignment</option>
                 <option :value="'lecture'">Lecture</option>
                 <option :value="'project'">Project</option>
@@ -61,7 +61,7 @@
             <!-- Downloadable Field -->
             <div class="form-group">
               <label for="downloadable">Downloadable:</label>
-              <select id="downloadable" v-model="updateData.downloadable" placeholder="Select if downloadable">
+              <select id="downloadable" v-model="coursewareData.downloadable" placeholder="Select if downloadable">
                 <option :value="true">Yes</option>
                 <option :value="false">No</option>
               </select>
@@ -70,13 +70,13 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="updateData.chapter" required placeholder="Enter chapter number" />
+              <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number" />
             </div>
 
             <!-- Order Field -->
             <div class="form-group">
               <label for="order">Order:</label>
-              <select id="order" v-model="updateData.order" placeholder="Select order">
+              <select id="order" v-model="coursewareData.order" placeholder="Select order">
                 <option :value="1">1</option>
                 <option :value="2">2</option>
               </select>
@@ -342,10 +342,21 @@ const router = useRouter();
 export default {
   data() {
     return {
+      storeCourseId: null,
       selectedCoursewareId: null,
       archiveDialogVisible: false, // Controls the visibility of the archive modal
       editDialogVisible: false,
       addCoursewareModal: false,
+      coursewareData: {
+        courseId: null,
+        fileType: '',
+        category: null,
+        downloadable: null,
+        chapter: null,
+        order: null,
+        variant_of: null,
+        version: null,
+      },
       updateData: {
         coursewareId: null,
         courseId: null,
@@ -408,7 +419,6 @@ export default {
       formData.append("variant_of", this.updateData.variant_of)
       formData.append("version", this.updateData.version)
       formData.append("changeFile", this.updateData.changeFile)
-
       if (this.updateData.changeFile) {
         formData.append('file', this.selectedFile || null);
       } else {
@@ -424,21 +434,23 @@ export default {
         },
       });
     },
-    async submitCourseware() {
+    async submitCourseware(props) {
       const formData = new FormData();
 
-      formData.append("courseId", this.updateData.courseId)
-      formData.append("fileType", this.updateData.fileType)
-      formData.append("category", this.updateData.category)
-      formData.append("downloadable", this.updateData.downloadable)
-      formData.append("chapter", this.updateData.chapter)
-      formData.append("order", this.updateData.order)
+      formData.append("courseId", props.courseId)
+      formData.append("fileType", this.selectedFile.type.split("/")[1])
+      formData.append("category", this.coursewareData.category)
+      formData.append("downloadable", this.coursewareData.downloadable)
+      formData.append("chapter", this.coursewareData.chapter)
+      formData.append("order", this.coursewareData.order)
       formData.append("variant_of", -1)
       formData.append("version", 1)
       formData.append('file', this.selectedFile);
-
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      console.log(this.selectedFile.type.split("/")[1])
       const response = await axiosInstances.axiosInstance.post(`courseware/create`, formData)
-      await axiosInstances.axiosInstance.put(`courseware/fixDisplay/${-1}`)
       console.log(response)
     },
     async setActiveVersion(courseware) {
