@@ -81,7 +81,8 @@ CREATE TABLE courseware_student
     id            BIGSERIAL PRIMARY KEY,
     courseware_id BIGINT  NOT NULL REFERENCES courseware (courseware_id),
     student_id    BIGINT  NOT NULL REFERENCES web_app_user (user_id),
-    completed     BOOLEAN NOT NULL
+    completed     BOOLEAN NOT NULL,
+    UNIQUE (courseware_id, student_id)
 );
 
 CREATE TABLE comment
@@ -176,7 +177,8 @@ VALUES ('Java - Beginner to Advanced', 'Java is a multiplatform, object-oriented
        ('Tips to become a billionaire', 'blank', 4, 'open', 'rejected', 'Finance', 0, 0, 0, NOW(), 'billionaire.jpg'),
        ('Learn about Inflation', 'blank', 7, 'open', 'approved', 'Economics', 7.0, 2, 2, NOW(), 'inflation.webp'),
        ('Lead your followers', 'blank', 8, 'open', 'pending', 'Leadership', 0, 0, 0, NOW(), 'leadership.webp'),
-       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0,0, NOW(), 'business.jpg');
+       ('A million dollar business is not a dream', 'blank', 4, 'semi-open', 'approved', 'Entrepreneurship', 0, 0, 0,
+        NOW(), 'business.jpg');
 
 
 INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
@@ -197,7 +199,7 @@ VALUES (1, 3, TRUE),
        (2, 3, TRUE),
        (3, 3, FALSE),
        (5, 3, FALSE),
-       (6, 3, TRUE),
+       (6, 3, FALSE),
        (7, 3, FALSE),
        (8, 3, FALSE),
        (9, 3, FALSE)

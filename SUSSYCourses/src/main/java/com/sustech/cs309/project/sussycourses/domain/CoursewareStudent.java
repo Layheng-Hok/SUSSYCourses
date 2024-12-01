@@ -9,7 +9,8 @@ import lombok.*;
 @Setter
 @ToString
 @Entity
-@Table(name = "courseware_student")
+@Table(name = "courseware_student",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"courseware_id", "student_id"})})
 public class CoursewareStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

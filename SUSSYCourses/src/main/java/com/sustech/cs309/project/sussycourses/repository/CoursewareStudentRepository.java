@@ -5,7 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CoursewareStudentRepository extends JpaRepository<CoursewareStudent, Long> {
+    Optional<CoursewareStudent> findByStudent_UserIdAndCourseware_CoursewareId(Long userId, Long coursewareId);
+
     @Query("""
             SELECT COUNT(cs) FROM CoursewareStudent cs \
             WHERE cs.student.userId = :studentId \
