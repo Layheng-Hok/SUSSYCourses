@@ -433,11 +433,11 @@ export default {
       formData.append("downloadable", this.updateData.downloadable)
       formData.append("chapter", this.updateData.chapter)
       formData.append("order", this.updateData.order)
-      formData.append("variant_of", null)
+      formData.append("variant_of", -1)
       formData.append("version", 1)
-      formData.append('file', this.selectedFile || null);
+      formData.append('file', this.selectedFile);
 
-      const response = await axiosInstances.axiosInstance.post(`courseware/update`, formData)
+      const response = await axiosInstances.axiosInstance.post(`courseware/create`, formData)
       await axiosInstances.axiosInstance.put(`courseware/fixDisplay/${-1}`)
       console.log(response)
     },

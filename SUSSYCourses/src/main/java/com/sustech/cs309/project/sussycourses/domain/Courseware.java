@@ -29,7 +29,7 @@ public class Courseware {
     @Column(nullable = false)
     private String category;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String url;
 
     @Column(nullable = false)
