@@ -40,9 +40,13 @@ public class CoursewareService {
         return new CoursewareResponse(
                 c.getCoursewareId(),
                 c.getCourse().getCourseId(),
-                c.getFileType(), c.getCategory(),
-                c.getDownloadable(), c.getChapter(),
-                c.getCoursewareOrder(), c.getVariantOf(),
+                c.getUrl(),
+                c.getFileType(),
+                c.getCategory(),
+                c.getDownloadable(),
+                c.getChapter(),
+                c.getCoursewareOrder(),
+                c.getVariantOf(),
                 c.getVersion(),
                 url,
                 null);
@@ -54,6 +58,14 @@ public class CoursewareService {
 
     public String resolveCoursewareLocation(Long courseId, Long coursewareId) {
         return "Courses/" + courseId + "/courseware/" + coursewareId;
+    }
+
+    public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForPublicUser(Long courseId) {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty() || !courseOptional.get().getStatus().equalsIgnoreCase("approved")) {
+            return null;
+        }
+        return getDisplayedCoursewaresByUserIdAndCourseIdForStudent(1L, courseId);
     }
 
     public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForStudent(Long studentId, Long courseId) {
@@ -80,6 +92,7 @@ public class CoursewareService {
                         return new CoursewareResponse(
                                 courseId,
                                 courseware.getCoursewareId(),
+                                courseware.getUrl(),
                                 courseware.getFileType(),
                                 courseware.getCategory(),
                                 courseware.getDownloadable(),
@@ -141,13 +154,17 @@ public class CoursewareService {
         courseware.setChapter(chapter);
         courseware.setDownloadable(downloadable);
         courseware.setFileType(fileType);
-        courseware.setUrl(file.getName() + "WEFWEF");
+        courseware.setUrl(file.getName());
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
         courseware.setDisplayVersion(true);
         courseware.setCreatedAt(LocalDateTime.now());
+        coursewareRepository.save(courseware);
+
         String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
         CloudUtils.putStorageKey(file, fileType, url);
+
+        courseware.setVariantOf(courseware.getCoursewareId());
         coursewareRepository.save(courseware);
 
         List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");

@@ -3,6 +3,7 @@ package com.sustech.cs309.project.sussycourses.dto;
 public record CoursewareResponse(
         Long courseId,
         Long coursewareId,
+        String fileName,
         String fileType,
         String category,
         Boolean downloadable,
