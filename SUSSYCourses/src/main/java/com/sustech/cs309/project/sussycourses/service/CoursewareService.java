@@ -44,7 +44,8 @@ public class CoursewareService {
                 c.getDownloadable(), c.getChapter(),
                 c.getCoursewareOrder(), c.getVariantOf(),
                 c.getVersion(),
-                url);
+                url,
+                null);
     }
 
     public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
@@ -55,7 +56,50 @@ public class CoursewareService {
         return "Courses/" + courseId + "/courseware/" + coursewareId;
     }
 
-    public String getDisplayedCoursewaresByUserIdAndCourseId(Long userId, Long courseId) throws IOException {
+    public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForStudent(Long studentId, Long courseId) {
+        Optional<WebAppUser> studentOptional = webAppUserRepository.findByUserId(studentId);
+        if (studentOptional.isEmpty() || !studentOptional.get().isEnabled()) {
+            return null;
+        }
+
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            return null;
+        }
+
+        if (studentOptional.get().getRole().getRoleId().equals(2)) {
+            if (courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(studentId, courseId, "enrolled").isEmpty()) {
+                return null;
+            }
+        }
+
+        List<Courseware> coursewares = coursewareRepository.findByCourse_CourseIdAndDisplayVersion(courseId, true);
+        return coursewares.stream()
+                .map(courseware -> {
+                    try {
+                        return new CoursewareResponse(
+                                courseId,
+                                courseware.getCoursewareId(),
+                                courseware.getFileType(),
+                                courseware.getCategory(),
+                                courseware.getDownloadable(),
+                                courseware.getChapter(),
+                                courseware.getCoursewareOrder(),
+                                courseware.getVariantOf(),
+                                courseware.getVersion(),
+                                CloudUtils.getStorageKey(resolveCoursewareLocation(courseId, courseware.getCoursewareId())),
+                                coursewareStudentRepository.findByStudent_UserIdAndCourseware_CoursewareId(studentId, courseware.getCoursewareId()).isPresent() ?
+                                        coursewareStudentRepository.findByStudent_UserIdAndCourseware_CoursewareId(studentId, courseware.getCoursewareId()).get().getCompleted() :
+                                        null
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+    }
+
+    public String getDisplayedCoursewaresByUserIdAndCourseIdForInstructor(Long userId, Long courseId) throws IOException {
         Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserId(userId);
         if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
             return null;
@@ -69,38 +113,13 @@ public class CoursewareService {
         WebAppUser webAppUser = webAppUserOptional.get();
         Course course = courseOptional.get();
 
-        if (webAppUser.getRole().getRoleName().equalsIgnoreCase("STUDENT")) {
-            if (courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(userId, courseId, "enrolled").isEmpty()) {
-                return null;
-            }
-        } else if (webAppUser.getRole().getRoleName().equalsIgnoreCase("INSTRUCTOR")) {
+        if (webAppUser.getRole().getRoleId().equals(3)) {
             if (!course.getTeacher().getUserId().equals(userId)) {
                 return null;
             }
         }
 
         return retrieveCoursewareData(courseId);
-//        List<Courseware> coursewares = coursewareRepository.findByCourse_CourseIdAndDisplayVersion(courseId, true);
-//        return coursewares.stream()
-//                .map(courseware -> {
-//                    try {
-//                        return new CoursewareResponse(
-//                            courseware.getCoursewareId(),
-//                                courseId,
-//                                courseware.getFileType(),
-//                                courseware.getCategory(),
-//                                courseware.getDownloadable(),
-//                                courseware.getChapter(),
-//                                courseware.getCoursewareOrder(),
-//                                courseware.getVariantOf(),
-//                                courseware.getVersion(),
-//                                CloudUtils.getStorageKey(resolveCoursewareLocation(courseId, courseware.getCoursewareId()))
-//                        );
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                })
-//                .toList();
     }
 
     public ResponseEntity<String> uploadCourseware(CoursewareRequest coursewareRequest) throws Exception {
@@ -146,121 +165,121 @@ public class CoursewareService {
     public String retrieveCoursewareData(Long courseId) throws IOException {
         List<JSONObject> data = new ArrayList<>();
         Course course = courseRepository.findById(courseId).orElse(null);
-            JSONObject courseData = new JSONObject();
-            List<Courseware> courseware = coursewareRepository.findOriginalOrLatestVersionByCourseId(courseId);
+        JSONObject courseData = new JSONObject();
+        List<Courseware> courseware = coursewareRepository.findOriginalOrLatestVersionByCourseId(courseId);
         assert course != null;
-        String courseName = course. getCourseName();
-            String coverPhotoName = course.getCoverImage();
-            // Basic course information
-            courseData.put("id", course.getCourseId().toString());
-            courseData.put("name", courseName);
-            courseData.put("description", course.getDescription());
-            courseData.put("image", CloudUtils.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
-            // Instructor info
-            courseData.put("instructorName", course.getTeacher().getFullName());
-            courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
-            courseData.put("instructorBio", course.getTeacher().getBio());
+        String courseName = course.getCourseName();
+        String coverPhotoName = course.getCoverImage();
+        // Basic course information
+        courseData.put("id", course.getCourseId().toString());
+        courseData.put("name", courseName);
+        courseData.put("description", course.getDescription());
+        courseData.put("image", CloudUtils.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
+        // Instructor info
+        courseData.put("instructorName", course.getTeacher().getFullName());
+        courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
+        courseData.put("instructorBio", course.getTeacher().getBio());
 
-            // Teaching chapters (mock data, adjust as per your real structure)
-            JSONArray teachingChapters = new JSONArray();
-            JSONArray homeworkChapters = new JSONArray();
-            JSONArray projectChapters = new JSONArray();
-            for (Courseware c : courseware) {
-                if (Objects.equals(c.getCategory(), "lecture")) {
-                    if (teachingChapters.length() == c.getChapter()) {
-                        JSONObject chapter = teachingChapters.getJSONObject(c.getChapter() - 1);
-                        JSONArray materials = chapter.getJSONArray("materials");
+        // Teaching chapters (mock data, adjust as per your real structure)
+        JSONArray teachingChapters = new JSONArray();
+        JSONArray homeworkChapters = new JSONArray();
+        JSONArray projectChapters = new JSONArray();
+        for (Courseware c : courseware) {
+            if (Objects.equals(c.getCategory(), "lecture")) {
+                if (teachingChapters.length() == c.getChapter()) {
+                    JSONObject chapter = teachingChapters.getJSONObject(c.getChapter() - 1);
+                    JSONArray materials = chapter.getJSONArray("materials");
 
-                        JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        materials.put(material);
-                    } else if (teachingChapters.length() < c.getChapter()) {
-                        JSONObject teachingChapter = new JSONObject();
-                        JSONArray materials = new JSONArray();
-                        JSONObject material = new JSONObject();
+                    JSONObject material = new JSONObject();
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    materials.put(material);
+                } else if (teachingChapters.length() < c.getChapter()) {
+                    JSONObject teachingChapter = new JSONObject();
+                    JSONArray materials = new JSONArray();
+                    JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        teachingChapter.put("name", "Chapter " + c.getChapter());
-                        materials.put(material);
-                        teachingChapter.put("materials", materials);
-                        teachingChapters.put(teachingChapter);
-                    }
-                } else if (Objects.equals(c.getCategory(), "assignment")) {
-                    if (homeworkChapters.length() == c.getChapter()) {
-                        JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter() - 1);
-                        JSONArray materials = chapter.getJSONArray("materials");
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    teachingChapter.put("name", "Chapter " + c.getChapter());
+                    materials.put(material);
+                    teachingChapter.put("materials", materials);
+                    teachingChapters.put(teachingChapter);
+                }
+            } else if (Objects.equals(c.getCategory(), "assignment")) {
+                if (homeworkChapters.length() == c.getChapter()) {
+                    JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter() - 1);
+                    JSONArray materials = chapter.getJSONArray("materials");
 
-                        JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        material.put("order", c.getCoursewareOrder());
-                        materials.put(material);
-                    } else if (homeworkChapters.length() < c.getChapter()) {
-                        JSONObject homeworkChapter = new JSONObject();
-                        JSONArray materials = new JSONArray();
-                        JSONObject material = new JSONObject();
+                    JSONObject material = new JSONObject();
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    material.put("order", c.getCoursewareOrder());
+                    materials.put(material);
+                } else if (homeworkChapters.length() < c.getChapter()) {
+                    JSONObject homeworkChapter = new JSONObject();
+                    JSONArray materials = new JSONArray();
+                    JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        materials.put(material);
-                        homeworkChapter.put("name", "Homework " + c.getChapter());
-                        homeworkChapter.put("materials", materials);
-                        homeworkChapters.put(homeworkChapter);
-                    }
-                } else if (Objects.equals(c.getCategory(), "project")) {
-                    if (projectChapters.length() == c.getChapter()) {
-                        JSONObject chapter = projectChapters.getJSONObject(c.getChapter() - 1);
-                        JSONArray materials = chapter.getJSONArray("materials");
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    materials.put(material);
+                    homeworkChapter.put("name", "Homework " + c.getChapter());
+                    homeworkChapter.put("materials", materials);
+                    homeworkChapters.put(homeworkChapter);
+                }
+            } else if (Objects.equals(c.getCategory(), "project")) {
+                if (projectChapters.length() == c.getChapter()) {
+                    JSONObject chapter = projectChapters.getJSONObject(c.getChapter() - 1);
+                    JSONArray materials = chapter.getJSONArray("materials");
 
-                        JSONObject material = new JSONObject();
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        materials.put(material);
-                    } else if (projectChapters.length() < c.getChapter()) {
-                        JSONObject projectChapter = new JSONObject();
-                        JSONArray materials = new JSONArray();
-                        JSONObject material = new JSONObject();
+                    JSONObject material = new JSONObject();
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    materials.put(material);
+                } else if (projectChapters.length() < c.getChapter()) {
+                    JSONObject projectChapter = new JSONObject();
+                    JSONArray materials = new JSONArray();
+                    JSONObject material = new JSONObject();
 
-                        String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
-                        material.put("coursewareId", c.getCoursewareId());
-                        material.put("variantOf", c.getVariantOf());
-                        material.put("title", c.getUrl());
-                        material.put("url", getMaterial);
-                        material.put("type", c.getFileType());
-                        materials.put(material);
-                        projectChapter.put("name", "Project " + c.getChapter());
-                        projectChapter.put("materials", materials);
-                        projectChapters.put(projectChapter);
-                    }
+                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    material.put("coursewareId", c.getCoursewareId());
+                    material.put("variantOf", c.getVariantOf());
+                    material.put("title", c.getUrl());
+                    material.put("url", getMaterial);
+                    material.put("type", c.getFileType());
+                    materials.put(material);
+                    projectChapter.put("name", "Project " + c.getChapter());
+                    projectChapter.put("materials", materials);
+                    projectChapters.put(projectChapter);
                 }
             }
-            courseData.put("teachingChapters", teachingChapters);
-            courseData.put("homeworkChapters", homeworkChapters);
-            courseData.put("projectChapters", projectChapters);
-            data.add(courseData);
-            return data.toString();
+        }
+        courseData.put("teachingChapters", teachingChapters);
+        courseData.put("homeworkChapters", homeworkChapters);
+        courseData.put("projectChapters", projectChapters);
+        data.add(courseData);
+        return data.toString();
     }
 
     public ResponseEntity<String> updateCourseware(UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
@@ -332,9 +351,9 @@ public class CoursewareService {
         return ResponseEntity.ok("Deleted Successfully");
     }
 
-    public ResponseEntity<String >fixDisplay(Long value) {
+    public ResponseEntity<String> fixDisplay(Long value) {
         List<Courseware> coursewares = coursewareRepository.findBrokenVariants(value);
-        for(Courseware c : coursewares) {
+        for (Courseware c : coursewares) {
             c.setVariantOf(c.getCoursewareId());
             coursewareRepository.save(c);
         }

@@ -18,12 +18,20 @@ import java.util.List;
 public class CoursewareController {
     private final CoursewareService coursewareService;
 
-    @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT')")
+    @GetMapping("/students/{studentId}/courses/{courseId}/coursewares")
+    public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForStudent(
+            @PathVariable Long studentId,
+            @PathVariable Long courseId) throws IOException {
+        return coursewareService.getDisplayedCoursewaresByUserIdAndCourseIdForStudent(studentId, courseId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR')")
     @GetMapping("/users/{userId}/courses/{courseId}/coursewares")
-    public String getDisplayedCoursewaresByUserIdAndCourseId(
+    public String getDisplayedCoursewaresByUserIdAndCourseIdForInstructor(
             @PathVariable Long userId,
             @PathVariable Long courseId) throws IOException {
-        return coursewareService.getDisplayedCoursewaresByUserIdAndCourseId(userId, courseId);
+        return coursewareService.getDisplayedCoursewaresByUserIdAndCourseIdForInstructor(userId, courseId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_INSTRUCTOR')")
@@ -58,20 +66,20 @@ public class CoursewareController {
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PutMapping("/courseware/{coursewareId}/setActive")
-    public ResponseEntity<String> setActiveVersion(@PathVariable Long coursewareId) throws Exception {
+    public ResponseEntity<String> setActiveVersion(@PathVariable Long coursewareId) {
         return coursewareService.setActive(coursewareId);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PutMapping("/courseware/fixDisplay/{value}")
-    public ResponseEntity<String> fixDisplay(@PathVariable Long value) throws Exception {
+    public ResponseEntity<String> fixDisplay(@PathVariable Long value) {
         return coursewareService.fixDisplay(value);
     }
 
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @DeleteMapping("/courseware/delete/{coursewareId}")
-    public ResponseEntity<String> deleteCourseware(@PathVariable Long coursewareId) throws Exception {
+    public ResponseEntity<String> deleteCourseware(@PathVariable Long coursewareId) {
         return coursewareService.deleteCourseware(coursewareId);
     }
 }

@@ -1,10 +1,8 @@
 package com.sustech.cs309.project.sussycourses.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public record CoursewareResponse(
-        Long coursewareId,
         Long courseId,
+        Long coursewareId,
         String fileType,
         String category,
         Boolean downloadable,
@@ -12,5 +10,7 @@ public record CoursewareResponse(
         Integer order,
         Long variant_of,
         Integer version,
-        String url) {
+        String url,
+        Boolean isCompleted
+) {
 }
