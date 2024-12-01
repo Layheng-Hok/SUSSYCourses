@@ -1,16 +1,11 @@
 package com.sustech.cs309.project.sussycourses.service;
 
-import com.sustech.cs309.project.sussycourses.domain.Course;
-import com.sustech.cs309.project.sussycourses.domain.Courseware;
-import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
+import com.sustech.cs309.project.sussycourses.domain.*;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareRequest;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareResponse;
 import com.sustech.cs309.project.sussycourses.dto.CoursewareVersionResponse;
 import com.sustech.cs309.project.sussycourses.dto.UpdateCoursewareRequest;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
-import com.sustech.cs309.project.sussycourses.repository.CoursewareRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +30,7 @@ public class CoursewareService {
     private final CourseRepository courseRepository;
     private final WebAppUserRepository webAppUserRepository;
     private final CourseStudentRepository courseStudentRepository;
+    private final CoursewareStudentRepository coursewareStudentRepository;
 
     public CoursewareResponse findByCoursewareId(Long coursewareId) throws IOException {
         Courseware c = coursewareRepository.findById(coursewareId).orElse(null);
@@ -126,13 +122,24 @@ public class CoursewareService {
         courseware.setChapter(chapter);
         courseware.setDownloadable(downloadable);
         courseware.setFileType(fileType);
-        courseware.setUrl(file.getName());
+        courseware.setUrl(file.getName() + "WEFWEF");
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
+        courseware.setDisplayVersion(true);
         courseware.setCreatedAt(LocalDateTime.now());
         String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
         CloudUtils.putStorageKey(file, fileType, url);
         coursewareRepository.save(courseware);
+
+        List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");
+        for (CourseStudent courseStudent : courseStudents) {
+            CoursewareStudent coursewareStudent = new CoursewareStudent();
+            coursewareStudent.setCourseware(courseware);
+            coursewareStudent.setStudent(courseStudent.getStudent());
+            coursewareStudent.setCompleted(false);
+            coursewareStudentRepository.save(coursewareStudent);
+        }
+
         return ResponseEntity.ok().body("Courseware uploaded");
     }
 
@@ -323,5 +330,14 @@ public class CoursewareService {
     public ResponseEntity<String> deleteCourseware(Long coursewareId) {
         coursewareRepository.deleteById(coursewareId);
         return ResponseEntity.ok("Deleted Successfully");
+    }
+
+    public ResponseEntity<String >fixDisplay(Long value) {
+        List<Courseware> coursewares = coursewareRepository.findBrokenVariants(value);
+        for(Courseware c : coursewares) {
+            c.setVariantOf(c.getCoursewareId());
+            coursewareRepository.save(c);
+        }
+        return ResponseEntity.ok("Updated Successfully");
     }
 }

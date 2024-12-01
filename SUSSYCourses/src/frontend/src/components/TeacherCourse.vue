@@ -120,14 +120,22 @@ const fetchUserData = async () => {
 
 const fetchCoursewareDetails = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`courseware/coursewarePage`);
+    console.log(userId)
+    console.log(courseId)
+    const response = await axiosInstances.axiosInstance.get(`/users/${userId}/courses/${courseId}/coursewares`);
+
+    console.log(response)
     course.value = response.data;
   } catch (error) {
-
     console.log("Error Details:", error);
     if (error.response && error.response.status === 403) {
-      router.push({ name: 'ForbiddenPage' });
-    } else {
+      await router.push({name: 'ForbiddenPage'});
+    }
+    else if (error.response && error.response.status === 404) {
+      await router.push({name: 'ForbiddenPage'});
+    }
+
+    else {
       console.error("Unexpected error occurred:", error);
     }
   }

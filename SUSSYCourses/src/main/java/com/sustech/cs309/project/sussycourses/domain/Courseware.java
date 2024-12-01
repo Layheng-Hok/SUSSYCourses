@@ -41,7 +41,7 @@ public class Courseware {
     @Column(nullable = false, updatable = false)
     private Integer coursewareOrder;
 
-    @Column(updatable = false)
+    @Column()
     private Long variantOf;
 
     @Column(nullable = false, updatable = false)

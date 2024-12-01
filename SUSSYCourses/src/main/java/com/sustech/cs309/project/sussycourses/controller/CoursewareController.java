@@ -63,6 +63,13 @@ public class CoursewareController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @PutMapping("/courseware/fixDisplay/{value}")
+    public ResponseEntity<String> fixDisplay(@PathVariable Long value) throws Exception {
+        return coursewareService.fixDisplay(value);
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @DeleteMapping("/courseware/delete/{coursewareId}")
     public ResponseEntity<String> deleteCourseware(@PathVariable Long coursewareId) throws Exception {
         return coursewareService.deleteCourseware(coursewareId);

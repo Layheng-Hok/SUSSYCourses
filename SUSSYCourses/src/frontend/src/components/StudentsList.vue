@@ -33,7 +33,7 @@ const courseId = route.params.courseId;
 
 onMounted(async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get(`/courses/${courseId}/students/enrolled`); 
+    const response = await axiosInstances.axiosInstance.get(`/courses/${courseId}/students/enrolled`);
     students.value = response.data.students;
   } catch (error) {
     console.error('Error fetching students data:', error);

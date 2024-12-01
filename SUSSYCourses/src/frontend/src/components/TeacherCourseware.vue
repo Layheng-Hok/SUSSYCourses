@@ -36,6 +36,67 @@
     </div>
   </div>
 
+  <!--Add Courseware Form -->
+  <div class="update-form-modal-backdrop" v-if="addCoursewareModal">
+    <div class="update-form-modal">
+      <div class="update-form-top">
+        <slot name="header">
+          <h2>Add Courseware</h2>
+        </slot>
+      </div>
+
+      <div class="update-form-bottom">
+        <slot name="body">
+          <form @submit.prevent="submitCourseware">
+            <!-- Category Field -->
+            <div class="form-group">
+              <label for="category">Category:</label>
+              <select id="category" v-model="updateData.category" required>
+                <option :value="'assignment'">Assignment</option>
+                <option :value="'lecture'">Lecture</option>
+                <option :value="'project'">Project</option>
+              </select>
+            </div>
+
+            <!-- Downloadable Field -->
+            <div class="form-group">
+              <label for="downloadable">Downloadable:</label>
+              <select id="downloadable" v-model="updateData.downloadable" placeholder="Select if downloadable">
+                <option :value="true">Yes</option>
+                <option :value="false">No</option>
+              </select>
+            </div>
+
+            <!-- Chapter Field -->
+            <div class="form-group">
+              <label for="chapter">Chapter:</label>
+              <input type="number" id="chapter" v-model="updateData.chapter" required placeholder="Enter chapter number" />
+            </div>
+
+            <!-- Order Field -->
+            <div class="form-group">
+              <label for="order">Order:</label>
+              <select id="order" v-model="updateData.order" placeholder="Select order">
+                <option :value="1">1</option>
+                <option :value="2">2</option>
+              </select>
+            </div>
+
+            <!-- File Upload Field -->
+            <div class="form-group">
+              <label for="file">Upload New File:</label>
+              <input type="file" id="file" @change="handleFileChange" />
+            </div>
+
+            <button type="submit" class="save-button">Save</button>
+            <button type="button" class="close-button" @click="addCoursewareModal = false">Cancel</button>
+          </form>
+        </slot>
+      </div>
+    </div>
+
+  </div>
+
 
 
   <!--Update Courseware Form -->
@@ -110,8 +171,11 @@
 
   <!-- Course Content Section with Interactive Media -->
   <el-card class="course-content" shadow="hover">
-
-    <h2>Course Content</h2>
+    <div class="course-content-header">
+    <div class="course-content-left"></div>
+    <div class="course-content-middle"><h2>Course Content</h2></div>
+    <div class="course-content-right"><button type="button" class="add-button" @click="addCoursewareModal = true">Add</button></div>
+    </div>
     <el-collapse>
       <el-collapse v-model="outerActiveNames">
         <el-collapse-item title="Teaching Chapters" name="1">
@@ -272,13 +336,16 @@
 import {onMounted, ref} from 'vue';
 import {DataBoard, Delete, Document, Edit, Files, MessageBox, VideoCamera} from '@element-plus/icons-vue';
 import axiosInstances from "@/services/axiosInstance";
-
+import {useRouter} from "vue-router";
+const userId = localStorage.getItem("userId")
+const router = useRouter();
 export default {
   data() {
     return {
       selectedCoursewareId: null,
       archiveDialogVisible: false, // Controls the visibility of the archive modal
       editDialogVisible: false,
+      addCoursewareModal: false,
       updateData: {
         coursewareId: null,
         courseId: null,
@@ -357,6 +424,23 @@ export default {
         },
       });
     },
+    async submitCourseware() {
+      const formData = new FormData();
+
+      formData.append("courseId", this.updateData.courseId)
+      formData.append("fileType", this.updateData.fileType)
+      formData.append("category", this.updateData.category)
+      formData.append("downloadable", this.updateData.downloadable)
+      formData.append("chapter", this.updateData.chapter)
+      formData.append("order", this.updateData.order)
+      formData.append("variant_of", null)
+      formData.append("version", 1)
+      formData.append('file', this.selectedFile || null);
+
+      const response = await axiosInstances.axiosInstance.post(`courseware/update`, formData)
+      await axiosInstances.axiosInstance.put(`courseware/fixDisplay/${-1}`)
+      console.log(response)
+    },
     async setActiveVersion(courseware) {
       this.selectedCoursewareId = courseware.coursewareId;
       await axiosInstances.axiosInstance.put(`courseware/${courseware.coursewareId}/setActive`);
@@ -400,7 +484,7 @@ export default {
     };
     onMounted(async () => {
       try {
-        const response = await axiosInstances.axiosInstance.get('http://localhost:8081/courseware/coursewarePage');
+        const response = await axiosInstances.axiosInstance.get(`/users/${userId}/courses/${props.courseId}/coursewares`);
         const coursesData = response.data
         console.log(coursesData)
         course.value = coursesData.find((c) => c.id === props.courseId);
@@ -409,7 +493,15 @@ export default {
           console.error("Course not found!");
         }
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        if (error.response && error.response.status === 403) {
+          await router.push({name: 'ForbiddenPage'});
+        }
+        else if (error.response && error.response.status === 404) {
+          await router.push({name: 'NotFound'});
+        }
+        else {
+          console.error("Unexpected error occurred:", error);
+        }
       }
     });
 
@@ -860,6 +952,39 @@ hr {
 
 .courseware-item {
   transition: all 0.3s ease; /* Smooth transition for shadow and background */
+}
+
+.course-content-header {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.course-content-left{
+  width: 33%;
+}
+.course-content-middle{
+  width: 33%;
+}
+.course-content-right{
+  display: flex;
+  justify-content: right;
+  width: 33%;
+  align-items: center;
+  align-content: center;
+  margin-bottom: 15px;
+}
+
+.add-button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  align-self: flex-end;
 }
 
 

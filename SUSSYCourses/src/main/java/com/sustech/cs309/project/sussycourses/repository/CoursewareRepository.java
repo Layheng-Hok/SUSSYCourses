@@ -32,4 +32,7 @@ public interface CoursewareRepository extends JpaRepository<Courseware, Long> {
 
     @Query("SELECT c FROM Courseware c WHERE c.variantOf = :variantOf AND c.displayVersion = true")
     Courseware findActiveCourseware(Long variantOf);
+
+    @Query("SELECT c FROM Courseware c WHERE c.variantOf = :value")
+    List<Courseware> findBrokenVariants(Long value);
 }
