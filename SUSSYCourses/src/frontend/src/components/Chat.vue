@@ -53,9 +53,9 @@
       const response = await axios.post(
         apiUrl,
         {
-          model: 'gpt-4o-mini',  
-          messages: [{ role: 'user', content: userInput.value + " Please keep your response short and simple and dont include markdown formatting."}],
-          max_tokens: 150,
+          model: 'gpt-4o',  
+          messages: [{ role: 'user', content: userInput.value + " Dont include markdown formatting."}],
+          max_tokens: 10000,
         },
         {
           headers: {

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MainPage from "@/components/MainPage.vue"; // Import TopBar component
+import MainPage from "@/components/MainPage.vue"; 
 import TeacherPage from "@/components/TeacherPage.vue";
 import StudentPage from "@/components/StudentPage.vue";
 import AdminPage from "@/components/AdminPage.vue";
@@ -10,6 +10,7 @@ import AccountSecurity from "@/components/AccountSecurity.vue";
 import Notifications from "@/components/Notifications.vue";
 import HelpSupport from "@/components/HelpSupport.vue";
 import CourseList from "@/components/CourseList.vue";
+import PublicCoursePage from "@/components/PublicCoursePage.vue";
 
 import SignUpStudent from "@/components/SignUpStudent.vue";
 import SignUpTeacher from "@/components/SignUpTeacher.vue";
@@ -23,10 +24,11 @@ import TeacherProfile from "@/components/TeacherProfile.vue";
 import Guideline from "@/components/Guideline.vue";
 import TeacherCoursesDetails from "@/components/TeacherCoursesDetails.vue";
 import TeacherCourse from "@/components/TeacherCourse.vue";
+import TeacherStreaming from "@/components/TeacherStreaming.vue";
 
 import NotFound from "@/components/404.vue";
 import ForbiddenPage from "@/components/403.vue";
-import TeacherStreaming from "@/components/TeacherStreaming.vue";
+
 
 const routes = [
   {
@@ -79,6 +81,11 @@ const routes = [
     name: "CoursePage",
     component: CoursePage,
     props: true,
+  },
+  {
+    path : "/public-course/:courseId",
+    name : "PublicCoursePage",
+    component : PublicCoursePage,
   },
   {
     path: "/signup-student",
@@ -150,7 +157,7 @@ const routes = [
     component: TeacherCoursesDetails,
   },
   {
-    path : "/courselist",
+    path : "/course-list",
     name : "CourseList",
     component : CourseList
   },

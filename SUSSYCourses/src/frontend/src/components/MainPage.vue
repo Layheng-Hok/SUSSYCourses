@@ -110,7 +110,7 @@
           <p class="rating"><strong>Rating:</strong> {{ teacher.averageRating }} <img src="@/assets/img_12.png"
                                                                                       alt="Star" class="star-icon"></p>
           <p class="student-count"><strong>{{ teacher.totalStudents }}</strong> students</p>
-          <p class="course-count"><strong>{{ teacher.numCourses }}</strong>courses</p>
+          <p class="course-count"><strong>{{ teacher.numCourses }}</strong> courses</p>
         </div>
       </div>
     </div>

@@ -108,7 +108,7 @@
     <div class="call-to-action">
       <h1>Explore for more courses</h1>
       <p>We have courses over the categories of web development, programming and etc.</p>
-      <router-link to="/courselist">
+      <router-link to="/course-list">
         <button class="cta-button">Go explore</button>
       </router-link>
     </div>
