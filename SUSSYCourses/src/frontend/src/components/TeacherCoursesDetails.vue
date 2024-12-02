@@ -104,8 +104,8 @@
     <h2>Your Courses</h2>
     <p>The courses below have been approved!</p>
 
-    <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block">
-      <div class="pending-courses">
+    <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
+      <div class="pending-courses" >
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">
           <p><strong>Course Name:</strong> {{ course.courseName }}</p>
@@ -121,14 +121,14 @@
   </div>
   <div v-else-if="approvedCourses.length =0">
     <h2>Your Courses</h2>
-    <p>You don’t have any approved courses yet.</p>
+    <p>You don't have any approved courses yet.</p>
   </div>
 
   <div v-if="pendingCourses.length > 0" class="pending">
     <h2>Pending Courses</h2>
     <p>Waiting to be approved by administrator...</p>
 
-    <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block">
+    <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
       <div class="pending-courses">
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">
@@ -145,14 +145,14 @@
   </div>
   <div v-else-if="pendingCourses.length =0">
     <h2>Pending Courses</h2>
-    <p>You don’t have any pending courses yet.</p>
+    <p>You don't have any pending courses yet.</p>
   </div>
 
   <div v-if="rejectedCourses.length > 0" class="pending">
     <h2>Rejected Courses</h2>
     <p>The courses below have been rejected...</p>
 
-    <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block">
+    <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
       <div class="pending-courses">
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">
@@ -172,7 +172,7 @@
   </div>
   <div v-else-if="rejectedCourses.length =0">
     <h2>Rejected Courses</h2>
-    <p>You don’t have any rejected courses!</p>
+    <p>You don't have any rejected courses!</p>
   </div>
 
   <div class="second">
@@ -214,10 +214,8 @@
 import {computed, onMounted, ref} from 'vue';
 import {Search} from '@element-plus/icons-vue';
 import axiosInstances from "@/services/axiosInstance";
-//import {useRouter} from 'vue-router';
 import {ElMessage} from "element-plus";
-
-//const router = useRouter();
+import {useRouter} from "vue-router";
 
 export default {
   components: {
@@ -225,6 +223,7 @@ export default {
   },
   emits: ['courseSubmitted'],
   setup() {
+    const router = useRouter();
     const activeFaqs = ref([]);
     const faqs = ref([
       {
@@ -233,7 +232,7 @@ export default {
       },
       {
         question: "How can I upload files or videos?",
-        answer: "Once your course is approved, you’ll have access to the upload feature, allowing you to enhance your course with files, videos, and other multimedia resources."
+        answer: "Once your course is approved, you'll have access to the upload feature, allowing you to enhance your course with files, videos, and other multimedia resources."
       },
       {
         question: "Can I track student progress?",
@@ -251,6 +250,12 @@ export default {
           rejectedCourses.value.length === 0
       );
     });
+
+    const goTo = (courseId) => {
+      const currentRoute = router.currentRoute.value;
+  const newPath = `${currentRoute.path}/course/${courseId}`; 
+  router.push(newPath);
+    };
 
     const handleSearch = () => {
       const query = searchQuery.value.toLowerCase().trim();
@@ -434,6 +439,7 @@ export default {
     };
 
     return {
+      goTo,
       activeFaqs,
       faqs,
       searchQuery,
@@ -589,6 +595,13 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; 
+}
+
+.course-block:hover {
+  transform: scale(1.01); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .pending-courses {

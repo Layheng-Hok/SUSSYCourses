@@ -67,6 +67,30 @@
         <el-card class="announcement" shadow="hover">
           <StreamInfo/>
         </el-card>
+        <el-card class="announcement" shadow="hover">
+    <div class="form-container">
+      <h2>Add Student to Course</h2>
+      
+      <form @submit.prevent="submitForm">
+        <div class="form-item">
+          <label for="studentEmail">Student's Email</label>
+          <input
+            id="studentEmail"
+            v-model="form.studentEmail"
+            type="email"
+            placeholder="Enter student's email"
+            required
+          />
+        </div>
+
+        <button type="submit" :disabled="loading" class="submit-button">Add Student</button>
+      </form>
+      
+      <div v-if="message" :class="messageType" class="message-container">
+        {{ message }}
+      </div>
+    </div>
+  </el-card>
       </div>
     </div>
 
@@ -108,6 +132,52 @@ const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 
+const form = ref({
+  studentEmail: '',
+});
+const loading = ref(false);
+const message = ref('');
+const messageType = ref(''); 
+
+const submitForm = async () => {
+  loading.value = true;
+  console.log('Form:', form.value);
+  try {
+
+    const response = await axiosInstances.axiosInstance.post(
+      `/instructors/${userId}/courses/${courseId}/add/${form.value.studentEmail}`
+    );
+
+    if (response.status === 200) {
+      message.value = 'Student added successfully!';
+      messageType.value = 'success';
+    } else {
+      message.value = 'Failed to add student!';
+      messageType.value = 'error';
+    }
+  } catch (error) {
+    message.value = 'An error occurred. Please try again.';
+    messageType.value = 'error';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchCourseDetails = async () => {
+    try {
+      const response = await axiosInstances.axiosInstance2.get(`courses/${courseId}`);
+      course.value = response.data;
+    } catch (error) {
+  
+      console.log("Error Details:", error);
+      if (error.response && error.response.status === 403) {
+        router.push({ name: 'ForbiddenPage' });
+      } else {
+        console.error("Unexpected error occurred:", error);
+      }    
+    }
+  };
+  
 const fetchUserData = async () => {
   try {
     const response = await axiosInstances.axiosInstance.get(`instructors/${userId}`);
@@ -123,41 +193,59 @@ const fetchUserData = async () => {
   }
 };
 
-const fetchCoursewareDetails = async () => {
-  try {
-    console.log(userId)
-    console.log(courseId)
-    const response = await axiosInstances.axiosInstance.get(`/users/${userId}/courses/${courseId}/coursewares`);
-
-    console.log(response)
-    course.value = response.data;
-  } catch (error) {
-    console.log("Error Details:", error);
-    if (error.response && error.response.status === 403) {
-      await router.push({name: 'ForbiddenPage'});
-    }
-    else if (error.response && error.response.status === 404) {
-      await router.push({name: 'ForbiddenPage'});
-    }
-
-    else {
-      console.error("Unexpected error occurred:", error);
-    }
-  }
-};
-
 const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
 
 onMounted(async () => {
   await fetchUserData();
-  await fetchCoursewareDetails();
+  await fetchCourseDetails();
 });
 </script>
 
 
 <style scoped>
+
+.form-item {
+  margin: 30px 0;
+}
+
+.form-item label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+}
+
+.message-container {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.success {
+  background-color: #e0f7e0;
+  color: green;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: red;
+}
+
 .el-menu-demo {
   position: fixed;
   top: 0;
