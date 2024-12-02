@@ -59,9 +59,8 @@
   </div>
 
   <div class="top-courses">
-  <h1>Top-Rated Courses</h1>
+    <h1>Top-Rated Courses</h1>
   </div>
-
   <div class="swiper-wrapper">
     <swiper
         :modules="[Navigation]"
@@ -70,16 +69,21 @@
         :slides-per-view="4"
         :slides-per-group="4"
     >
-      <swiper-slide>
+      <swiper-slide v-for="course in courses" :key="course.courseId">
         <div class="course-card">
           <div class="course-image-wrapper">
-            <img src="@/assets/tm1.png" alt="Course 1" class="course-image"/>
+            <img :src="course.coverImageUrl" :alt="course.courseName" class="course-image"/>
           </div>
           <div class="course-content">
-            <h3>The Complete Web Development Bootcamp</h3>
-            <p>Dr. Angela Yu, Developer and Lead Instructor</p>
-            <p class="rating">4.7 ⭐ (408,046)</p>
-            <p class="price">$16.99 <span class="old-price">$89.99</span></p>
+            <h3>{{ course.courseName }}</h3>
+            <p>{{ course.teacherName }}</p>
+            <p class="rating"><strong>Topic: </strong>{{ course.topic }}</p>
+            <p class="rating"><strong>Rating:</strong> {{ course.averageRating }} <img src="@/assets/img_12.png"
+                                                                                       alt="Star" class="star-icon">({{
+                course.numEvaluations
+              }})</p>
+            <p class="rating"><strong>Type: </strong>{{ course.type }}</p>
+
             <button class="enroll-button">
               <router-link to="/signup-student">Enroll Now</router-link>
             </button>
@@ -87,122 +91,6 @@
         </div>
       </swiper-slide>
 
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm2.png" alt="Course 2" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>The Web Developer Bootcamp 2024</h3>
-            <p>Colt Steele</p>
-            <p class="rating">4.7 ⭐ (276,491)</p>
-            <p class="price">$27.99 <span class="old-price">$149.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm1.png" alt="Course 3" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>Web Development Masterclass - Online Certification</h3>
-            <p>YouAccel Training</p>
-            <p class="rating">4.3 ⭐ (9,981)</p>
-            <p class="price">$13.99 <span class="old-price">$69.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm3.png" alt="Course 4" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>Practical Web Development: 22 Courses in 1</h3>
-            <p>Creative Online School</p>
-            <p class="rating">4.2 ⭐ (4,352)</p>
-            <p class="price">$13.99 <span class="old-price">$54.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm1.png" alt="Course 3" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>Web Development Masterclass - Online Certification</h3>
-            <p>YouAccel Training</p>
-            <p class="rating">4.3 ⭐ (9,981)</p>
-            <p class="price">$13.99 <span class="old-price">$69.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm2.png" alt="Course 2" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>The Web Developer Bootcamp 2024</h3>
-            <p>Colt Steele</p>
-            <p class="rating">4.7 ⭐ (276,491)</p>
-            <p class="price">$27.99 <span class="old-price">$149.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm1.png" alt="Course 3" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>Web Development Masterclass - Online Certification</h3>
-            <p>YouAccel Training</p>
-            <p class="rating">4.3 ⭐ (9,981)</p>
-            <p class="price">$13.99 <span class="old-price">$69.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img src="@/assets/tm3.png" alt="Course 4" class="course-image"/>
-          </div>
-          <div class="course-content">
-            <h3>Practical Web Development: 22 Courses in 1</h3>
-            <p>Creative Online School</p>
-            <p class="rating">4.2 ⭐ (4,352)</p>
-            <p class="price">$13.99 <span class="old-price">$54.99</span></p>
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
-      </swiper-slide>
       <div v-if="!atStart" class="swiper-button-prev" @click="goToPrev"></div>
       <div v-if="!atEnd" class="swiper-button-next" @click="goToNext"></div>
     </swiper>
@@ -212,16 +100,17 @@
     <h1>Popular Instructors</h1>
     <p>These real-world experts are highly rated by learners like you.</p>
     <div class="instructor-list">
-      <div class="instructor-card" v-for="teacher in mockTeachers" :key="teacher.name">
+      <div class="instructor-card" v-for="teacher in teachers" :key="teacher.userId">
         <div class="profile-picture">
-          <img src="@/assets/img_10.png" alt="Instructor Picture">
+          <img :src="teacher.profileImageUrl" alt="Instructor Picture">
         </div>
         <div class="instructor-info">
-          <h2>{{ teacher.name }}</h2>
-          <p>{{ teacher.description }}</p>
-          <p class="rating">Rating: {{ teacher.rating }} <img src="@/assets/img_12.png" alt="Star" class="star-icon"></p>
-          <p class="student-count">{{ teacher.students }} students</p>
-          <p class="course-count">{{ teacher.courses }} courses</p>
+          <h2>{{ teacher.fullName }}</h2>
+          <p>{{ getUniqueTopics(teacher.courses) }}</p>
+          <p class="rating"><strong>Rating:</strong> {{ teacher.averageRating }} <img src="@/assets/img_12.png"
+                                                                                      alt="Star" class="star-icon"></p>
+          <p class="student-count"><strong>{{ teacher.totalStudents }}</strong> students</p>
+          <p class="course-count"><strong>{{ teacher.numCourses }}</strong>courses</p>
         </div>
       </div>
     </div>
@@ -230,13 +119,11 @@
   <div class="trending-courses">
     <div class="left-part">
       <h1>Trending Now</h1>
-      <h2>ChatGPT is a top skill</h2>
-      <router-link to="" class="course-link">See ChatGPT courses &gt;</router-link>
-      <p class="learner-count">3,705,695 learners</p>
+      <h2>JAVA is a top skill</h2>
+      <router-link to="" class="course-link">See programming courses &gt;</router-link>
+      <p class="learner-count">560 learners</p>
     </div>
-
     <div class="vertical-divider"></div>
-
     <div class="category-grid">
       <div class="category" v-for="(category, index) in categories" :key="index">
         <h3>{{ category.name }}</h3>
@@ -252,14 +139,15 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, onMounted} from 'vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
+import axiosInstances from "@/services/axiosInstance";
 import {Navigation} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-const atStart = ref(true);  // Tracks if at the first slide
-const atEnd = ref(false);   // Tracks if at the last slide
+const atStart = ref(true);
+const atEnd = ref(false);
 const swiperInstance = ref(null);
 
 const handleSwiper = (swiper) => {
@@ -280,8 +168,39 @@ const goToNext = () => {
 
 const handleSelect = (index) => {
   console.log(`Selected menu item index: ${index}`);
-  // Add routing logic or other actions here based on the selected index
 };
+
+const teachers = ref([]);
+
+onMounted(() => {
+  fetchInstructors();
+});
+
+const fetchInstructors = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get('/courses/instructors/top-rated');
+    teachers.value = response.data;
+  } catch (error) {
+    console.error('Error fetching instructors:', error);
+  }
+};
+
+const getUniqueTopics = (courses) => {
+  const topics = courses.map((course) => course.topic);
+  const uniqueTopics = [...new Set(topics)];
+  return uniqueTopics.join(', ');
+};
+
+const courses = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get('/courses/top-rated');
+    courses.value = response.data;
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+  }
+});
 
 const images = [
   {src: require('@/assets/main_1.png'), alt: 'Image 2'},
@@ -290,61 +209,31 @@ const images = [
 
 const categories = ref([
   {
-    name: "Development",
+    name: "Web Development",
     courses: [
-      {name: "Python", learners: "46,203,544", link: "#"},
-      {name: "Web Development", learners: "13,697,450", link: "#"},
-      {name: "Data Science", learners: "7,489,675", link: "#"},
+      {name: "Learn Axios", learners: "120", link: "#"},
+      {name: "Intro to web Development", learners: "230", link: "#"},
+      {name: "Spring Boot", learners: "450", link: "#"},
     ],
   },
   {
     name: "Design",
     courses: [
-      {name: "Blender", learners: "2,778,547", link: "#"},
-      {name: "Graphic Design", learners: "4,375,054", link: "#"},
-      {name: "User Experience (UX) Design", learners: "2,009,988", link: "#"},
+      {name: "Interior Design", learners: "110", link: "#"},
+      {name: "Graphic Design", learners: "70", link: "#"},
+      {name: "User Experience (UX) Design", learners: "90", link: "#"},
     ],
   },
   {
-    name: "Business",
+    name: "Finance and Economics",
     courses: [
-      {name: "PMI Project Management Professional (PMP)", learners: "2,412,480", link: "#"},
-      {name: "Microsoft Power BI", learners: "4,340,192", link: "#"},
-      {name: "Project Management", learners: "3,752,340", link: "#"},
+      {name: "Tips to become a billionaire", learners: "240", link: "#"},
+      {name: "Learn about Inflation", learners: "160", link: "#"},
+      {name: "Project Management", learners: "55", link: "#"},
     ],
   },
 ]);
 
-const mockTeachers = [
-  {
-    name: "TIA Education, Andrew Ramdayal",
-    rating: 4.7,
-    students: "503,883",
-    courses: 26,
-    description: "PMI Project Management Professional (PMP), PMI…"
-  },
-  {
-    name: "Maven Analytics",
-    rating: 4.6,
-    students: "1,381,684",
-    courses: 43,
-    description: "Business Intelligence (BI), Microsoft Power BI"
-  },
-  {
-    name: "TIA Education, Andrew Ramdayal",
-    rating: 4.7,
-    students: "503,883",
-    courses: 26,
-    description: "PMI Project Management Professional (PMP), PMI…"
-  },
-  {
-    name: "Maven Analytics",
-    rating: 4.6,
-    students: "1,381,684",
-    courses: 43,
-    description: "Business Intelligence (BI), Microsoft Power BI"
-  },
-];
 </script>
 
 <style scoped>
