@@ -1,19 +1,13 @@
 <template>
   <!-- Top Navigation Menu -->
-  <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
+  <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" >
     <el-menu-item index="0">
       <router-link to="/">
         <img class="nav-logo" src="@/assets/Banner/banner2.png" alt="Element logo"/>
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-    <div class="user-info">
-      <div class="user-details">
-        <span class="user-points">Points: {{ user?.points || 0}}</span>
-        <span class="user-level">Level: {{ user?.points / 100 || 0 }}</span>
-      </div>
-      <img class="profile-pic-small" :src="user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
-    </div>
+      <UserInfo :user="user" />
   </el-menu-item>
   </el-menu>
 
@@ -131,12 +125,13 @@
 </template>
 
 <script setup>
-import {computed, ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
+import {computed, ref, onMounted} from 'vue';
 import Chat from './Chat.vue';
+import UserInfo from './UserInfo.vue';
 import HeroBanner from './HeroBanner.vue';
-import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import CourseBreakdown from './CourseBreakdown.vue';
+import ProfileSidebar from '@/components/ProfileSidebar.vue';
 import axiosInstances from '@/services/axiosInstance';
 
 const router = useRouter();
@@ -144,7 +139,6 @@ const user = ref(null);
 const courses = ref([]);
 const userId = localStorage.getItem('userId');
 
-const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
@@ -264,38 +258,11 @@ html {
   background-color: transparent !important;
 }
 
-.user-info {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.user-details {
-  margin-right: 20px;
-  font-size: 16px;
-  color: #333;
-  line-height: 1.2; 
-}
-
-.user-points,
-.user-level {
-  display: block;
-}
-
 .sidebar-toggle {
   margin-left: auto;
   cursor: pointer;
   display: flex;
   align-items: center;
-}
-
-.profile-pic-small {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  object-fit: cover;
-  overflow: hidden;
 }
 
 .overlay {

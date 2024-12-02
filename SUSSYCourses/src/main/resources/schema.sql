@@ -138,7 +138,7 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
         '87c051f7-5613-49ab-968c-99921a77c612', 'Male', NULL, 0, '2024-11-17 09:16:28.935239', null),
        ('L Lawliet', 'hoklayheng33@gmail.com', '$2a$10$znvpPc2Doq4EmyOC8PgeAOCjqpA/X.lHbqunjXvHVywEWJOpa7Y8.', 2, true,
         '9cfc5093-02cd-4e64-8b72-560405aa72d1', 'Male',
-        'A brilliant detective with eccentric habits and unmatched deductive reasoning.', 0,
+        'A brilliant detective with eccentric habits and unmatched deductive reasoning.', 308,
         '2024-11-17 09:16:28.935239', 'l'),
        ('Kakashi Hatake', 'fbringer99@gmail.com', '$2a$10$HHzqkBErJo3jrrc9Zy/zRuiM0xdkz33CY4b4NR40bgvrZrhYANIiK', 3,
         true, 'a3c8731a-1c73-4753-ae5e-ba2e1e1698b1', 'Male',

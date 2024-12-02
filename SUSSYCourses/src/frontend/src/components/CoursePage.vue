@@ -7,7 +7,7 @@
       </router-link>
     </el-menu-item>
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
-      <img class="profile-pic-small" :src=" user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
+      <UserInfo :user="user" />
     </el-menu-item>
   </el-menu>
 
@@ -112,14 +112,15 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import ProfileSidebar from './ProfileSidebar.vue';
+import UserInfo from './UserInfo.vue';
 import Courseware from './Courseware.vue';
-import RatingAndReview from './RatingAndReview.vue';
 import DoughnutChart from './DoughnutChart.vue';
+import ProfileSidebar from './ProfileSidebar.vue';
 import CommentSection from './CommentSection.vue';
+import RatingAndReview from './RatingAndReview.vue';
 import axiosInstances from '@/services/axiosInstance';
-import VanillaTilt from "vanilla-tilt";
 import axios from 'axios';
+import VanillaTilt from "vanilla-tilt";
 
 const teacherImage = ref(null);
 const route = useRoute();
@@ -132,7 +133,6 @@ const isLiked = ref(false);
 
 const activeIndex = ref('1');
 const isSidebarVisible = ref(false);
-const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 
