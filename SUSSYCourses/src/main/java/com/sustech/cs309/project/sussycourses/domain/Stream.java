@@ -21,9 +21,15 @@ public class Stream {
     @JoinColumn(name = "teacher_id", referencedColumnName = "userId", nullable = false)
     private WebAppUser teacher;
 
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     private String streamKey;
 
     @Column(length = 300)
     private String url;
+
+    @Column(length = 100)
+    private String title;
+
+    @Column(length = 300)
+    private String description;
 }
