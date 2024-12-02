@@ -353,7 +353,6 @@ public class CoursewareService {
         return ResponseEntity.ok("Updated Successfully");
     }
 
-
     public ResponseEntity<String> deleteCourseware(Long coursewareId) {
         coursewareRepository.deleteById(coursewareId);
         return ResponseEntity.ok("Deleted Successfully");

@@ -6,10 +6,7 @@ import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Notification;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
-import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
-import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
-import com.sustech.cs309.project.sussycourses.repository.NotificationRepository;
-import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
+import com.sustech.cs309.project.sussycourses.repository.*;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +34,9 @@ public class CourseService {
     private final CourseStudentRepository courseStudentRepository;
     private final WebAppUserRepository webAppUserRepository;
     private final NotificationRepository notificationRepository;
+    private final RatingRepository ratingRepository;
+    private final CoursewareRepository coursewareRepository;
+    private final CoursewareStudentRepository coursewareStudentRepository;
 
     public List<AdminCourseDetailResponse> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
@@ -93,6 +93,22 @@ public class CourseService {
                 null,
                 null,
                 course.getCreatedAt()
+        );
+    }
+
+    public CourseworkDataResponse getCourseworkData(Long courseId) {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            return null;
+        }
+        return new CourseworkDataResponse(
+                ratingRepository.findAverageContentQualityRatingByCourseId(courseId),
+                ratingRepository.findAverageTeachingCompetenceRatingByCourseId(courseId),
+                ratingRepository.findAverageWorkloadBalanceRatingByCourseId(courseId),
+                ratingRepository.findAverageRatingByCourseId(courseId),
+                (coursewareStudentRepository.countAllCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "assignment") != 0) || (coursewareStudentRepository.countAllCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "assignment") != 0) ?
+                        (float) (coursewareStudentRepository.countCompletedCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "assignment") + coursewareStudentRepository.countCompletedCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "project")) /
+                                (coursewareStudentRepository.countAllCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "assignment") + coursewareStudentRepository.countAllCoursewaresByCourseIdAndCategoryWithDisplayVersion(courseId, "project")) : 0
         );
     }
 

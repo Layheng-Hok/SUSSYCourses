@@ -44,6 +44,12 @@ public class CourseController {
         return courseService.getCourseDetail(courseId);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR')")
+    @GetMapping("/{courseId}/coursework-data")
+    public CourseworkDataResponse getCourseworkData(@PathVariable Long courseId) {
+        return courseService.getCourseworkData(courseId);
+    }
+
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")
     public ResponseEntity<String> createCourse(@ModelAttribute CourseCreationRequest courseCreationRequest) throws Exception {

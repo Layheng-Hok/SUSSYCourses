@@ -36,4 +36,27 @@ public interface CoursewareStudentRepository extends JpaRepository<CoursewareStu
             @Param("courseId") Long courseId,
             @Param("category") String category
     );
+
+    @Query("""
+            SELECT COUNT(cs) FROM CoursewareStudent cs \
+            WHERE cs.courseware.course.courseId = :courseId \
+            AND cs.courseware.category = :category \
+            AND cs.courseware.displayVersion = true
+            """)
+    Integer countAllCoursewaresByCourseIdAndCategoryWithDisplayVersion(
+            @Param("courseId") Long courseId,
+            @Param("category") String category
+    );
+
+    @Query("""
+            SELECT COUNT(cs) FROM CoursewareStudent cs \
+            WHERE cs.courseware.course.courseId = :courseId \
+            AND cs.courseware.category = :category \
+            AND cs.completed = true \
+            AND cs.courseware.displayVersion = true
+            """)
+    Integer countCompletedCoursewaresByCourseIdAndCategoryWithDisplayVersion(
+            @Param("courseId") Long courseId,
+            @Param("category") String category
+    );
 }

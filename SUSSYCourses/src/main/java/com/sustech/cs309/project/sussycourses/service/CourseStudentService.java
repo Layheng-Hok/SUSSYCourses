@@ -192,23 +192,23 @@ public class CourseStudentService {
             return ResponseEntity.status(404).body("Course not found or not opened");
         }
 
-        WebAppUser webAppUser = webAppUserOptional.get();
+        WebAppUser student = webAppUserOptional.get();
         Course course = courseOptional.get();
 
         CourseStudent courseStudent = new CourseStudent();
-        courseStudent.setStudent(webAppUser);
+        courseStudent.setStudent(student);
         courseStudent.setCourse(course);
         courseStudent.setLiked(false);
         courseStudent.setCreatedAt(LocalDateTime.now());
 
         Notification studentToTeacherNotification = new Notification();
-        studentToTeacherNotification.setSender(webAppUser);
+        studentToTeacherNotification.setSender(student);
         studentToTeacherNotification.setReceiver(course.getTeacher());
         studentToTeacherNotification.setCreatedAt(LocalDateTime.now());
 
         Notification teacherToStudentNotification = new Notification();
         teacherToStudentNotification.setSender(course.getTeacher());
-        teacherToStudentNotification.setReceiver(webAppUser);
+        teacherToStudentNotification.setReceiver(student);
         teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
 
         if (course.getType().equalsIgnoreCase("open")) {
@@ -217,18 +217,27 @@ public class CourseStudentService {
 
             studentToTeacherNotification.setSubject("New Student Enrollment");
             studentToTeacherNotification.setText(String.format("Student %s (%s) has successfully enrolled in your course: %s.",
-                    webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
+                    student.getFullName(), student.getEmail(), course.getCourseName()));
 
             teacherToStudentNotification.setSubject("Enrollment Confirmation");
             teacherToStudentNotification.setText(String.format("You have successfully enrolled in the course: %s, taught by %s.",
                     course.getCourseName(), course.getTeacher().getFullName()));
+
+            List<Courseware> coursewares = coursewareRepository.findByCourse_CourseId(courseId);
+            for (Courseware courseware : coursewares) {
+                CoursewareStudent coursewareStudent = new CoursewareStudent();
+                coursewareStudent.setCourseware(courseware);
+                coursewareStudent.setStudent(student);
+                coursewareStudent.setCompleted(false);
+                coursewareStudentRepository.save(coursewareStudent);
+            }
         } else if (course.getType().equalsIgnoreCase("semi-open")) {
             courseStudent.setStatus("pending");
             courseStudentRepository.save(courseStudent);
 
             studentToTeacherNotification.setSubject("Course Enrollment Pending Approval");
             studentToTeacherNotification.setText(String.format("Student %s (%s) has requested to join your course: %s. Approval is required.",
-                    webAppUser.getFullName(), webAppUser.getEmail(), course.getCourseName()));
+                    student.getFullName(), student.getEmail(), course.getCourseName()));
 
             teacherToStudentNotification.setSubject("Enrollment Request Received");
             teacherToStudentNotification.setText(String.format("Your request to join the course: %s, has been sent to the instructor, %s, for approval.",
