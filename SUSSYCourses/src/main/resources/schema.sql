@@ -127,7 +127,9 @@ CREATE TABLE stream
     id  SERIAL PRIMARY KEY,
     teacher_id BIGINT REFERENCES web_app_user(user_id) UNIQUE NOT NULL,
     stream_key VARCHAR(100) UNIQUE,
-    url VARCHAR(300) UNIQUE
+    url VARCHAR(300) UNIQUE,
+    title VARCHAR(100),
+    description VARCHAR(300)
 );
 
 
@@ -267,7 +269,7 @@ VALUES ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!
         '2023-10-01T12:00:00Z'),
        ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
 
-INSERT INTO stream(teacher_id, stream_key, url)
-VALUES (4,null,null),(7,null,null),(8,null,null);
+INSERT INTO stream(teacher_id, stream_key, url, title, description)
+VALUES (4,null,null, 'I will teach you stuff', 'This stream is me showcasing nothing'),(7,null,null, 'I will teach you stuff', 'This stream is me showcasing nothing'),(8,null, null, 'I will teach you stuff', 'This stream is me showcasing nothing');
 
 END;
