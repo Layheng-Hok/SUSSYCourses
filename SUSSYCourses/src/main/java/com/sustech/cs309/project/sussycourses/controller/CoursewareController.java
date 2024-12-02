@@ -55,7 +55,7 @@ public class CoursewareController {
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/courseware/create")
     public ResponseEntity<String> createCourseware(@ModelAttribute CoursewareRequest coursewareRequest) throws Exception {
-        return coursewareService.uploadCourseware(coursewareRequest);
+        return coursewareService.createCourseware(coursewareRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")

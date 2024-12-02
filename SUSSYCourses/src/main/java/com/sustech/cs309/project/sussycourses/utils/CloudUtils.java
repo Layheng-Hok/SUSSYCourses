@@ -64,6 +64,11 @@ public class CloudUtils {
         return "Comments/" + commentId + "/" + attachmentName;
     }
 
+
+    public static String resolveCoursewareLocation(Long courseId, Long coursewareId) {
+        return "Courses/" + courseId + "/courseware/" + coursewareId;
+    }
+
     private static String generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName, String serviceAccountKeyPath) throws StorageException, IOException {
         ServiceAccountCredentials credentials = ServiceAccountCredentials
                 .fromStream(new FileInputStream(serviceAccountKeyPath));
