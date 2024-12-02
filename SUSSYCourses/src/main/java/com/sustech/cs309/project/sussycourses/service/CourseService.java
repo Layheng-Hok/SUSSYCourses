@@ -184,18 +184,18 @@ public class CourseService {
                 .toList();
     }
 
-    public ResponseEntity<String> createCourse(CourseCreationRequest courseCreationRequest) throws Exception {
-        String courseName = courseCreationRequest.courseName();
-        Long teacherId = courseCreationRequest.teacherId();
-        String description = courseCreationRequest.description();
-        String type = courseCreationRequest.type();
-        String topic = courseCreationRequest.topic();
-        MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
-        String fileType = courseCreationRequest.fileType();
-        String coverImageName = courseCreationRequest.coverImageName();
+    public ResponseEntity<String> createCourse(CourseRequest courseRequest) throws Exception {
+        String courseName = courseRequest.courseName();
+        Long teacherId = courseRequest.teacherId();
+        String description = courseRequest.description();
+        String type = courseRequest.type();
+        String topic = courseRequest.topic();
+        MultipartFile coverImageFile = courseRequest.coverImageFile();
+        String fileType = courseRequest.fileType();
+        String coverImageName = courseRequest.coverImageName();
 
         Optional<WebAppUser> teacherOptional = webAppUserRepository.findById(teacherId);
-        if (teacherOptional.isEmpty()) {
+        if (teacherOptional.isEmpty() || !teacherOptional.get().isEnabled()) {
             return ResponseEntity.status(404).body("Instructor not found");
         }
 
@@ -241,15 +241,46 @@ public class CourseService {
         return ResponseEntity.ok("Course created successfully");
     }
 
-    public ResponseEntity<String> updateCourse(CourseCreationRequest courseCreationRequest) throws Exception {
-        String courseName = courseCreationRequest.courseName();
-        Long teacherId = courseCreationRequest.teacherId();
-        String description = courseCreationRequest.description();
-        String type = courseCreationRequest.type();
-        String topic = courseCreationRequest.topic();
-        MultipartFile coverImageFile = courseCreationRequest.coverImageFile();
-        String fileType = courseCreationRequest.fileType();
-        String coverImageName = courseCreationRequest.coverImageName();
+    public ResponseEntity<String> updateCourse(CourseRequest courseRequest, Long courseId) throws Exception {
+        String courseName = courseRequest.courseName();
+        Long teacherId = courseRequest.teacherId();
+        String description = courseRequest.description();
+        String type = courseRequest.type();
+        String topic = courseRequest.topic();
+        MultipartFile coverImageFile = courseRequest.coverImageFile();
+        String fileType = courseRequest.fileType();
+        String coverImageName = courseRequest.coverImageName();
+
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("Course not found");
+        }
+
+        Optional<WebAppUser> teacherOptional = webAppUserRepository.findByUserIdAndRoleRoleId(teacherId, 3);
+        if (teacherOptional.isEmpty() || !teacherOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("Instructor not found");
+        }
+
+        Course course = courseOptional.get();
+        WebAppUser teacher = teacherOptional.get();
+
+        if (!course.getTeacher().getUserId().equals(teacherId)) {
+            return ResponseEntity.status(403).body("Teacher does not have the permission to edit this course");
+        }
+
+        course.setCourseName(courseName);
+        course.setDescription(description);
+        course.setType(type);
+        course.setTopic(topic);
+        if (coverImageName != null && !coverImageName.trim().isEmpty()) {
+            if (course.getCoverImage() != null) {
+                CloudUtils.deleteBlob(CloudUtils.resolveCourseCoverImageLocation(courseId, course.getCoverImage()));
+            }
+            course.setCoverImage(coverImageName);
+            String fileLocation = CloudUtils.resolveCourseCoverImageLocation(courseId, coverImageName);
+            CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
+        }
+        courseRepository.save(course);
 
         return ResponseEntity.ok("Course updated successfully");
     }

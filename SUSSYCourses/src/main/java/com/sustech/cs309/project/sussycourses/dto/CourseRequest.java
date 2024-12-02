@@ -2,7 +2,7 @@ package com.sustech.cs309.project.sussycourses.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public record CourseCreationRequest(
+public record CourseRequest(
         String courseName,
         String description,
         Long teacherId,
