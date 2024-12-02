@@ -34,10 +34,26 @@
 
         <!-- Learning Progress Chart -->
         <div class="learning-progress-section">
-          <h2>Course rating statistics</h2>
-          <slot name="learning-progress">
-            <DoughnutChart/>
-          </slot>
+          <div class="progress-left">
+            <h2>Course Ratings</h2>
+            <slot name="learning-progress">
+              <BarChart
+            :contentQualityRating="contentQualityRating"
+            :teachingCompetenceRating="teachingCompetenceRating"
+            :workloadBalanceRating="workloadBalanceRating"
+          />
+            </slot>
+          </div>
+
+          <div class="progress-right">
+            <h2>Coursework Completion</h2>
+            <slot name="coursework-progress">
+              <DoughnutChart
+            :data="courseworkData"
+            :colors="courseworkColors"
+          />
+        </slot>
+          </div>
         </div>
 
         <!-- Comment Section -->
@@ -119,6 +135,7 @@ import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
 import StudentsList from './StudentsList.vue';
 import StreamInfo from "@/components/StreamInfo.vue";
+import BarChart from "@/components/BarChart.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -132,12 +149,33 @@ const isSidebarVisible = ref(false);
 const defaultProfilePic = "/assets/Avatars/student.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 
+const courseworkData = ref([50, 50]); 
+const courseworkColors = ['#f39c12', '#e0e0e0'];
+const contentQualityRating = ref(1); 
+const teachingCompetenceRating = ref(1); 
+const workloadBalanceRating = ref(1);  
+
 const form = ref({
   studentEmail: '',
 });
 const loading = ref(false);
 const message = ref('');
 const messageType = ref(''); 
+
+const fetchCourseworkData = async () => {
+  try {
+    
+    const response = await axiosInstances.axiosInstance.get(`/courses/${courseId}/coursework-data`);
+    const data = response.data;
+    courseworkData.value = [data.courseworkCompletion * 100, 100 - data.courseworkCompletion * 100];
+    contentQualityRating.value = data.contentQualityRating;
+    teachingCompetenceRating.value = data.teachingCompetenceRating;
+    workloadBalanceRating.value = data.workloadBalanceRating;
+    
+  } catch (error) {
+    console.error("Error fetching progress data:", error);
+  }
+};
 
 const submitForm = async () => {
   loading.value = true;
@@ -200,11 +238,21 @@ const toggleSidebar = () => {
 onMounted(async () => {
   await fetchUserData();
   await fetchCourseDetails();
+  await fetchCourseworkData();
 });
 </script>
 
 
 <style scoped>
+.learning-progress-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-left,
+.progress-right {
+  width: 48%; 
+}
 
 .form-item {
   margin: 30px 0;
