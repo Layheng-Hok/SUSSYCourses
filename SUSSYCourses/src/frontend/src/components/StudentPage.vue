@@ -92,7 +92,8 @@
           
           <p class="course-type"> Type: {{ course.type }}</p>
           <p class="course-status"> Status: <b> {{ course.enrollmentStatus }}</b></p>
-          <p class="course-progress"> Learning progress: NA %</p>
+          <p class="course-progress"> Learning progress: {{ (course.learningProgress * 100).toFixed(2) }} %</p>
+          <p class="course-progress"> Coursework progress: {{ (course.courseworkProgress * 100).toFixed(2) }} %</p>
         </div>
       </div>
     </div>

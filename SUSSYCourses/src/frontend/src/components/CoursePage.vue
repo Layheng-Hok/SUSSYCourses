@@ -28,10 +28,25 @@
 
         <!-- Learning Progress Chart -->
         <div class="learning-progress-section">
-          <h2>Learning Progress</h2>
-          <slot name="learning-progress">
-            <DoughnutChart/>
-          </slot>
+          <div class="progress-left">
+            <h2>Learning Progress</h2>
+            <slot name="learning-progress">
+              <DoughnutChart
+              :data="learningProgressData"
+              :colors="learningProgressColors"
+            />
+            </slot>
+          </div>
+
+          <div class="progress-right">
+            <h2>Coursework Progress</h2>
+            <slot name="coursework-progress">
+              <DoughnutChart
+            :data="courseworkProgressData"
+            :colors="courseworkProgressColors"
+          />
+        </slot>
+          </div>
         </div>
 
         <!-- Rating and Review Section -->
@@ -136,6 +151,26 @@ const isSidebarVisible = ref(false);
 const defaultTeacherProfilePic = "/assets/Avatars/instructor.jpg";
 const defaultCoverPic = "/assets/Courses/whale.png";
 
+const learningProgressData = ref([70, 30]);
+const learningProgressColors = ['#4caf50', '#d3d3d3']; 
+
+const courseworkProgressData = ref([50, 50]); 
+const courseworkProgressColors = ['#f39c12', '#e0e0e0']; 
+
+const fetchProgressData = async () => {
+  try {
+    
+    const response = await axiosInstances.axiosInstance.get(`/students/${userId}/courses/${courseId}/progress`);
+    const data = response.data;
+    const teachingCompletedPercentage = (data.completedTeachingMaterials / data.totalTeachingMaterials * 100) ||0;
+    const courseworkCompletedPercentage = (data.completedCourseworkMaterials / data.totalCourseworkMaterials * 100) || 0;
+    learningProgressData.value = [teachingCompletedPercentage, 100 - teachingCompletedPercentage];
+    courseworkProgressData.value = [courseworkCompletedPercentage, 100 - courseworkCompletedPercentage];
+    
+  } catch (error) {
+    console.error("Error fetching progress data:", error);
+  }
+};
 
 const readBio = async (language) => {
   const bioText = course.value?.teacherBio || "No bio available for this instructor.";
@@ -236,6 +271,7 @@ const toggleSidebar = () => {
 onMounted(async () => {
   await fetchUserData();
   await fetchCourseDetails();
+  await fetchProgressData();
   if (teacherImage.value) {
     VanillaTilt.init(teacherImage.value, {
       max: 25, 
@@ -339,8 +375,17 @@ onUnmounted(() => {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   background-color: #f9f9f9;
   border-radius: 8px;
-  padding:20px;
+  padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.learning-progress-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-left,
+.progress-right {
+  width: 48%; 
 }
 
 .course-details,

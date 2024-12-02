@@ -2,7 +2,14 @@
   <div>
   </div>
   <div v-if="material.fileType === 'mp4'" class="video-container">
-      <video @ended="markAsCompleted(material.coursewareId)" controls :src="material.url" controlsList="nodownload" class="video-player"></video>
+    <video
+      @ended="markAsCompleted(material.coursewareId)"
+      controls
+      :src="material.url"
+      controlsList="nodownload"
+      :download="material.isDownloadable ? true : undefined"
+      class="video-player"
+    ></video>
     </div>
 
   <div v-else class="attachment-box">

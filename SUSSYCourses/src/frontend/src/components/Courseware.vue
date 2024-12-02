@@ -82,6 +82,7 @@ const uniqueChapters = computed(() => {
   </script>
 
   <style scoped>
+
 .course-content {
   margin: 20px;
   padding: 20px;
@@ -107,11 +108,10 @@ h2 {
   margin-bottom: 15px;
 }
 
-.el-collapse-item__header {
-  font-size: 18px;
-  font-weight: 500;
-  color: #1a73e8;
-  cursor: pointer;
+::v-deep .el-collapse-item__header {
+color: black;
+font-size: 16px;
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
 
 .el-list {
