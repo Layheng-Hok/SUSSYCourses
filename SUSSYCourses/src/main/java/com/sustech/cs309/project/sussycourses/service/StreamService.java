@@ -1,7 +1,9 @@
 package com.sustech.cs309.project.sussycourses.service;
 
+import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.Stream;
 import com.sustech.cs309.project.sussycourses.dto.StreamResponse;
+import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.StreamRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import video.api.client.api.ApiException;
 import video.api.client.api.models.LiveStream;
 import video.api.client.api.models.LiveStreamCreationPayload;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,9 +23,9 @@ import java.util.Optional;
 @Slf4j
 public class StreamService {
     private final StreamRepository streamRepository;
+    private final CourseRepository courseRepository;
 
-
-    public StreamResponse generateStreamKey(String name, Long teacherId){
+    public StreamResponse generateStreamKey(String name, Long teacherId, String description){
         Stream stream = streamRepository.findByTeacherId(teacherId);
         if(stream.getStreamKey() != null){
             return new StreamResponse(name, stream.getStreamKey(), "localhost:8080/sussy/stream/" + stream.getTeacher().getUserId());
@@ -41,6 +45,8 @@ public class StreamService {
             LiveStream liveStream = client.liveStreams().create(liveStreamCreationPayload);
             stream.setStreamKey(liveStream.getStreamKey());
             stream.setUrl(String.valueOf(liveStream.getAssets().getPlayer()));
+            stream.setTitle(name);
+            stream.setDescription(description);
             streamRepository.save(stream);
 //            return new StreamResponse(name, liveStream.getStreamKey(), String.valueOf(liveStream.getAssets().getPlayer()));
             return new StreamResponse(name, liveStream.getStreamKey(), "localhost:8080/sussy/stream/" + stream.getTeacher().getUserId());
@@ -48,5 +54,16 @@ public class StreamService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<String> getStreamInformation(Long courseId){
+        ArrayList<String> list = new ArrayList<>();
+        Course course = courseRepository.findById(courseId).get();
+
+        Stream stream = streamRepository.findByTeacherId(course.getTeacher().getUserId());
+        list.add(stream.getUrl());
+        list.add(stream.getTitle());
+        list.add(stream.getDescription());
+        return list;
     }
 }

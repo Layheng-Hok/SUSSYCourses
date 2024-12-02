@@ -1,4 +1,16 @@
 <template>
+  <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false" >
+    <el-menu-item index="0">
+      <router-link to="/">
+        <img class="nav-logo" src="@/assets/Banner/banner2.png" alt="Element logo"/>
+      </router-link>
+    </el-menu-item>
+    <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
+      <UserInfo :user="user" />
+    </el-menu-item>
+  </el-menu>
+
+
   <div class="video-container">
     <iframe
         :src="videoUrl"
@@ -13,17 +25,26 @@
     <h2 class="video-title">{{ videoTitle || "Default Stream Title" }}</h2>
     <p class="video-description">{{ videoDescription || "No description available." }}</p>
   </div>
+
+  <ProfileSidebar
+      :user="user"
+      :activeIndex="activeIndex"
+      :isVisible="isSidebarVisible"
+      @menuSelect="handleMenuSelect"
+  />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axiosInstances from "@/services/axiosInstance";
 import {useRoute, useRouter} from "vue-router";
+import UserInfo from "@/components/UserInfo.vue";
+import ProfileSidebar from "@/components/ProfileSidebar.vue";
 
 // Reactive reference to hold the video URL
 const videoUrl = ref(''); // Initially empty
-const videoTitle = ref('Hello');
-const videoDescription = ref('Hello');
+const videoTitle = ref('');
+const videoDescription = ref('');
 
 const route = useRoute();
 const router = useRouter();
@@ -31,12 +52,14 @@ const user = ref(null);
 const userId = localStorage.getItem('userId');
 const course = ref(null);
 const courseId = route.params.courseId;
+const activeIndex = ref('1');
+const isSidebarVisible = ref(false);
 
 // Function to fetch or generate the stream URL
 const getStreamUrl = async () => {
   try {
     // Simulating an API call or logic to get the stream URL
-    const response = await axiosInstances.axiosInstance.get('stream/url');
+    const response = await axiosInstances.axiosInstance.get(`stream/${courseId}`);
     videoUrl.value = response.data[0];
     videoTitle.value = response.data[1];
     videoDescription.value = response.data[2];
@@ -44,6 +67,14 @@ const getStreamUrl = async () => {
     console.error('Error fetching stream URL:', error);
     videoUrl.value = ''; // Fallback or error message URL
   }
+};
+
+const handleMenuSelect = (index) => {
+  activeIndex.value = index;
+};
+
+const toggleSidebar = () => {
+  isSidebarVisible.value = !isSidebarVisible.value;
 };
 
 const fetchUserData = async () => {
@@ -92,7 +123,6 @@ onMounted(async () => {
   position: relative;
   width: 80%;
   padding-top: 42.25%; /* 16:9 aspect ratio */
-  height: 0;
   overflow: hidden;
   max-width: 100%;
   margin: 20px auto;
@@ -134,6 +164,23 @@ onMounted(async () => {
   line-height: 1.6;
   margin: 0;
   width: 100%;
+}
+
+.el-menu-demo {
+  position: relative;
+  flex-direction: row;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-logo {
+  width: 240px;
+  height: 90px;
 }
 
 

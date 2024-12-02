@@ -52,14 +52,14 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PostMapping("/create")
-    public ResponseEntity<String> createCourse(@ModelAttribute CourseCreationRequest courseCreationRequest) throws Exception {
-        return courseService.createCourse(courseCreationRequest);
+    public ResponseEntity<String> createCourse(@ModelAttribute CourseRequest courseRequest) throws Exception {
+        return courseService.createCourse(courseRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PutMapping("/update")
-    public ResponseEntity<String> updateCourse(@RequestBody CourseCreationRequest newCourse) throws Exception {
-        return courseService.updateCourse(newCourse);
+    @PutMapping("/update/{courseId}")
+    public ResponseEntity<String> updateCourse(@RequestBody CourseRequest newCourse, @PathVariable Long courseId) throws Exception {
+        return courseService.updateCourse(newCourse, courseId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

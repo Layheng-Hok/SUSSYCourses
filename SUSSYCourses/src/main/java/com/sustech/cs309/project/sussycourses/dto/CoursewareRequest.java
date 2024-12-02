@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record CoursewareRequest(
         Long courseId,
         String fileType,
+        String fileName,
         String category,
         Boolean downloadable,
         Integer chapter,
