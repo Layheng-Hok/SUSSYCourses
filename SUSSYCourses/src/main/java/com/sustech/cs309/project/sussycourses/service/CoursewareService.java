@@ -35,7 +35,7 @@ public class CoursewareService {
     public CoursewareResponse findByCoursewareId(Long coursewareId) throws IOException {
         Courseware c = coursewareRepository.findById(coursewareId).orElse(null);
         assert c != null;
-        String url = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+        String url = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
 
         return new CoursewareResponse(
                 c.getCourse().getCourseId(),
@@ -51,14 +51,6 @@ public class CoursewareService {
                 c.getVersion(),
                 url,
                 null);
-    }
-
-    public String resolveCoverPhotoLocation(String courseName, String coverPhotoName) {
-        return "Courses/" + courseName + "/" + coverPhotoName;
-    }
-
-    public String resolveCoursewareLocation(Long courseId, Long coursewareId) {
-        return "Courses/" + courseId + "/courseware/" + coursewareId;
     }
 
     public List<CoursewareResponse> getDisplayedCoursewaresByUserIdAndCourseIdForPublicUser(Long courseId) {
@@ -102,7 +94,7 @@ public class CoursewareService {
                                 courseware.getCoursewareOrder(),
                                 courseware.getVariantOf(),
                                 courseware.getVersion(),
-                                CloudUtils.getStorageKey(resolveCoursewareLocation(courseId, courseware.getCoursewareId())),
+                                CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(courseId, courseware.getCoursewareId())),
                                 coursewareStudentRepository.findByStudent_UserIdAndCourseware_CoursewareId(studentId, courseware.getCoursewareId()).isPresent() ?
                                         coursewareStudentRepository.findByStudent_UserIdAndCourseware_CoursewareId(studentId, courseware.getCoursewareId()).get().getCompleted() :
                                         null
@@ -137,35 +129,33 @@ public class CoursewareService {
         return retrieveCoursewareData(courseId);
     }
 
-    public ResponseEntity<String> uploadCourseware(CoursewareRequest coursewareRequest) throws Exception {
+    public ResponseEntity<String> createCourseware(CoursewareRequest coursewareRequest) throws Exception {
         Long courseId = coursewareRequest.courseId();
-        String fileType = coursewareRequest.fileType();
-        String category = coursewareRequest.category();
-        Boolean downloadable = coursewareRequest.downloadable();
-        Integer chapter = coursewareRequest.chapter();
-        Integer order = coursewareRequest.order();
-        Integer version = coursewareRequest.version();
-        Long variant = coursewareRequest.variant_of();
-        MultipartFile file = coursewareRequest.file();
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            return ResponseEntity.status(404).body("Course not found");
+        }
 
         Courseware courseware = new Courseware();
-        Course course = courseRepository.findById(courseId).orElse(null);
-        courseware.setCourse(course);
-        courseware.setCategory(category);
-        courseware.setCoursewareOrder(order);
-        courseware.setChapter(chapter);
-        courseware.setDownloadable(downloadable);
-        courseware.setFileType(fileType);
-        courseware.setUrl(file.getName());
-        courseware.setVersion(version);
-        courseware.setVariantOf(variant);
+        courseware.setCourse(courseOptional.get());
+        courseware.setCategory(coursewareRequest.category());
+        courseware.setCoursewareOrder(courseware.getCoursewareOrder());
+        courseware.setChapter(coursewareRequest.chapter());
+        courseware.setDownloadable(coursewareRequest.downloadable());
+        courseware.setFileType(coursewareRequest.fileType());
+        courseware.setUrl(coursewareRequest.file().getName());
+        courseware.setVersion(coursewareRequest.version());
+        courseware.setVariantOf(coursewareRequest.variantOf());
         courseware.setDisplayVersion(true);
         courseware.setCreatedAt(LocalDateTime.now());
         coursewareRepository.save(courseware);
 
         courseware.setVariantOf(courseware.getCoursewareId());
         coursewareRepository.save(courseware);
-        String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
+
+        String fileType = coursewareRequest.fileType();
+        MultipartFile file = coursewareRequest.file();
+        String url = CloudUtils.resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
         CloudUtils.putStorageKey(file, fileType, url);
 
         List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");
@@ -192,7 +182,7 @@ public class CoursewareService {
         courseData.put("id", course.getCourseId().toString());
         courseData.put("name", courseName);
         courseData.put("description", course.getDescription());
-        courseData.put("image", CloudUtils.getStorageKey(resolveCoverPhotoLocation(courseName, coverPhotoName)));
+        courseData.put("image", CloudUtils.getStorageKey(CloudUtils.resolveCourseCoverImageLocation(courseId, coverPhotoName)));
         // Instructor info
         courseData.put("instructorName", course.getTeacher().getFullName());
         courseData.put("instructorImage", "/assets/Avatars/instructor.jpg");
@@ -209,7 +199,7 @@ public class CoursewareService {
                     JSONArray materials = chapter.getJSONArray("materials");
 
                     JSONObject material = new JSONObject();
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -221,7 +211,7 @@ public class CoursewareService {
                     JSONArray materials = new JSONArray();
                     JSONObject material = new JSONObject();
 
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -238,7 +228,7 @@ public class CoursewareService {
                     JSONArray materials = chapter.getJSONArray("materials");
 
                     JSONObject material = new JSONObject();
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -251,7 +241,7 @@ public class CoursewareService {
                     JSONArray materials = new JSONArray();
                     JSONObject material = new JSONObject();
 
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -268,7 +258,7 @@ public class CoursewareService {
                     JSONArray materials = chapter.getJSONArray("materials");
 
                     JSONObject material = new JSONObject();
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -280,7 +270,7 @@ public class CoursewareService {
                     JSONArray materials = new JSONArray();
                     JSONObject material = new JSONObject();
 
-                    String getMaterial = CloudUtils.getStorageKey(resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
+                    String getMaterial = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(c.getCourse().getCourseId(), c.getCoursewareId()));
                     material.put("coursewareId", c.getCoursewareId());
                     material.put("variantOf", c.getVariantOf());
                     material.put("title", c.getUrl());
@@ -301,19 +291,19 @@ public class CoursewareService {
     }
 
     public ResponseEntity<String> updateCourseware(UpdateCoursewareRequest updateCoursewareRequest) throws Exception {
-        Courseware courseware = coursewareRepository.findById(updateCoursewareRequest.coursewareId()).get();
-        long courseId = updateCoursewareRequest.courseId();
+        Courseware courseware = coursewareRepository.findById(updateCoursewareRequest.coursewareId()).orElse(null);
+        Long courseId = updateCoursewareRequest.courseId();
         String fileType = updateCoursewareRequest.fileType();
         String category = updateCoursewareRequest.category();
-        boolean downloadable = updateCoursewareRequest.downloadable();
-        int chapter = updateCoursewareRequest.chapter();
-        int order = updateCoursewareRequest.order();
-        int version = updateCoursewareRequest.version();
-        long variant = updateCoursewareRequest.variant_of();
-        boolean changeFile = updateCoursewareRequest.changeFile();
+        Boolean downloadable = updateCoursewareRequest.downloadable();
+        Integer chapter = updateCoursewareRequest.chapter();
+        Integer order = updateCoursewareRequest.order();
+        Integer version = updateCoursewareRequest.version();
+        Long variant = updateCoursewareRequest.variant_of();
+        Boolean changeFile = updateCoursewareRequest.changeFile();
         MultipartFile file = updateCoursewareRequest.file();
 
-        Course course = courseRepository.findById(courseId).get();
+        assert courseware != null;
         courseware.setFileType(fileType);
         courseware.setCategory(category);
         courseware.setDownloadable(downloadable);
@@ -322,7 +312,7 @@ public class CoursewareService {
         courseware.setVersion(version);
         courseware.setVariantOf(variant);
         if (changeFile) {
-            String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
+            String url = CloudUtils.resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
             String urlToStore = url.split("/")[url.split("/").length - 1];
             courseware.setUrl(urlToStore);
             CloudUtils.putStorageKey(file, fileType, url);
@@ -345,7 +335,7 @@ public class CoursewareService {
         List<Courseware> list = coursewareRepository.findByVariantOf(variantOf);
         List<CoursewareVersionResponse> coursewareVersionResponseList = new ArrayList<>();
         for (Courseware courseware : list) {
-            String url = CloudUtils.getStorageKey(resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId()));
+            String url = CloudUtils.getStorageKey(CloudUtils.resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId()));
             CoursewareVersionResponse c = new CoursewareVersionResponse(courseware.getCoursewareId(), courseware.getCategory(), url, courseware.getDownloadable(), courseware.getChapter(), courseware.getCoursewareOrder(), courseware.getVariantOf(), courseware.getVersion(), courseware.getDisplayVersion(), courseware.getCreatedAt());
             coursewareVersionResponseList.add(c);
         }

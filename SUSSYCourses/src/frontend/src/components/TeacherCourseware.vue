@@ -70,7 +70,8 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number" />
+              <input type="number" id="chapter" v-model="coursewareData.chapter" required
+                     placeholder="Enter chapter number"/>
             </div>
 
             <!-- Order Field -->
@@ -85,7 +86,7 @@
             <!-- File Upload Field -->
             <div class="form-group">
               <label for="file">Upload New File:</label>
-              <input type="file" id="file" @change="handleFileChange" />
+              <input type="file" id="file" @change="handleFileChange"/>
             </div>
 
             <button type="submit" class="save-button">Save</button>
@@ -96,7 +97,6 @@
     </div>
 
   </div>
-
 
 
   <!--Update Courseware Form -->
@@ -122,7 +122,6 @@
             </div>
 
 
-
             <!-- Downloadable Field -->
             <div class="form-group">
               <label for="downloadable">Downloadable:</label>
@@ -135,7 +134,8 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="updateData.chapter" required placeholder="Enter chapter number" />
+              <input type="number" id="chapter" v-model="updateData.chapter" required
+                     placeholder="Enter chapter number"/>
             </div>
 
             <!-- Order Field -->
@@ -150,13 +150,13 @@
             <!-- Change File Checkbox -->
             <div class="form-group">
               <label for="changeFile">Change File:</label>
-              <input type="checkbox" id="changeFile" v-model="updateData.changeFile" />
+              <input type="checkbox" id="changeFile" v-model="updateData.changeFile"/>
             </div>
 
             <!-- File Upload Field -->
             <div class="form-group">
               <label for="file">Upload New File:</label>
-              <input type="file" id="file" @change="handleFileChange" />
+              <input type="file" id="file" @change="handleFileChange"/>
             </div>
 
             <button type="submit" class="save-button">Save</button>
@@ -172,9 +172,11 @@
   <!-- Course Content Section with Interactive Media -->
   <el-card class="course-content" shadow="hover">
     <div class="course-content-header">
-    <div class="course-content-left"></div>
-    <div class="course-content-middle"><h2>Course Content</h2></div>
-    <div class="course-content-right"><button type="button" class="add-button" @click="addCoursewareModal = true">Add</button></div>
+      <div class="course-content-left"></div>
+      <div class="course-content-middle"><h2>Course Content</h2></div>
+      <div class="course-content-right">
+        <button type="button" class="add-button" @click="addCoursewareModal = true">Add</button>
+      </div>
     </div>
     <el-collapse>
       <el-collapse v-model="outerActiveNames">
@@ -202,9 +204,15 @@
                       <video controls :src="`${material.url}`" width="60%" class="video-frame"></video>
                       <div class="courseware-right-side">
                         <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)"><MessageBox /></el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)"><Edit /></el-icon>
-                          <el-icon class="delete-icon"><Delete /></el-icon>
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                          <el-icon class="delete-icon">
+                            <Delete/>
+                          </el-icon>
                         </div>
                         <div class="courseware-information">
                           <div class="courseware-information-header">Courseware Information</div>
@@ -243,9 +251,15 @@
                       </div>
                       <div class="courseware-right-side">
                         <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)"><MessageBox /></el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)"><Edit /></el-icon>
-                          <el-icon class="delete-icon"><Delete /></el-icon>
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                          <el-icon class="delete-icon">
+                            <Delete/>
+                          </el-icon>
                         </div>
                         <div class="courseware-information">
                           <div class="courseware-information-header">Courseware Information</div>
@@ -287,7 +301,7 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <a :href="`/assets/Materials/${material.url}`" target="_blank">
-                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
+                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
               </a>
             </el-list-item>
@@ -301,7 +315,7 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <a :href="`/assets/Materials/${material.url}`" target="_blank">
-                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;" />
+                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
               </a>
             </el-list-item>
@@ -337,6 +351,7 @@ import {onMounted, ref} from 'vue';
 import {DataBoard, Delete, Document, Edit, Files, MessageBox, VideoCamera} from '@element-plus/icons-vue';
 import axiosInstances from "@/services/axiosInstance";
 import {useRouter} from "vue-router";
+
 const userId = localStorage.getItem("userId")
 const router = useRouter();
 export default {
@@ -390,16 +405,16 @@ export default {
     async openEditDialog(coursewareId) {
       const data = await axiosInstances.axiosInstance.get(`courseware/${coursewareId}`);
       const courseware = data.data
-      this.updateData.coursewareId= coursewareId;
-      this.updateData.courseId= courseware.courseId;
-      this.updateData.fileType= courseware.fileType;
-      this.updateData.downloadable= courseware.downloadable;
+      this.updateData.coursewareId = coursewareId;
+      this.updateData.courseId = courseware.courseId;
+      this.updateData.fileType = courseware.fileType;
+      this.updateData.downloadable = courseware.downloadable;
       this.updateData.category = courseware.category;
-      this.updateData.chapter= courseware.chapter;
-      this.updateData.order= courseware.order;
-      this.updateData.variant_of= courseware.variant_of;
-      this.updateData.version= courseware.version;
-      this.updateData.changeFile= false;
+      this.updateData.chapter = courseware.chapter;
+      this.updateData.order = courseware.order;
+      this.updateData.variant_of = courseware.variant_of;
+      this.updateData.version = courseware.version;
+      this.updateData.changeFile = false;
       this.editDialogVisible = true;
       console.log(this.updateData.coursewareId)
     },
@@ -416,13 +431,13 @@ export default {
       formData.append("downloadable", this.updateData.downloadable)
       formData.append("chapter", this.updateData.chapter)
       formData.append("order", this.updateData.order)
-      formData.append("variant_of", this.updateData.variant_of)
+      formData.append("variantOf", this.updateData.variant_of)
       formData.append("version", this.updateData.version)
       formData.append("changeFile", this.updateData.changeFile)
       if (this.updateData.changeFile) {
         formData.append('file', this.selectedFile || null);
       } else {
-        formData.append('file', new Blob([], { type: 'application/octet-stream' }));
+        formData.append('file', new Blob([], {type: 'application/octet-stream'}));
       }
 
       for (const [key, value] of formData.entries()) {
@@ -443,7 +458,7 @@ export default {
       formData.append("downloadable", this.coursewareData.downloadable)
       formData.append("chapter", this.coursewareData.chapter)
       formData.append("order", this.coursewareData.order)
-      formData.append("variant_of", -1)
+      formData.append("variantOf", -1)
       formData.append("version", 1)
       formData.append('file', this.selectedFile);
       for (const [key, value] of formData.entries()) {
@@ -507,11 +522,9 @@ export default {
       } catch (error) {
         if (error.response && error.response.status === 403) {
           await router.push({name: 'ForbiddenPage'});
-        }
-        else if (error.response && error.response.status === 404) {
+        } else if (error.response && error.response.status === 404) {
           await router.push({name: 'NotFound'});
-        }
-        else {
+        } else {
           console.error("Unexpected error occurred:", error);
         }
       }
@@ -558,8 +571,8 @@ export default {
   display: block; /* Prevent inline gaps */
 }
 
-.video-frame{
-  height:300px;
+.video-frame {
+  height: 300px;
   border-radius: 8px; /* Rounded video corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle shadow for video */
 }
@@ -594,21 +607,22 @@ export default {
   justify-items: end;
 }
 
-.courseware-icons{
+.courseware-icons {
   display: flex;
   flex-direction: row;
   justify-content: end;
 }
 
-.edit-icon{
+.edit-icon {
   padding-right: 10px;
   padding-left: 10px;
   color: #409eff;
 }
 
-.delete-icon{
+.delete-icon {
   color: red;
 }
+
 .courseware-information {
   margin: 20px 0; /* Add spacing around the container */
   padding: 20px; /* Add internal padding */
@@ -669,7 +683,6 @@ export default {
 .archive-icon:hover {
   color: #ff3300; /* Change color on hover */
 }
-
 
 
 .el-list-item {
@@ -783,7 +796,7 @@ export default {
   display: flex;
   width: 30%;
   flex-direction: column;
-  gap:50px;
+  gap: 50px;
   align-content: space-around;
   margin-left: 50px;
   padding: 20px; /* Add internal padding */
@@ -796,7 +809,7 @@ export default {
   border-radius: 8px; /* Rounded video corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle shadow for video */
   width: 100%;
-  height:100%;
+  height: 100%;
   margin-right: 10px;
 }
 
@@ -826,8 +839,8 @@ export default {
 .modal-set-button {
   display: inline-block;
   padding: 16px 40px;
-  width:220px;
-  font-size:12px;
+  width: 220px;
+  font-size: 12px;
   font-weight: bold;
   color: #ffffff;
   text-align: center;
@@ -917,7 +930,7 @@ hr {
 .update-form-bottom {
   display: flex;
   flex-direction: column;
-  width:100%;
+  width: 100%;
   height: 100%;
 }
 
@@ -951,14 +964,15 @@ hr {
   cursor: pointer;
   margin-right: 10px;
 }
+
 .save-button:hover {
   background-color: #45a049;
 }
 
 /* Add shadow effect or highlight when a version is displayed */
 .selected-version {
-  box-shadow: 0px 4px 8px rgba(0, 128, 0, 0.7);  /* Green shadow for selected version */
-  border: 2px solid green;  /* Optional: add border for better emphasis */
+  box-shadow: 0px 4px 8px rgba(0, 128, 0, 0.7); /* Green shadow for selected version */
+  border: 2px solid green; /* Optional: add border for better emphasis */
   background-color: rgba(0, 128, 0, 0.1); /* Optional: slightly change background color */
 }
 
@@ -972,13 +986,15 @@ hr {
   gap: 10px;
 }
 
-.course-content-left{
+.course-content-left {
   width: 33%;
 }
-.course-content-middle{
+
+.course-content-middle {
   width: 33%;
 }
-.course-content-right{
+
+.course-content-right {
   display: flex;
   justify-content: right;
   width: 33%;
@@ -998,7 +1014,6 @@ hr {
   margin-top: 20px;
   align-self: flex-end;
 }
-
 
 
 </style>

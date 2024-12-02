@@ -9,7 +9,7 @@ public record CoursewareRequest(
         Boolean downloadable,
         Integer chapter,
         Integer order,
-        Long variant_of,
+        Long variantOf,
         Integer version,
         MultipartFile file) {
 }
