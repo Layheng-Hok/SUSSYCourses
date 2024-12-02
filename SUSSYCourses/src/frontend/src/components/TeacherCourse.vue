@@ -62,7 +62,11 @@
 
         <el-card class="announcement" shadow="hover">
           <AnnouncementForm/>
-    </el-card>
+        </el-card>
+
+        <el-card class="announcement" shadow="hover">
+          <StreamInfo/>
+        </el-card>
       </div>
     </div>
 
@@ -90,6 +94,7 @@ import CommentSection from './CommentSection.vue';
 import AnnouncementForm from './AnnouncementForm.vue';
 import axiosInstances from '@/services/axiosInstance';
 import StudentsList from './StudentsList.vue';
+import StreamInfo from "@/components/StreamInfo.vue";
 
 const route = useRoute();
 const router = useRouter();

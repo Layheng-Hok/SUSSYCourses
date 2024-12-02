@@ -26,6 +26,7 @@ import TeacherCourse from "@/components/TeacherCourse.vue";
 
 import NotFound from "@/components/404.vue";
 import ForbiddenPage from "@/components/403.vue";
+import TeacherStreaming from "@/components/TeacherStreaming.vue";
 
 const routes = [
   {
@@ -113,6 +114,11 @@ const routes = [
     path: "/admin/users",
     name: "UserList",
     component: UserList,
+  },
+  {
+    path: "/sussy/stream/:streamId",
+    name: "TeacherStreaming",
+    component: TeacherStreaming,
   },
   {
     path: "/instructor-dashboard/:userId",
