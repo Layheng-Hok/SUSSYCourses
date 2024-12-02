@@ -57,7 +57,7 @@
       v-if="badNotificationStatus"
       :title="badNotificationStatus"
       type="error"
-      :closable="false"
+      :closable="true"
   />
 
 </template>
@@ -91,6 +91,7 @@ const generateStreamKey = async () => {
       },
     });
     if (response.status === 200) {
+      badNotificationStatus.value = '';
       streamInfo.value.streamKey = response.data.streamKey;
       streamInfo.value.streamName = response.data.streamName.replace(/^"|"$/g, '');
       streamInfo.value.streamLink = response.data.streamLink;
