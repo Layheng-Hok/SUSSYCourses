@@ -53,16 +53,20 @@
       :closable="false"
   />
 
+  <el-alert
+      v-if="badNotificationStatus"
+      :title="badNotificationStatus"
+      type="error"
+      :closable="false"
+  />
+
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 import axiosInstances from '@/services/axiosInstance';
 
-const route = useRoute();
 const userId = localStorage.getItem('userId');
-const courseId = route.params.courseId;
 
 const streamNameError = ref('');
 const streamKeyError = ref('');
@@ -72,19 +76,23 @@ const streamInfo = ref({
   streamLink: ''
 });
 const notificationStatus = ref('');
+const badNotificationStatus = ref('');
 
 // Function to regenerate the stream key
 const generateStreamKey = async () => {
   try {
-    console.log(userId, courseId)
-    const response = await axiosInstances.axiosInstance.post('/stream/getStreamInfo', streamInfo.value.streamName, {
+    if(streamInfo.value.streamName === ''){
+      badNotificationStatus.value = 'Fill in a stream name';
+      return;
+    }
+    const response = await axiosInstances.axiosInstance.post(`/stream/getStreamInfo/${userId}`, streamInfo.value.streamName, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
     if (response.status === 200) {
       streamInfo.value.streamKey = response.data.streamKey;
-      streamInfo.value.streamName = response.data.streamName;
+      streamInfo.value.streamName = response.data.streamName.replace(/^"|"$/g, '');
       streamInfo.value.streamLink = response.data.streamLink;
       notificationStatus.value = "Your stream key has been successfully generated! Copy the key and paste it into your streaming service to begin broadcasting. Share the stream link with your students, so they can join in and watch your session live!"
     } else {
@@ -146,7 +154,7 @@ input {
 
 .submit-button {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #9d00ff;
   color: white;
   border: none;
   cursor: pointer;
@@ -154,7 +162,7 @@ input {
 }
 
 .submit-button:hover {
-  background-color: #45a049;
+  background-color: #9d00ff;
 }
 
 </style>

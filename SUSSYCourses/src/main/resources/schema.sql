@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS course CASCADE;
 DROP TABLE IF EXISTS courseware CASCADE;
 DROP TABLE IF EXISTS notification CASCADE;
 DROP TABLE IF EXISTS courses CASCADE;
+DROP TABLE IF EXISTS stream CASCADE;
 DROP TABLE IF EXISTS web_app_user CASCADE;
 DROP TABLE IF EXISTS role CASCADE;
 
@@ -120,6 +121,15 @@ CREATE TABLE notification
     text            VARCHAR(500)                                 NOT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE stream
+(
+    id  SERIAL PRIMARY KEY,
+    teacher_id BIGINT REFERENCES web_app_user(user_id) UNIQUE NOT NULL,
+    stream_key VARCHAR(100) UNIQUE,
+    url VARCHAR(300) UNIQUE
+);
+
 
 INSERT INTO role (role_name)
 VALUES ('ADMIN');
@@ -256,5 +266,8 @@ VALUES ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!
        ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Important', 'You have a project deadline in 3 days.',
         '2023-10-01T12:00:00Z'),
        ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
+
+INSERT INTO stream(teacher_id, stream_key, url)
+VALUES (4,null,null),(7,null,null),(8,null,null);
 
 END;

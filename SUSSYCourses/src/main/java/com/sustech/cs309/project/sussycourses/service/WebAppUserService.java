@@ -1,10 +1,12 @@
 package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.Course;
+import com.sustech.cs309.project.sussycourses.domain.Stream;
 import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
 import com.sustech.cs309.project.sussycourses.repository.RoleRepository;
+import com.sustech.cs309.project.sussycourses.repository.StreamRepository;
 import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import com.sustech.cs309.project.sussycourses.utils.CloudUtils;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class WebAppUserService {
 
 
     private final EmailService emailService;
+    private final StreamRepository streamRepository;
 
     public ResponseEntity<String> createWebAppUser(@RequestBody RegistrationRequest registrationRequest) {
         if (webAppUserRepository.findByEmail(registrationRequest.email()).isPresent()) {
@@ -82,6 +85,14 @@ public class WebAppUserService {
                 + "The SUSSYCourses Team";
 
         emailService.sendEmail(recipientAddress, subject, message);
+
+        if (registrationRequest.roleId() == 3) {
+            Stream stream = new Stream();
+            stream.setTeacher(webAppUser);
+            stream.setStreamKey(null);
+            stream.setUrl(null);
+            streamRepository.save(stream);
+        }
 
         return ResponseEntity.status(201).body("Our dear user, please check your email to verify your account. Thank you for joining us.");
     }

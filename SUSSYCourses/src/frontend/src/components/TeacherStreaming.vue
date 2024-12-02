@@ -18,11 +18,19 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axiosInstances from "@/services/axiosInstance";
+import {useRoute, useRouter} from "vue-router";
 
 // Reactive reference to hold the video URL
 const videoUrl = ref(''); // Initially empty
 const videoTitle = ref('Hello');
 const videoDescription = ref('Hello');
+
+const route = useRoute();
+const router = useRouter();
+const user = ref(null);
+const userId = localStorage.getItem('userId');
+const course = ref(null);
+const courseId = route.params.courseId;
 
 // Function to fetch or generate the stream URL
 const getStreamUrl = async () => {
@@ -38,7 +46,43 @@ const getStreamUrl = async () => {
   }
 };
 
-onMounted(() => {
+const fetchUserData = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}`);
+    user.value = response.data;
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      await router.push({name: 'ForbiddenPage'});
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }
+  }
+};
+
+const fetchCourseDetails = async () => {
+  try {
+    const response = await axiosInstances.axiosInstance.get(`students/${userId}/courses/${courseId}`);
+    if(response.data === ""){
+      await router.push({name: 'ForbiddenPage'});
+    }
+    course.value = response.data;
+  } catch (error) {
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      await router.push({name: 'ForbiddenPage'});
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }
+  }
+};
+
+onMounted(async () => {
+  console.log(userId)
+  console.log(courseId)
+  await fetchUserData();
+  await fetchCourseDetails();
   getStreamUrl();
 });
 </script>
