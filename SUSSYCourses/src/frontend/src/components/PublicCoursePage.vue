@@ -15,10 +15,12 @@
           <!-- Courseware Section -->
           <div class="courseware-section">
             <h2>Courseware</h2>
-            <Courseware :course-id="courseId" />
+            <PublicCourseware :course-id="courseId" />
           </div>
-
-          <button @click.stop="enrollInCourse(course.courseId)" class="enroll-button">Enroll</button>
+          <div class="enroll-section">
+            <p>If you're interested in this course, click below to enroll and start learning!</p>
+            <button @click.stop="enrollInCourse(course.courseId)" class="enroll-button">Enroll Now</button>
+        </div>
 
         </div>
   
@@ -66,9 +68,9 @@
   import { ref, onMounted, onUnmounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { ArrowLeft } from "@element-plus/icons-vue";
-  import Courseware from './Courseware.vue';
   import axiosInstances from '@/services/axiosInstance';
   import VanillaTilt from "vanilla-tilt";
+    import PublicCourseware from './PublicCourseware.vue';
   
   const teacherImage = ref(null);
   const route = useRoute();
@@ -84,7 +86,8 @@ const userId = localStorage.getItem('userId');
     const enrollInCourse = async (courseId) => {
   try {
     if (!userId || userId === 1) {
-    alert('Please log in first to enroll in a course.');
+    alert('Please log in before you enroll in a course.');
+    router.push({ name: 'LogIn' });
     return; 
   }
     const response = await axiosInstances.axiosInstance.post(`/students/${userId}/courses/${courseId}/enroll`);
@@ -113,6 +116,7 @@ const userId = localStorage.getItem('userId');
   
   onMounted(async () => {
     await fetchCourseDetails();
+
     if (teacherImage.value) {
       VanillaTilt.init(teacherImage.value, {
         max: 25, 
@@ -179,7 +183,7 @@ color: #0056b3;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  width: 100px;
+  width: 130px;
   margin: 0 auto;
 }
 
