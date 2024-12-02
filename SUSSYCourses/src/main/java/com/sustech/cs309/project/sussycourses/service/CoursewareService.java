@@ -139,7 +139,7 @@ public class CoursewareService {
         Courseware courseware = new Courseware();
         courseware.setCourse(courseOptional.get());
         courseware.setCategory(coursewareRequest.category());
-        courseware.setCoursewareOrder(courseware.getCoursewareOrder());
+        courseware.setCoursewareOrder(coursewareRequest.order());
         courseware.setChapter(coursewareRequest.chapter());
         courseware.setDownloadable(coursewareRequest.downloadable());
         courseware.setFileType(coursewareRequest.fileType());
