@@ -286,6 +286,15 @@ public class CourseStudentService {
         teacherToStudentNotification.setCreatedAt(LocalDateTime.now());
         notificationRepository.save(teacherToStudentNotification);
 
+        List<Courseware> coursewares = coursewareRepository.findByCourse_CourseId(courseId);
+        for (Courseware courseware : coursewares) {
+            CoursewareStudent coursewareStudent = new CoursewareStudent();
+            coursewareStudent.setCourseware(courseware);
+            coursewareStudent.setStudent(student);
+            coursewareStudent.setCompleted(false);
+            coursewareStudentRepository.save(coursewareStudent);
+        }
+
         return ResponseEntity.ok().body("Student added successfully");
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "web_app_user")
 public class WebAppUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(length = 50, nullable = false)
