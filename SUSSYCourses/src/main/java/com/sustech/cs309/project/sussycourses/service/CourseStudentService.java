@@ -56,6 +56,12 @@ public class CourseStudentService {
                                 courseStudent.getLiked(),
                                 courseStudent.getCourse().getLikeCount(),
                                 courseStudent.getCourse().getNumEvaluations() != 0 ? courseStudent.getCourse().getTotalEvaluationScore() / courseStudent.getCourse().getNumEvaluations() : 0,
+                                (coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "lecture") != 0) ?
+                                        (float) (coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "lecture")) /
+                                                coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "lecture") : 0,
+                                coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "assignment") + coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "project") != 0 ?
+                                        (float) (coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "assignment") + coursewareStudentRepository.countCompletedCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "project")) /
+                                                coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "assignment") + coursewareStudentRepository.countAllCoursewaresByStudentIdCourseIdAndCategoryWithDisplayVersion(userId, courseStudent.getCourse().getCourseId(), "project") : 0,
                                 courseStudent.getCourse().getCreatedAt());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -133,6 +139,8 @@ public class CourseStudentService {
                 courseStudent.getLiked(),
                 courseStudent.getCourse().getLikeCount(),
                 courseStudent.getCourse().getNumEvaluations() != 0 ? courseStudent.getCourse().getTotalEvaluationScore() / courseStudent.getCourse().getNumEvaluations() : 0,
+                null,
+                null,
                 courseStudent.getCourse().getCreatedAt()
         );
     }

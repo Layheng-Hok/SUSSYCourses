@@ -17,6 +17,8 @@ public record StudentCourseDetailResponse(
         Boolean liked,
         Long likesCount,
         Float averageRating,
+        Float learningProgress,
+        Float courseworkProgress,
         LocalDateTime createdAt
 ) {
 }

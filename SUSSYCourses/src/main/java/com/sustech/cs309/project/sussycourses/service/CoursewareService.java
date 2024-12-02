@@ -138,14 +138,14 @@ public class CoursewareService {
     }
 
     public ResponseEntity<String> uploadCourseware(CoursewareRequest coursewareRequest) throws Exception {
-        long courseId = coursewareRequest.courseId();
+        Long courseId = coursewareRequest.courseId();
         String fileType = coursewareRequest.fileType();
         String category = coursewareRequest.category();
-        boolean downloadable = coursewareRequest.downloadable();
-        int chapter = coursewareRequest.chapter();
-        int order = coursewareRequest.order();
-        int version = coursewareRequest.version();
-        long variant = coursewareRequest.variant_of();
+        Boolean downloadable = coursewareRequest.downloadable();
+        Integer chapter = coursewareRequest.chapter();
+        Integer order = coursewareRequest.order();
+        Integer version = coursewareRequest.version();
+        Long variant = coursewareRequest.variant_of();
         MultipartFile file = coursewareRequest.file();
 
         Courseware courseware = new Courseware();
@@ -167,7 +167,6 @@ public class CoursewareService {
         coursewareRepository.save(courseware);
         String url = resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
         CloudUtils.putStorageKey(file, fileType, url);
-
 
         List<CourseStudent> courseStudents = courseStudentRepository.findByCourse_CourseIdAndStatus(courseId, "enrolled");
         for (CourseStudent courseStudent : courseStudents) {

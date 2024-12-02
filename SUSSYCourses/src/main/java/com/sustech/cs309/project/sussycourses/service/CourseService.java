@@ -90,6 +90,8 @@ public class CourseService {
                 null,
                 course.getLikeCount(),
                 course.getNumEvaluations() != 0 ? course.getTotalEvaluationScore() / course.getNumEvaluations() : 0,
+                null,
+                null,
                 course.getCreatedAt()
         );
     }
