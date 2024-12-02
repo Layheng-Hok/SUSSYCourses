@@ -38,7 +38,6 @@ const getStreamUrl = async () => {
   }
 };
 
-// Call getStreamUrl when the component is mounted
 onMounted(() => {
   getStreamUrl();
 });

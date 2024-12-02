@@ -116,7 +116,7 @@ const routes = [
     component: UserList,
   },
   {
-    path: "/sussy/stream/:streamId",
+    path: "/sussy/stream/:courseId",
     name: "TeacherStreaming",
     component: TeacherStreaming,
   },
