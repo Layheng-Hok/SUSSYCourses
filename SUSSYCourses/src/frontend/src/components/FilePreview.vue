@@ -1,19 +1,25 @@
 <template>
-  <div class="attachment-box">
+  <div>
+  </div>
+  <div v-if="material.fileType === 'mp4'" class="video-container">
+      <video @ended="markAsCompleted(material.coursewareId)" controls :src="material.url" controlsList="nodownload" class="video-player"></video>
+    </div>
+
+  <div v-else class="attachment-box">
     <div class="icon-container">
-      <img :src="icon" :alt="`${type} icon`" class="file-icon" />
+      <img :src="icon" :alt="`${material.fileType} icon`" class="file-icon" />
     </div>
 
     <div class="file-info">
-      <p>{{ title || `${type.toUpperCase()} File` }}</p>
+      <p>{{ material.fileName || `${material.fileType.toUpperCase()} File` }}</p>
     </div>
 
     <div class="expand-container">
-      <button @click="viewFile" class="expand-button">
+      <button @click="viewFile(material.coursewareId)" class="expand-button">
         View
       </button>
 
-      <button v-if="!isNonDownloadable" @click="downloadFile" class="download-button">
+      <button v-if="material.isDownloadable" @click="downloadFile" class="download-button">
         Download
       </button>
     </div>
@@ -23,30 +29,15 @@
 <script setup>
 import { computed, defineProps } from 'vue';
 import { marked } from 'marked';
+import axiosInstances from '@/services/axiosInstance';
 
 const props = defineProps({
-  type: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  url: {
-    type: String,
-    required: true,
-  },
-  isNonDownloadable: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+  material: Object,
 });
 
 const icon = computed(() => {
-  switch (props.type) {
+  const fileType = props.material.fileType;
+  switch (fileType) {
     case 'pdf':
       return '/assets/Icons/pdf-icon.svg';
     case 'pptx':
@@ -60,20 +51,35 @@ const icon = computed(() => {
 
 const downloadFile = () => {
   const link = document.createElement('a');
-  link.href = props.url;
+  link.href = props.material.url;
   link.download = props.title || 'file';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
-const viewFile = () => {
-  if (props.type === 'pdf') {
+const viewFile = async (coursewareId) => {
+  if (props.fileType === 'pdf') {
     openPdfInViewer(props.url);
-  } else if (props.type === 'pptx') {
+  } else if (props.fileType === 'pptx') {
     openPptxInGoogleViewer(props.url);
-  } else if (props.type === 'md') {
+  } else if (props.fileType === 'md') {
     viewMarkdownInNewTab(props.url);
+  }
+
+  markAsCompleted(coursewareId);
+};
+
+const markAsCompleted = async (coursewareId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+
+    const response = await axiosInstances.axiosInstance.put(`/students/${userId}/coursewares/${coursewareId}/completed`);
+    if (response.status === 200) {
+      console.log(`Courseware ${coursewareId} marked as completed after viewing.`);
+    }
+  } catch (error) {
+    console.error('Error marking courseware as completed:', error);
   }
 };
 
@@ -101,6 +107,21 @@ const viewMarkdownInNewTab = (url) => {
 </script>
   
   <style scoped>
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.video-player {
+  width: 80%;
+  height: 80%;
+}
+
   .attachment-box {
   display: flex;
   align-items: center;

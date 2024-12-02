@@ -9,8 +9,8 @@
     <el-menu-item index="1" @click="toggleSidebar" class="sidebar-toggle">
     <div class="user-info">
       <div class="user-details">
-        <span class="user-points">Points: {{ user?.points ||0}}</span>
-        <span class="user-level">Level: {{ user?.level || 0 }}</span>
+        <span class="user-points">Points: {{ user?.points || 0}}</span>
+        <span class="user-level">Level: {{ user?.points / 100 || 0 }}</span>
       </div>
       <img class="profile-pic-small" :src="user?.profileImageUrl || defaultProfilePic" alt="Profile Picture"/>
     </div>

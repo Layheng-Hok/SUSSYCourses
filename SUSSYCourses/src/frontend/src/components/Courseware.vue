@@ -4,20 +4,14 @@
     <el-collapse>
       <!-- Teaching Chapters -->
       <el-collapse-item title="Teaching Chapters" name="1">
-        <div v-for="(material, index) in filteredMaterials('lecture')" :key="index" class="material">
-          <h3>Chapter {{ material.chapter }}</h3>
-          <el-list>
-            <el-list-item :key="material.coursewareId">
-              <!-- Video content -->
-              <div v-if="material.fileType === 'mp4'" class="video-container">
-                <video controls :src="material.url" controlsList="nodownload" class="video-player"></video>
-              </div>
-              <div v-else>
-                <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" :isNonDownloadable="material.downloadable" />
-              </div>
-            </el-list-item>
-          </el-list>
-        </div>
+        <div v-for="(chapter, index) in uniqueChapters" :key="index" class="material">
+      <h3>Chapter {{ chapter }}</h3>
+      <el-list>
+        <el-list-item v-for="material in filteredMaterials('lecture').filter(m => m.chapter === chapter)" :key="material.coursewareId">
+          <FilePreview :material="material" />
+        </el-list-item>
+      </el-list>
+    </div>
       </el-collapse-item>
 
       <!-- Homework Chapters -->
@@ -26,7 +20,7 @@
           <h3>Chapter {{ material.chapter }}</h3>
           <el-list>
             <el-list-item :key="material.coursewareId">
-              <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" />
+              <FilePreview :material="material" />
             </el-list-item>
           </el-list>
         </div>
@@ -38,7 +32,7 @@
           <h3>Chapter {{ material.chapter }}</h3>
           <el-list>
             <el-list-item :key="material.coursewareId">
-              <FilePreview :type="material.fileType" :title="material.fileName" :url="material.url" />
+              <FilePreview :material="material" />
             </el-list-item>
           </el-list>
         </div>
@@ -49,7 +43,7 @@
 
   
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed} from 'vue';
   import { useRoute } from 'vue-router';
   import axiosInstances from "@/services/axiosInstance";
   import FilePreview from './FilePreview.vue';
@@ -66,7 +60,6 @@
     
     if (response.data && Array.isArray(response.data)) {
       courseMaterials.value = response.data;
-      console.log('Fetched Courseware Materials:', courseMaterials.value);
     } else {
       console.error('Invalid data format');
     }
@@ -78,6 +71,10 @@
 const filteredMaterials = (category) => {
   return courseMaterials.value.filter(material => material.category === category);
 };
+
+const uniqueChapters = computed(() => {
+  return [...new Set(filteredMaterials('lecture').map(m => m.chapter))];
+});
   
   onMounted(async () => {
     await getCoursewares();
@@ -135,20 +132,6 @@ h2 {
 
 .el-list-item a {
   color: #1a73e8
-}
-
-.video-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
-  max-width: 100%;
-  width: 100%;
-}
-
-.video-player {
-  width: 80%;
-  height: 80%;
 }
   </style>
   
