@@ -4,6 +4,20 @@
     </div>
     <div class="profile-container">
       <el-form :model="passwordForm" label-width="120px">
+        <!-- Current Password -->
+        <el-form-item label="Current Password">
+          <el-input
+              :type="showPassword ? 'text' : 'password'"
+              v-model="passwordForm.currentPassword"
+              placeholder="Enter your current password"
+          >
+            <template #suffix>
+              <el-button @click="toggleShowPassword" type="text" size="small">
+                <component :is="showPassword ? Hide : View" style="width: 1em; height: 1em" />
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
         <!-- New Password -->
         <el-form-item label="New Password">
           <el-input
@@ -45,14 +59,15 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { ArrowLeft, View, Hide } from '@element-plus/icons-vue';
-  
-  const router = useRouter(); 
+  import axiosInstances from "@/services/axiosInstance";
+  const router = useRouter();
   
   const goBack = () => {
     router.back();
   };
   
   const passwordForm = ref({
+    currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
@@ -63,12 +78,31 @@
     showPassword.value = !showPassword.value;
   };
   
-  const submitPasswordChange = () => {
+  const submitPasswordChange = async () => {
     if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
       alert('Passwords do not match');
     } else {
-      console.log('Password updated:', passwordForm.value.newPassword);
-      // Implement password update logic
+      try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          alert('User ID not found');
+          return;
+        }
+
+        const response = await axiosInstances.axiosInstance.put(`/${userId}/change-password`, {
+          currentPassword: passwordForm.value.currentPassword,
+          newPassword: passwordForm.value.newPassword,
+          confirmPassword: passwordForm.value.confirmPassword,
+        });
+
+        if (response.status === 200) {
+          alert('Password updated successfully');
+          router.push({ name: 'LogIn' });
+        }
+      } catch (error) {
+        const errorMessage = error.response?.data || "Failed to change password";
+        alert(errorMessage);
+      }
     }
   };
   </script>

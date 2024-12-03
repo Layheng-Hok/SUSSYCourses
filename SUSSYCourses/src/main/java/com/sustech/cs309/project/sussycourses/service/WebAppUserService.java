@@ -278,4 +278,24 @@ public class WebAppUserService {
 
         return ResponseEntity.ok("User profile updated successfully");
     }
+
+    public ResponseEntity<String> updatePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
+        Optional<WebAppUser> webAppUserOptional = webAppUserRepository.findByUserId(userId);
+        if (webAppUserOptional.isEmpty() || !webAppUserOptional.get().isEnabled()) {
+            return ResponseEntity.status(404).body("User not found or account is not enabled");
+        }
+
+        WebAppUser webAppUser = webAppUserOptional.get();
+
+        if (!passwordEncoder.matches(changePasswordRequest.currentPassword(), webAppUser.getPassword())) {
+            return ResponseEntity.status(400).body("Incorrect current password");
+        }
+
+        String encodedPassword = passwordEncoder.encode(changePasswordRequest.newPassword());
+
+        webAppUser.setPassword(encodedPassword);
+        webAppUserRepository.save(webAppUser);
+
+        return ResponseEntity.ok("Password updated successfully");
+    }
 }
