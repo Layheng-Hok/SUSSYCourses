@@ -45,7 +45,8 @@
         <!-- Modal Footer -->
         <template #footer>
           <el-button @click="isPasswordModalVisible = false" class="cancel-button">Cancel</el-button>
-          <el-button type="primary" :loading="isSaving" @click="changePassword" class="submit-button">Change Password</el-button>
+          <el-button type="primary" :loading="isSaving" @click="changePassword" class="submit-button">Change Password
+          </el-button>
         </template>
       </el-dialog>
 
@@ -54,7 +55,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 import {Edit} from "@element-plus/icons-vue";
@@ -131,7 +132,7 @@ const changePassword = async () => {
   try {
     isSaving.value = true;
     const userId = localStorage.getItem("userId");
-    await axiosInstances.axiosInstance.put(`/${userId}/change-password`, {
+    await axiosInstances.axiosInstance.put(`users/${userId}/change-password`, {
       currentPassword: formRef.currentPassword,
       newPassword: formRef.newPassword,
       confirmPassword: formRef.confirmPassword,
@@ -139,7 +140,7 @@ const changePassword = async () => {
     ElMessage.success("Password changed successfully!");
     isPasswordModalVisible.value = false;
     passwordForm.value = {currentPassword: "", newPassword: "", confirmPassword: ""};
-    router.push({ name: 'LogIn' });
+    router.push({name: 'LogIn'});
   } catch (error) {
     const errorMessage = error.response?.data || "Failed to change password";
     ElMessage.error(errorMessage);
