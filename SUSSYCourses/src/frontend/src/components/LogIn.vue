@@ -44,6 +44,9 @@
         </div>
 
         <button @click="handleLogin">Log in</button>
+        <!-- Display error message if any -->
+        <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
+
         <h3>Don't have an account?
           <router-link to="/signup-student" class="signup-link">Sign up</router-link>
         </h3>
@@ -169,13 +172,14 @@ const handleLogin = async () => {
         }
       } catch (error) {
         if (error.response) {
-          errorMessage.value = error.response.data || 'Login failed';
+          errorMessage.value = error.response.data.message || 'Invalid credentials';
+          console.error("Error from backend: ", error.response.data.message);
         } else {
-          console.log("Something went wrong");
+          errorMessage.value = 'Something went wrong. Please try again.';
+          console.error("Error: ", error);
         }
       }
-    }
-;
+};
 </script>
 
 
@@ -450,5 +454,12 @@ const handleLogin = async () => {
   color: #0066cc; /* Change text color on hover */
   font-weight: bold;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.error-message {
+  color: #D32F2F;
+  font-size: 14px;
+  margin-top: 10px;
+  font-family: 'Aptos Narrow', sans-serif;
 }
 </style>/
