@@ -66,12 +66,12 @@ const downloadFile = () => {
 };
 
 const viewFile = async (coursewareId) => {
-  if (props.fileType === 'pdf') {
-    openPdfInViewer(props.url);
-  } else if (props.fileType === 'pptx') {
-    openPptxInGoogleViewer(props.url);
-  } else if (props.fileType === 'md') {
-    viewMarkdownInNewTab(props.url);
+  if (props.material.fileType === 'pdf') {
+    openPdfInViewer(props.material.url);
+  } else if (props.material.fileType === 'pptx') {
+    openPptxInGoogleViewer(props.material.url);
+  } else if (props.material.fileType === 'md') {
+    viewMarkdownInNewTab(props.material.url);
   }
 
   markAsCompleted(coursewareId);
