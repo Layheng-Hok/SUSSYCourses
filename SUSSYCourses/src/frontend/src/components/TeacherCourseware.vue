@@ -426,7 +426,7 @@ export default {
       formData.append("category", this.updateData.category)
       formData.append("downloadable", this.updateData.downloadable)
       formData.append("chapter", this.updateData.chapter)
-      formData.append("order", this.updateData.order)
+      formData.append("order", 1)
       formData.append("variantOf", this.updateData.variant_of)
       formData.append("version", this.updateData.version)
       formData.append("changeFile", this.updateData.changeFile)
@@ -453,7 +453,7 @@ export default {
       formData.append("category", this.coursewareData.category)
       formData.append("downloadable", this.coursewareData.downloadable)
       formData.append("chapter", this.coursewareData.chapter)
-      formData.append("order", this.coursewareData.order)
+      formData.append("order", 1)
       formData.append("variantOf", -1)
       formData.append("version", 1)
       formData.append('file', this.selectedFile);
