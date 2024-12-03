@@ -3,6 +3,8 @@
   </div>
   <div v-if="material.fileType === 'mp4'" class="video-container">
     <video
+     :id="`videoPlayer-${material.coursewareId}`"
+        @play="onPlay(material.coursewareId)"
       @ended="markAsCompleted(material.coursewareId)"
       controls
       :src="material.url"
@@ -41,6 +43,30 @@ import axiosInstances from '@/services/axiosInstance';
 const props = defineProps({
   material: Object,
 });
+
+// Function to forcefully pause the video by coursewareId
+const forcePause = (coursewareId) => {
+  // Select all video elements and pause them
+  const videos = document.querySelectorAll('video');
+  videos.forEach((video) => {
+    if(video.id !== `videoPlayer-${coursewareId}`){
+      video.pause();
+    }
+  });
+};
+
+const onPlay = (coursewareId) => {
+  // Force pause all videos
+  forcePause(coursewareId);
+
+  // Get the specific video element using document.querySelector
+  const video = document.querySelector(`#videoPlayer-${coursewareId}`);
+
+  if (video) {
+    // Video found, you can play or perform any other actions
+    console.log(`Video with coursewareId: ${coursewareId} started playing`);
+  }
+};
 
 const icon = computed(() => {
   const fileType = props.material.fileType;
