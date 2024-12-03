@@ -104,8 +104,9 @@
     <h2>Your Courses</h2>
     <p>The courses below have been approved!</p>
 
-    <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
-      <div class="pending-courses" >
+    <div v-for="(course, index) in approvedCourses" :key="course.courseId || index" class="course-block"
+         @click=goTo(course.courseId)>
+      <div class="pending-courses">
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">
           <p><strong>Course Name:</strong> {{ course.courseName }}</p>
@@ -248,8 +249,8 @@ export default {
 
     const goTo = (courseId) => {
       const currentRoute = router.currentRoute.value;
-  const newPath = `${currentRoute.path}/course/${courseId}`; 
-  router.push(newPath);
+      const newPath = `${currentRoute.path}/course/${courseId}`;
+      router.push(newPath);
     };
 
     const handleSearch = () => {
@@ -583,11 +584,11 @@ export default {
   border: 1px solid #ddd;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .course-block:hover {
-  transform: scale(1.01); 
+  transform: scale(1.01);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 

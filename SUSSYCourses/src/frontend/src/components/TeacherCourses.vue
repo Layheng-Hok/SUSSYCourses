@@ -13,18 +13,18 @@
           <el-input placeholder="Course Name" v-model="form.courseName" class="modal-input"/>
         </el-form-item>
 
-        <el-form-item label="Select Field" prop="courseField">
-          <el-select v-model="form.courseField" placeholder="Select Field" class="modal-input">
-            <el-option label="Web Development" value="Web Development"/>
-            <el-option label="Data Science" value="Data Science"/>
-            <el-option label="Marketing" value="Marketing"/>
-            <el-option label="Design" value="Design"/>
+        <el-form-item label="Select Topic" prop="courseField">
+          <el-select v-model="form.courseField" placeholder="Select Topic" class="modal-input">
             <el-option label="Programming" value="Programming"/>
             <el-option label="Hardware" value="Hardware"/>
-            <el-option label="Finance" value="Finance"/>
-            <el-option label="Economics" value="Economics"/>
-            <el-option label="Leadership" value="Leadership"/>
-            <el-option label="Entrepreneurship" value="Entrepreneurship"/>
+            <el-option label="Math" value="Math"/>
+            <el-option label="Science" value="Science"/>
+            <el-option label="Languages" value="Languages"/>
+            <el-option label="Chinese" value="Chinese"/>
+            <el-option label="Software" value="Software"/>
+            <el-option label="Business" value="Business"/>
+            <el-option label="Data Science" value="Science"/>
+            <el-option label="Languages" value="Languages"/>
           </el-select>
         </el-form-item>
 
@@ -32,8 +32,16 @@
           <el-input type="textarea" placeholder="Description" v-model="form.courseDescription" class="modal-input"/>
         </el-form-item>
 
+        <el-form-item label="Select Type" prop="courseType">
+          <el-select v-model="form.courseType" placeholder="Select Type" class="modal-input">
+            <el-option label="open" value="open"/>
+            <el-option label="semi-open" value="semi-open"/>
+            <el-option label="non-open" value="non-open"/>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="Course Image" prop="courseImage">
-          <template v-if="form.courseImage.length === 0">
+          <template v-if="!form.courseImagePreview">
             <el-upload
                 class="upload-demo"
                 action=""
@@ -45,15 +53,23 @@
             </el-upload>
           </template>
           <template v-else>
-            <img :src="form.courseImage[0]" class="el-icon-plus"
-                 style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px"/>
+            <img
+                :src="form.courseImagePreview"
+                style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; cursor: pointer;"
+                @click="triggerImageUpload"
+            />
+            <input
+                type="file"
+                ref="fileInput"
+                style="display: none;"
+                @change="handleFileChange"
+            />
           </template>
         </el-form-item>
-
       </el-form>
       <template #footer>
-        <el-button @click="isModalVisible = false" class="cancel-button">Cancel</el-button>
-        <el-button type="primary" @click="submitCourse" class="submit-button">Submit</el-button>
+        <el-button @click="cancelChanges" class="cancel-button">Cancel</el-button>
+        <el-button type="primary" :loading="isSaving" @click="submitCourse" class="submit-button">Submit</el-button>
       </template>
     </el-dialog>
   </div>
@@ -95,10 +111,12 @@
 
 <script>
 import {ref} from 'vue';
+import {ElMessage} from "element-plus";
+import axiosInstances from "@/services/axiosInstance";
 
 export default {
   emits: ['courseSubmitted'],
-  setup(props, {emit}) {
+  setup() {
     // FAQs
     const activeFaqs = ref([]);
     const faqs = ref([
@@ -118,6 +136,9 @@ export default {
 
     const isModalVisible = ref(false);
     const formRef = ref(null);
+    const isSaving = ref(false);
+    const courseIndex = ref(null);
+    const fileInput = ref(null);
 
     // Form and rules for validation
     const form = ref({
@@ -125,6 +146,7 @@ export default {
       courseField: '',
       courseDescription: '',
       courseImage: [],
+      courseType: '',
     });
 
     const rules = {
@@ -142,50 +164,94 @@ export default {
       ],
     };
 
-    const submitCourse = () => {
-      formRef.value.validate((valid) => {
-        if (valid) {
-          // Get the current date and time
-          const submissionDate = new Date().toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true
+    const cancelChanges = () => {
+      resetForm();
+      isModalVisible.value = false;
+      ElMessage.info('Changes canceled');
+    }
+
+    const submitCourse = async () => {
+      formRef.value.validate(async (valid) => {
+        if (!valid) return;
+        try {
+          isSaving.value = true;
+          const userId = localStorage.getItem("userId");
+          if (!userId) {
+            ElMessage.error("User ID not found. Please log in.");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("courseName", form.value.courseName);
+          formData.append("description", form.value.courseDescription);
+          formData.append("teacherId", userId);
+          formData.append("type", form.value.courseType);
+          formData.append("topic", form.value.courseField);
+          const file = form.value.courseImage[0];
+          if (file) {
+            formData.append("coverImageName", form.value.coverImageName);
+            formData.append("fileType", form.value.fileType);
+            formData.append("coverImageFile", file);
+          } else {
+            throw new Error("No image file selected.");
+          }
+
+          const response = await axiosInstances.axiosInstance.post("/courses/create", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
 
-          const newCourse = {
-            ...form.value,
-            submissionDate
-          };
-
-          let courses = JSON.parse(localStorage.getItem('courses')) || [];
-          courses.push(newCourse);
-          localStorage.setItem('courses', JSON.stringify(courses));
-
-          // Reset form fields after submission
-          form.value = {
-            courseName: '',
-            courseField: '',
-            courseDescription: '',
-            courseImage: [],
-          };
-
-          isModalVisible.value = false;
-          emit('courseSubmitted');
-        } else {
-          console.log('Error: Please fill out the required fields');
-          return false;
+          if (response.status === 200) {
+            ElMessage.success("Course added successfully!");
+            resetForm();
+          } else {
+            throw new Error(response.data.message || "Failed to add course.");
+          }
+        } catch (error) {
+          ElMessage.error("Failed to add course. Please try again.");
+        } finally {
+          isSaving.value = false;
         }
       });
     };
 
     const handleImageChange = (file) => {
       if (file.raw) {
-        form.value.courseImage = [URL.createObjectURL(file.raw)];
+        form.value.courseImage = [file.raw];
+        form.value.courseImagePreview = URL.createObjectURL(file.raw);
+
+        const fullFileName = file.raw.name;
+        const fileNameWithoutExtension = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
+        const fileExtension = fullFileName.substring(fullFileName.lastIndexOf('.') + 1);
+
+        form.value.coverImageName = fileNameWithoutExtension;
+        form.value.fileType = fileExtension;
       }
+    };
+
+    const triggerImageUpload = () => {
+      fileInput.value.click();
+    };
+
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        form.value.courseImage = [URL.createObjectURL(file)];
+      }
+    };
+
+    const resetForm = () => {
+      form.value = {
+        courseName: '',
+        courseField: '',
+        courseDescription: '',
+        courseImage: [],
+        courseImagePreview: null,
+        courseType: '',
+      };
+      courseIndex.value = null;
+      isModalVisible.value = false;
     };
 
     return {
@@ -196,7 +262,11 @@ export default {
       form,
       rules,
       submitCourse,
-      handleImageChange
+      handleImageChange,
+      triggerImageUpload,
+      handleFileChange,
+      cancelChanges,
+      isSaving,
     };
   }
 };
