@@ -36,16 +36,16 @@
 
         <el-form-item label="Select Topic" prop="courseField">
           <el-select v-model="form.courseField" placeholder="Select Topic" class="modal-input">
-            <el-option label="Web Development" value="Web Development"/>
-            <el-option label="Data Science" value="Data Science"/>
-            <el-option label="Marketing" value="Marketing"/>
-            <el-option label="Design" value="Design"/>
             <el-option label="Programming" value="Programming"/>
             <el-option label="Hardware" value="Hardware"/>
-            <el-option label="Finance" value="Finance"/>
-            <el-option label="Economics" value="Economics"/>
-            <el-option label="Leadership" value="Leadership"/>
-            <el-option label="Entrepreneurship" value="Entrepreneurship"/>
+            <el-option label="Math" value="Math"/>
+            <el-option label="Science" value="Science"/>
+            <el-option label="Languages" value="Languages"/>
+            <el-option label="Chinese" value="Chinese"/>
+            <el-option label="Software" value="Software"/>
+            <el-option label="Business" value="Business"/>
+            <el-option label="Data Science" value="Science"/>
+            <el-option label="Languages" value="Languages"/>
           </el-select>
         </el-form-item>
 
@@ -113,7 +113,6 @@
           <p><strong>Description:</strong> {{ course.description }}</p>
           <p><strong>Type:</strong> {{ course.type }}</p>
           <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-          <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
         </div>
         <p class="submission-date">{{ course.createdAt }}</p>
       </div>
@@ -160,9 +159,6 @@
           <p><strong>Description:</strong> {{ course.description }}</p>
           <p><strong>Type:</strong> {{ course.type }}</p>
           <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-          <div style="background-color: #ffe6e6; padding: 8px; border-radius: 5px; margin-top: 10px;">
-            <span style="color: red;"><strong>Rejection Reason:</strong> {{ course.type }} </span>
-          </div>
 
         </div>
         <p class="submission-date">{{ course.createdAt }}</p>
@@ -340,13 +336,6 @@ export default {
       ],
     };
 
-    const editCourse = (index) => {
-      courseIndex.value = index; // Set the index of the course being edited
-      const course = courses.value[index];
-      form.value = {...course};
-      isModalVisible.value = true;
-    };
-
     const cancelChanges = () => {
       resetForm();
       isModalVisible.value = false;
@@ -450,7 +439,6 @@ export default {
       submitCourse,
       handleImageChange,
       courses,
-      editCourse,
       resetForm,
       handleFileChange,
       fileInput,
@@ -635,20 +623,6 @@ export default {
   right: 30px;
   font-size: 12px;
   color: #7A7A7A;
-}
-
-.edit-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  font-size: 14px;
-  color: white;
-  background-color: #74B3E3;
-  border: none;
-  cursor: pointer;
-}
-
-.edit-button:hover {
-  background-color: #9DCAEB;
 }
 
 .second p {
