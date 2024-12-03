@@ -49,7 +49,7 @@
           :key="index"
           class="course-box"
       >
-        <img :src="course.image" alt="Course Image" class="course-image"/>
+        <img :src="course.coverImageUrl" alt="Course Image" class="course-image"/>
         <h3>{{ course.courseName }}</h3>
         <p class="course-instructor">Instructor: {{ course.teacherName }}</p>
         <p class="course-topic">Category: {{ course.topic }}</p>

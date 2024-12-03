@@ -37,6 +37,18 @@
           </el-list>
         </div>
       </el-collapse-item>
+
+        <!-- Project Chapters -->
+        <el-collapse-item title="Attachment" name="4">
+        <div v-for="(material, index) in filteredMaterials('attachment')" :key="index" class="material">
+          <h3>Chapter {{ material.chapter }}</h3>
+          <el-list>
+            <el-list-item :key="material.coursewareId">
+              <FilePreview :material="material" />
+            </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
     </el-collapse>
   </el-card>
 </template>
