@@ -57,8 +57,8 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-    @PutMapping("/update/{courseId}")
-    public ResponseEntity<String> updateCourse(@RequestBody CourseRequest newCourse, @PathVariable Long courseId) throws Exception {
+    @PutMapping("/{courseId}/update")
+    public ResponseEntity<String> updateCourse(@ModelAttribute CourseRequest newCourse, @PathVariable Long courseId) throws Exception {
         return courseService.updateCourse(newCourse, courseId);
     }
 
