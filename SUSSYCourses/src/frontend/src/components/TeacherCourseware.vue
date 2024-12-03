@@ -74,8 +74,6 @@
               <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
             </div>
 
-<<<<<<< Updated upstream
-=======
             <div class="form-group">
               <label for="order">Order:</label>
               <select id="order" v-model="coursewareData.order" required>
@@ -84,7 +82,6 @@
               </select>
             </div>
 
->>>>>>> Stashed changes
             <!-- File Upload Field -->
             <div class="form-group">
               <label for="file">Upload New File:</label>
