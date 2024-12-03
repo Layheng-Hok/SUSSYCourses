@@ -31,7 +31,7 @@
     </div>
 
     <!-- Course Boxes Section -->
-    <h2 class="section-heading">All available courses ({{ totalCourses }}): </h2>
+    <h2 class="section-heading">All available courses</h2>
     <div class="course-boxes">
       <div
           v-for="(course, index) in filteredCourses"
