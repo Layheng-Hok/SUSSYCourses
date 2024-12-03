@@ -119,7 +119,7 @@
         placeholder="Enter your reply here"
       ></textarea>
       <div>
-        <button class="submit-button" @click="submitReply">Submit Reply</button>
+        <button class="submit-button" @click="submitComment">Submit Reply</button>
         <button class="cancel-button" @click="cancelReply">Cancel</button>
       </div>
     </div>
@@ -242,7 +242,7 @@ const fetchComments = async () => {
 };
 
 const submitComment = async () => {
-  if (!newCommentMessage.value.trim()) {
+  if (!newCommentMessage.value.trim() && !newReplyMessage.value.trim()) {
     alert("Comment cannot be empty.");
     return;
   }
@@ -250,15 +250,16 @@ const submitComment = async () => {
   try {
     const formData = new FormData();
     formData.append("message", newCommentMessage.value);
+    formData.append("message", newReplyMessage.value);
 
     if (attachment.value) {
       formData.append(
-        "attachmentName",
-        stripFileExtension(attachmentName.value) || ""
+          "attachmentName",
+          stripFileExtension(attachmentName.value) || ""
       );
-            formData.append(
-        "attachmentFileType",
-        attachment.value.type.split("/").pop()
+      formData.append(
+          "attachmentFileType",
+          attachment.value.type.split("/").pop()
       );
       formData.append("attachmentFile", attachment.value);
     } else {
@@ -273,15 +274,16 @@ const submitComment = async () => {
     }
 
     await axiosInstances.axiosInstance.post(
-      `/users/${userId.value}/courses/${courseId}/comments/create`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
+        `/users/${userId.value}/courses/${courseId}/comments/create`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
     );
 
     await fetchComments(); // Refresh the comment list
     newCommentMessage.value = "";
+    newReplyMessage.value = "";
     attachment.value = null;
     attachmentName.value = "";
     replyingTo.value = null;
