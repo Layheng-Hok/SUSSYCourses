@@ -55,7 +55,7 @@ CREATE TABLE courseware
     courseware_id    BIGSERIAL PRIMARY KEY,
     course_id        BIGINT REFERENCES course (course_id),
     file_type        VARCHAR(10)  NOT NULL CHECK (file_type IN ('md', 'pdf', 'mp4', 'pptx')),
-    category         VARCHAR(20)  NOT NULL CHECK (category IN ('lecture', 'assignment', 'project')),
+    category         VARCHAR(20)  NOT NULL CHECK (category IN ('lecture', 'assignment', 'project', 'attachment')),
     url              VARCHAR(255) NOT NULL UNIQUE,
     downloadable     BOOLEAN      NOT NULL,
     chapter          INT          NOT NULL,
@@ -203,7 +203,8 @@ VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, FALSE, NOW()),
        (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, FALSE, NOW()),
        (1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE, NOW()),
        (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, FALSE, NOW()),
-       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, FALSE, NOW())
+       (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, FALSE, NOW()),
+       (1, 'pdf', 'attachment', 'uhuh.md', FALSE, 1, 1, 1, 1, TRUE, NOW())
 ;
 
 INSERT INTO courseware_student(courseware_id, student_id, completed)

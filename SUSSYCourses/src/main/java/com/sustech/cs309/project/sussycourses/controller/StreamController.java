@@ -15,8 +15,8 @@ import java.util.ArrayList;
 @Slf4j
 public class StreamController {
     private final StreamService streamService;
-    @PostMapping("stream/getStreamInfo/{teacherId}")
-    public StreamResponse getStreamInfo(@RequestBody String name, @RequestBody String description, @PathVariable Long teacherId) throws IOException {
+    @PostMapping("stream/getStreamInfo/{teacherId}/{name}")
+    public StreamResponse getStreamInfo(@RequestBody String description, @PathVariable String name, @PathVariable Long teacherId) throws IOException {
         return streamService.generateStreamKey(name, teacherId, description);
     }
 

@@ -12,6 +12,13 @@
           v-model="streamInfo.streamName"
           :class="{'input-error': streamNameError}"
       />
+      <label for="description">Description:</label>
+      <input
+          type="text"
+          id="description"
+          v-model="streamInfo.description"
+          :class="{'input-error': streamNameError}"
+      />
       <span v-if="streamNameError" class="error-message">{{ streamNameError }}</span>
     </div>
 
@@ -72,6 +79,7 @@ const streamNameError = ref('');
 const streamKeyError = ref('');
 const streamInfo = ref({
   streamName: '',
+  description: '',
   streamKey: '',
   streamLink: ''
 });
@@ -85,7 +93,7 @@ const generateStreamKey = async () => {
       badNotificationStatus.value = 'Fill in a stream name';
       return;
     }
-    const response = await axiosInstances.axiosInstance.post(`/stream/getStreamInfo/${userId}`, streamInfo.value.streamName, {
+    const response = await axiosInstances.axiosInstance.post(`/stream/getStreamInfo/${userId}/${streamInfo.value.streamName}`, streamInfo.value.description, {
       headers: {
         'Content-Type': 'application/json',
       },

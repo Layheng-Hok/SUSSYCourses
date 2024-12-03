@@ -51,17 +51,18 @@
             <!-- Category Field -->
             <div class="form-group">
               <label for="category">Category:</label>
-              <select id="category" v-model="coursewareData.category" required>
+              <select id="category" v-model="coursewareData.category" required @change="onCategoryChange">
                 <option :value="'assignment'">Assignment</option>
                 <option :value="'lecture'">Lecture</option>
                 <option :value="'project'">Project</option>
+                <option :value="'attachment'">Attachment</option>
               </select>
             </div>
 
             <!-- Downloadable Field -->
             <div class="form-group">
               <label for="downloadable">Downloadable:</label>
-              <select id="downloadable" v-model="coursewareData.downloadable" placeholder="Select if downloadable">
+              <select id="downloadable" v-model="coursewareData.downloadable" :disabled="isAttachment" required>
                 <option :value="true">Yes</option>
                 <option :value="false">No</option>
               </select>
@@ -70,16 +71,15 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="coursewareData.chapter" required
-                     placeholder="Enter chapter number"/>
+              <input type="number" id="chapter" v-model="coursewareData.chapter" :disabled="isAttachment" required
+                     :value="isAttachment ? 0 : coursewareData.chapter" placeholder="Enter chapter number"/>
             </div>
 
-            <!-- Order Field -->
             <div class="form-group">
               <label for="order">Order:</label>
-              <select id="order" v-model="coursewareData.order" placeholder="Select order">
-                <option :value="1">1</option>
-                <option :value="2">2</option>
+              <select id="order" v-model="coursewareData.order" :disabled="isAttachment" required>
+                <!-- Dynamically create options based on the selected category -->
+                <option v-for="n in orderOptions(course)" :key="n" :value="n">{{ n }}</option>
               </select>
             </div>
 
@@ -322,6 +322,19 @@
           </el-list>
         </div>
       </el-collapse-item>
+
+      <el-collapse-item title="Attachments" name="4">
+        <div v-for="chapter in course.attachments" :key="chapter.name" class="chapter">
+          <el-list>
+            <el-list-item v-for="material in chapter.materials" :key="material.url">
+              <a :href="`/assets/Materials/${material.url}`" target="_blank">
+                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
+                {{ material.title }}
+              </a>
+            </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
     </el-collapse>
   </el-card>
 
@@ -357,6 +370,7 @@ const router = useRouter();
 export default {
   data() {
     return {
+      isAttachment: false,
       storeCourseId: null,
       selectedCoursewareId: null,
       archiveDialogVisible: false, // Controls the visibility of the archive modal
@@ -374,7 +388,7 @@ export default {
       },
       updateData: {
         coursewareId: null,
-        courseId: null,
+        courseId: '',
         fileType: '',
         category: null,
         downloadable: null,
@@ -389,6 +403,28 @@ export default {
     };
   },
   methods: {
+    onCategoryChange() {
+      if (this.coursewareData.category === 'attachment') {
+        this.coursewareData.chapter = 0;
+        this.coursewareData.order = 0;
+        this.coursewareData.downloadable = true;
+        this.isAttachment = true;
+      } else {
+        this.isAttachment = false;
+      }
+    },
+    orderOptions(course) {
+      if (this.coursewareData.category === 'project') {
+        return Array.from({ length: course.projectChapters.length + 1 }, (_, i) => i + 1);
+      } else if (this.coursewareData.category === 'assignment') {
+        return Array.from({ length: course.homeworkChapters.length + 1 }, (_, i) => i + 1);
+      } else if (this.coursewareData.category === 'lecture') {
+        return Array.from({ length: course.teachingChapters.length + 1 }, (_, i) => i + 1);
+      } else {
+        return [0]; // Default empty for non-matching categories
+      }
+    },
+
     // Opens the modal and sets the selected courseware data
     async openArchiveModal(courseware) {
       const variantOf = courseware.variantOf;
@@ -482,6 +518,10 @@ export default {
       this.archiveDialogVisible = false; // Close the modal after archiving
     },
   },
+  watch: {
+    // Watch category changes to update form fields dynamically
+    'coursewareData.category': 'onCategoryChange'
+  },
   name: "CourseContent",
   components: {MessageBox, Delete, Edit},
   props: {
@@ -494,7 +534,8 @@ export default {
     const course = ref({
       teachingChapters: [],
       homeworkChapters: [],
-      projectChapters: []
+      projectChapters: [],
+      attachments: []
     });
 
     const materialIcon = (type) => {
