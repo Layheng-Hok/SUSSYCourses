@@ -74,14 +74,6 @@
               <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
             </div>
 
-            <div class="form-group">
-              <label for="order">Order:</label>
-              <select id="order" v-model="coursewareData.order" required>
-                <!-- Dynamically create options based on the selected category -->
-                <option v-for="n in orderOptions(course)" :key="n+1" :value="n+1">{{ n+1 }}</option>
-              </select>
-            </div>
-
             <!-- File Upload Field -->
             <div class="form-group">
               <label for="file">Upload New File:</label>
@@ -135,15 +127,6 @@
               <label for="chapter">Chapter:</label>
               <input type="number" id="chapter" v-model="updateData.chapter" required
                      placeholder="Enter chapter number"/>
-            </div>
-
-            <!-- Order Field -->
-            <div class="form-group">
-              <label for="order">Order:</label>
-              <select id="order" v-model="updateData.order" placeholder="Select order">
-                <option :value="1">1</option>
-                <option :value="2">2</option>
-              </select>
             </div>
 
             <!-- Change File Checkbox -->
@@ -401,17 +384,6 @@ export default {
     };
   },
   methods: {
-    orderOptions(course) {
-      if (this.coursewareData.category === 'project') {
-        return Array.from({ length: course.projectChapters.length + 1 }, (_, i) => i + 1);
-      } else if (this.coursewareData.category === 'assignment') {
-        return Array.from({ length: course.homeworkChapters.length + 1 }, (_, i) => i + 1);
-      } else if (this.coursewareData.category === 'lecture') {
-        return Array.from({ length: course.teachingChapters.length + 1 }, (_, i) => i + 1);
-      } else {
-        return [0]; // Default empty for non-matching categories
-      }
-    },
 
     // Opens the modal and sets the selected courseware data
     async openArchiveModal(courseware) {
