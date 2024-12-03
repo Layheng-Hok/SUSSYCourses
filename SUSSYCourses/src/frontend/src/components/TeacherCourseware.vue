@@ -300,7 +300,7 @@
           <h3>{{ chapter.name }}</h3>
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
-              <a :href="`/assets/Materials/${material.url}`" target="_blank">
+              <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
               </a>
@@ -314,7 +314,7 @@
           <h3>{{ chapter.name }}</h3>
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
-              <a :href="`/assets/Materials/${material.url}`" target="_blank">
+              <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
               </a>
@@ -327,7 +327,7 @@
         <div v-for="chapter in course.attachments" :key="chapter.name" class="chapter">
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
-              <a :href="`/assets/Materials/${material.url}`" target="_blank">
+              <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
               </a>
