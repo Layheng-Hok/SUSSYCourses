@@ -28,8 +28,7 @@
 
         <!-- Rating and Review Section -->
         <div class="students-section">
-          <h2>Enrolled students</h2>
-          <StudentsList />
+          <StudentsList :courseId="courseId"/>
         </div>
 
         <!-- Learning Progress Chart -->

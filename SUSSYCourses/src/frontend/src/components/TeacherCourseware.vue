@@ -51,7 +51,7 @@
             <!-- Category Field -->
             <div class="form-group">
               <label for="category">Category:</label>
-              <select id="category" v-model="coursewareData.category" required @change="onCategoryChange">
+              <select id="category" v-model="coursewareData.category" required>
                 <option :value="'assignment'">Assignment</option>
                 <option :value="'lecture'">Lecture</option>
                 <option :value="'project'">Project</option>
@@ -62,7 +62,7 @@
             <!-- Downloadable Field -->
             <div class="form-group">
               <label for="downloadable">Downloadable:</label>
-              <select id="downloadable" v-model="coursewareData.downloadable" :disabled="isAttachment" required>
+              <select id="downloadable" v-model="coursewareData.downloadable" required>
                 <option :value="true">Yes</option>
                 <option :value="false">No</option>
               </select>
@@ -71,15 +71,14 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="coursewareData.chapter" :disabled="isAttachment" required
-                     :value="isAttachment ? 0 : coursewareData.chapter" placeholder="Enter chapter number"/>
+              <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
             </div>
 
             <div class="form-group">
               <label for="order">Order:</label>
-              <select id="order" v-model="coursewareData.order" :disabled="isAttachment" required>
+              <select id="order" v-model="coursewareData.order" required>
                 <!-- Dynamically create options based on the selected category -->
-                <option v-for="n in orderOptions(course)" :key="n" :value="n">{{ n }}</option>
+                <option v-for="n in orderOptions(course)" :key="n+1" :value="n+1">{{ n+1 }}</option>
               </select>
             </div>
 
@@ -370,7 +369,6 @@ const router = useRouter();
 export default {
   data() {
     return {
-      isAttachment: false,
       storeCourseId: null,
       selectedCoursewareId: null,
       archiveDialogVisible: false, // Controls the visibility of the archive modal
@@ -403,16 +401,6 @@ export default {
     };
   },
   methods: {
-    onCategoryChange() {
-      if (this.coursewareData.category === 'attachment') {
-        this.coursewareData.chapter = 0;
-        this.coursewareData.order = 0;
-        this.coursewareData.downloadable = true;
-        this.isAttachment = true;
-      } else {
-        this.isAttachment = false;
-      }
-    },
     orderOptions(course) {
       if (this.coursewareData.category === 'project') {
         return Array.from({ length: course.projectChapters.length + 1 }, (_, i) => i + 1);

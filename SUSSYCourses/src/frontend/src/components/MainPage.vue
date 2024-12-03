@@ -117,9 +117,9 @@
   <div class="trending-courses">
     <div class="left-part">
       <h1>Trending Now</h1>
-      <h2>Web development is a top skill</h2>
-      <router-link :to="{ path: '/course-list', query: { searchQuery: 'Web Development' } }" class="course-link">See Web Development courses &gt;</router-link>
-      <p class="learner-count">400 learners</p>
+      <h2>Chinese is a top skill</h2>
+      <router-link :to="{ path: '/course-list', query: { searchQuery: 'Chinese' } }" class="course-link">See Chinese courses &gt;</router-link>
+      <p class="learner-count"> 30 learners</p>
     </div>
     <div class="vertical-divider"></div>
     <div class="category-grid">
@@ -148,16 +148,11 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const popularTopics = [
-  "Web Development",
-  "Marketing",
   "Programming",
-  "Finance",
-  "Leadership",
-  "Data Science",
-  "Design",
   "Hardware",
-  "Economics",
-  "Entrepreneurship"
+  "Math",
+  "Science",
+  "Languages",
 ];
 
 const goToCourseList = (topic) => {
@@ -227,25 +222,28 @@ const images = [
 
 const categories = ref([
   {
-    name: "Web Development",
+    name: "Programming",
     courses: [
-      { id: 4, name: "Learn Axios", learners: "120", link: "/public-course/4" },
-      { id: 6, name: "Intro to Web Development", learners: "230", link: "/public-course/6" },
-      { id: 5, name: "Why React is better than Vue and Angular", learners: "50", link: "/public-course/5" },
+      { id: 1, name: "C/C++ System Design", learners: "20", link: "/public-course/1" },
+      { id: 5, name: "Data Structure and Algorithm Analysis", learners: "5", link: "/public-course/5" },
+      { id: 7, name: "Introduction to Java Programming", learners: "10", link: "/public-course/7" },
     ],
   },
   {
-    name: "Design and Marketing",
+    name: "Science",
     courses: [
-      { id: 8, name: "Interior Design", learners: "110", link: "/public-course/8" },
-      { id: 7, name: "How to Sell a Book", learners: "70", link: "/public-course/7" },
+      { id: 13, name: "Principles of Physics", learners: "10", link: "/public-course/13" },
+      { id: 14, name: "Introduction to Chemistry", learners: "5", link: "/public-course/14" },
+      { id: 15, name: "Basic Life Science", learners: "7", link: "/public-course/15" },
+
     ],
   },
   {
-    name: "Entrepreneurship and Economics",
+    name: "Hardware",
     courses: [
-      { id: 13, name: "A Million Dollar Business is Not a Dream", learners: "240", link: "/public-course/13" },
-      { id: 11, name: "Learn About Inflation", learners: "160", link: "/public-course/11" },
+      { id: 9, name: "Digital Logic", learners: "12", link: "/public-course/9" },
+      { id: 10, name: "Computer Organization", learners: "4", link: "/public-course/10" },
+
     ],
   },
 ]);
@@ -599,8 +597,8 @@ const categories = ref([
 
 .category-grid {
   display: flex;
-  gap: 50px;
-  margin-left: 100px;
+  gap: 80px;
+  margin-left: 120px;
   margin-top: 40px;
 }
 
