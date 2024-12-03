@@ -597,8 +597,8 @@ const categories = ref([
 
 .category-grid {
   display: flex;
-  gap: 50px;
-  margin-left: 100px;
+  gap: 80px;
+  margin-left: 120px;
   margin-top: 40px;
 }
 
