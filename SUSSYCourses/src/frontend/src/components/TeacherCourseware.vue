@@ -74,13 +74,7 @@
               <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
             </div>
 
-            <div class="form-group">
-              <label for="order">Order:</label>
-              <select id="order" v-model="coursewareData.order" required>
-                <!-- Dynamically create options based on the selected category -->
-                <option v-for="n in orderOptions(course)+1" :key="n" :value="n">{{ n }}</option>
-              </select>
-            </div>
+  
 
             <!-- File Upload Field -->
             <div class="form-group">
