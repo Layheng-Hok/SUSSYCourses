@@ -12,15 +12,7 @@
             alt="Element logo"
         /></router-link>
     </el-menu-item>
-    <el-menu-item index="1">
-      <router-link to="/studentpage">Study on SUSSY</router-link>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/teacherpage">Teach on SUSSY</router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/login">Log in</router-link>
-    </el-menu-item>
+
   </el-menu>
 
   <div class="main-container">
@@ -321,7 +313,7 @@ const handleSignup = async () => {
   text-decoration: none !important;
 }
 
-.el-menu-item:nth-child(4) a {
+.el-menu-item:nth-child(3) a {
   border: 1px solid black;
   padding: 5px 16px;
   color: black;
@@ -334,13 +326,13 @@ const handleSignup = async () => {
   font-family: 'Aptos Narrow', sans-serif;
 }
 
-.el-menu-item:nth-child(4) a:hover {
+.el-menu-item:nth-child(3) a:hover {
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
   color: white;
 }
 
-.el-menu-item:nth-child(5) a {
+.el-menu-item:nth-child(4) a {
   border: 1px solid #74B3E3;
   background-color: #74B3E3;
   color: white;
@@ -353,17 +345,17 @@ const handleSignup = async () => {
   font-family: 'Aptos Narrow', sans-serif;
 }
 
-.el-menu-item:nth-child(5) a:hover {
+.el-menu-item:nth-child(4) a:hover {
   background-color: #9DCAEB;
   border: 1px solid #9DCAEB;
   color: white;
 }
 
-.el-menu-item:nth-child(4) {
+.el-menu-item:nth-child(3) {
   margin-right: -25px; /* Adjust the space between 'Log in' and 'Sign up' */
 }
 
-.el-menu-item:nth-child(5) {
+.el-menu-item:nth-child(4) {
   margin-left: 0; /* Adjust the space between 'Log in' and 'Sign up' */
 }
 
