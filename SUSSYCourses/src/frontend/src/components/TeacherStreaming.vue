@@ -63,7 +63,9 @@ const getStreamUrl = async () => {
     videoUrl.value = response.data[0];
     videoTitle.value = response.data[1];
     videoDescription.value = response.data[2];
-    console.log(courseId)
+    console.log("courseId", userId)
+    console.log(videoUrl.value)
+    console.log(response.data)
   } catch (error) {
     console.error('Error fetching stream URL:', error);
     videoUrl.value = ''; // Fallback or error message URL

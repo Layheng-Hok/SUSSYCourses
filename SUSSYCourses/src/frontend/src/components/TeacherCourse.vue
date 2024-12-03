@@ -81,7 +81,7 @@
         </el-card>
 
         <el-card class="announcement" shadow="hover">
-          <StreamInfo/>
+          <StreamInfo :courseId="courseId"/>
         </el-card>
         <el-card class="announcement" shadow="hover">
     <div class="form-container">

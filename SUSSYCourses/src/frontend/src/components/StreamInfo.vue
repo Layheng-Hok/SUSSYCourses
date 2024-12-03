@@ -70,8 +70,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {defineProps, ref} from 'vue';
 import axiosInstances from '@/services/axiosInstance';
+
+const props = defineProps({
+  courseId: Number,
+});
 
 const userId = localStorage.getItem('userId');
 
@@ -93,7 +97,7 @@ const generateStreamKey = async () => {
       badNotificationStatus.value = 'Fill in a stream name';
       return;
     }
-    const response = await axiosInstances.axiosInstance.post(`/stream/getStreamInfo/${userId}/${streamInfo.value.streamName}`, streamInfo.value.description, {
+    const response = await axiosInstances.axiosInstance.post(`/stream/getStreamInfo/${userId}/${streamInfo.value.streamName}/${props.courseId}`, streamInfo.value.description, {
       headers: {
         'Content-Type': 'application/json',
       },

@@ -25,10 +25,10 @@ public class StreamService {
     private final StreamRepository streamRepository;
     private final CourseRepository courseRepository;
 
-    public StreamResponse generateStreamKey(String name, Long teacherId, String description){
+    public StreamResponse generateStreamKey(String name, Long teacherId, String description, Long courseId){
         Stream stream = streamRepository.findByTeacherId(teacherId);
         if(stream.getStreamKey() != null){
-            return new StreamResponse(name, stream.getStreamKey(), "localhost:8080/sussy/stream/" + stream.getTeacher().getUserId());
+            return new StreamResponse(name, stream.getStreamKey(), "localhost:8080/sussy/stream/" + courseId);
         }
 
         ApiVideoClient client = new ApiVideoClient("Yhf2OhyHRdvH9MZm8oQdU1FKT98uppMG7ENahjlxnJ3");
@@ -61,6 +61,8 @@ public class StreamService {
         Course course = courseRepository.findById(courseId).get();
 
         Stream stream = streamRepository.findByTeacherId(course.getTeacher().getUserId());
+        System.out.println(stream.getUrl());
+        System.out.println(stream.getTeacher().getUserId());
         list.add(stream.getUrl());
         list.add(stream.getTitle());
         list.add(stream.getDescription());
