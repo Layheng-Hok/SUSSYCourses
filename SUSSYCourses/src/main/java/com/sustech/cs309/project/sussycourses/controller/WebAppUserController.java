@@ -1,9 +1,6 @@
 package com.sustech.cs309.project.sussycourses.controller;
 
-import com.sustech.cs309.project.sussycourses.dto.InstructorDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.StudentDetailResponse;
-import com.sustech.cs309.project.sussycourses.dto.UpdateUserRequest;
-import com.sustech.cs309.project.sussycourses.dto.UserResponse;
+import com.sustech.cs309.project.sussycourses.dto.*;
 import com.sustech.cs309.project.sussycourses.service.WebAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +43,11 @@ public class WebAppUserController {
     @PutMapping("/users/update/{userId}")
     public ResponseEntity<String> updateUserProfile(@PathVariable Long userId, @ModelAttribute UpdateUserRequest updateUserRequest) throws Exception {
         return webAppUserService.updateUserProfile(userId, updateUserRequest);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_STUDENT','ROLE_INSTRUCTOR')")
+    @PutMapping("/users/{userId}/change-password")
+    public ResponseEntity<String> changePassword(@PathVariable Long userId, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return webAppUserService.updatePassword(userId, changePasswordRequest);
     }
 }

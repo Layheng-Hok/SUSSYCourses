@@ -40,7 +40,7 @@
             <option disabled value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            <option value="Others">Others</option>
           </select>
           <span v-if="genderError" class="field-error">{{ genderError }}</span>
 

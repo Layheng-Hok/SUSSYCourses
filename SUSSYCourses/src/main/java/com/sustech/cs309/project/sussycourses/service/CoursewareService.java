@@ -143,7 +143,7 @@ public class CoursewareService {
         courseware.setChapter(coursewareRequest.chapter());
         courseware.setDownloadable(coursewareRequest.downloadable());
         courseware.setFileType(coursewareRequest.fileType());
-        courseware.setUrl(coursewareRequest.file().getName());
+        courseware.setUrl(coursewareRequest.fileName());
         courseware.setVersion(coursewareRequest.version());
         courseware.setVariantOf(coursewareRequest.variantOf());
         courseware.setDisplayVersion(true);

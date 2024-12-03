@@ -128,7 +128,7 @@
     <h2>Pending Courses</h2>
     <p>Waiting to be approved by administrator...</p>
 
-    <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
+    <div v-for="(course, index) in pendingCourses" :key="course.courseId || index" class="course-block">
       <div class="pending-courses">
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">
@@ -137,7 +137,6 @@
           <p><strong>Description:</strong> {{ course.description }}</p>
           <p><strong>Type:</strong> {{ course.type }}</p>
           <p><strong>Status:</strong> {{ course.approvalStatus }}</p>
-          <button class="edit-button" @click="editCourse(index)">Edit Submission</button>
         </div>
         <p class="submission-date">{{ course.createdAt }}</p>
       </div>
@@ -152,7 +151,7 @@
     <h2>Rejected Courses</h2>
     <p>The courses below have been rejected...</p>
 
-    <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block" @click=goTo(course.courseId)>
+    <div v-for="(course, index) in rejectedCourses" :key="course.courseId || index" class="course-block">
       <div class="pending-courses">
         <img :src="course.coverImageUrl" class="course-image" v-if="course.coverImageUrl"/>
         <div class="course-info">

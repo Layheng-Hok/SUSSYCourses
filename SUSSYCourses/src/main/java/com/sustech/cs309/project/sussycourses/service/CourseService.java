@@ -215,6 +215,10 @@ public class CourseService {
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
+        Long courseId = course.getCourseId();
+        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(courseId, coverImageName);
+        CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
+
         WebAppUser admin = webAppUserRepository.findById(2L).orElse(null);
 
         Notification teacherToAdminNotification = new Notification();
@@ -233,10 +237,6 @@ public class CourseService {
         adminToTeacherNotification.setText(String.format("Your course titled '%s' has been successfully submitted and is pending review by the admin. You will be notified once the review is complete.",
                 courseName));
         adminToTeacherNotification.setCreatedAt(LocalDateTime.now());
-
-        Long courseId = course.getCourseId();
-        String fileLocation = CloudUtils.resolveCourseCoverImageLocation(courseId, coverImageName);
-        CloudUtils.putStorageKey(coverImageFile, fileType, fileLocation);
 
         return ResponseEntity.ok("Course created successfully");
     }
@@ -264,14 +264,22 @@ public class CourseService {
         Course course = courseOptional.get();
         WebAppUser teacher = teacherOptional.get();
 
-        if (!course.getTeacher().getUserId().equals(teacherId)) {
-            return ResponseEntity.status(403).body("Teacher does not have the permission to edit this course");
+        if (!teacher.getUserId().equals(teacherId)) {
+            return ResponseEntity.status(403).body("The instructor does not have the permission to edit this course");
         }
-
-        course.setCourseName(courseName);
-        course.setDescription(description);
-        course.setType(type);
-        course.setTopic(topic);
+        
+        if (courseName != null && !courseName.trim().isEmpty()) {
+            course.setCourseName(courseName);
+        }
+        if (description != null && !description.trim().isEmpty()) {
+            course.setDescription(description);
+        }
+        if (type != null && !type.trim().isEmpty()) {
+            course.setType(type);
+        }
+        if (topic != null && !topic.trim().isEmpty()) {
+            course.setTopic(topic);
+        }
         if (coverImageName != null && !coverImageName.trim().isEmpty()) {
             if (course.getCoverImage() != null) {
                 CloudUtils.deleteBlob(CloudUtils.resolveCourseCoverImageLocation(courseId, course.getCoverImage()));
@@ -340,7 +348,7 @@ public class CourseService {
     }
 
     public List<BasicCourseResponse> getCoursesByInstructorId(Long instructorId) {
-        List<Course> courses = courseRepository.findByTeacher_UserId(instructorId);
+        List<Course> courses = courseRepository.findByTeacher_UserIdOrderByCourseId(instructorId);
         return courses.stream()
                 .map(course -> {
                     try {

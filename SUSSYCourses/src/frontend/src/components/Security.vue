@@ -45,7 +45,8 @@
         <!-- Modal Footer -->
         <template #footer>
           <el-button @click="isPasswordModalVisible = false" class="cancel-button">Cancel</el-button>
-          <el-button type="primary" @click="changePassword" class="submit-button">Change Password</el-button>
+          <el-button type="primary" :loading="isSaving" @click="changePassword" class="submit-button">Change Password
+          </el-button>
         </template>
       </el-dialog>
 
@@ -54,13 +55,34 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 import {Edit} from "@element-plus/icons-vue";
+import axiosInstances from "@/services/axiosInstance";
+import {useRouter} from 'vue-router';
 
+const router = useRouter();
 const user = ref({
-  email: "johnDoe@gmail.com",
+  email: 'Fetching...',
+});
+
+const isSaving = ref(false);
+
+onMounted(async () => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No userId found in localStorage!");
+      return;
+    }
+    const response = await axiosInstances.axiosInstance.get(`/instructors/${userId}`);
+    const userData = response.data;
+
+    user.value.email = userData.email;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
 });
 
 const isPasswordModalVisible = ref(false);
@@ -97,7 +119,7 @@ const openPasswordModal = () => {
   isPasswordModalVisible.value = true;
 };
 
-const changePassword = () => {
+const changePassword = async () => {
   const formRef = passwordForm.value;
   if (!formRef.currentPassword || !formRef.newPassword || !formRef.confirmPassword) {
     ElMessage.error("Please complete all fields!");
@@ -107,10 +129,24 @@ const changePassword = () => {
     ElMessage.error("Passwords do not match!");
     return;
   }
-
-  ElMessage.success("Password changed successfully!");
-  isPasswordModalVisible.value = false;
-  passwordForm.value = {currentPassword: "", newPassword: "", confirmPassword: ""};
+  try {
+    isSaving.value = true;
+    const userId = localStorage.getItem("userId");
+    await axiosInstances.axiosInstance.put(`users/${userId}/change-password`, {
+      currentPassword: formRef.currentPassword,
+      newPassword: formRef.newPassword,
+      confirmPassword: formRef.confirmPassword,
+    });
+    ElMessage.success("Password changed successfully!");
+    isPasswordModalVisible.value = false;
+    passwordForm.value = {currentPassword: "", newPassword: "", confirmPassword: ""};
+    router.push({name: 'LogIn'});
+  } catch (error) {
+    const errorMessage = error.response?.data || "Failed to change password";
+    ElMessage.error(errorMessage);
+  } finally {
+    isSaving.value = false;
+  }
 };
 </script>
 

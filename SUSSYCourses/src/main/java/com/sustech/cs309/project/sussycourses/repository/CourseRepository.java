@@ -20,6 +20,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findByTeacher_UserId(Long userId);
 
+    List<Course> findByTeacher_UserIdOrderByCourseId(Long userId);
+
     Integer countByTeacher_UserId(Long userId);
 
     List<Course> findByTeacher_UserIdOrderByTotalEvaluationScoreDesc(Long userId);
