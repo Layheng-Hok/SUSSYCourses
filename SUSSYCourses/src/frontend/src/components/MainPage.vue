@@ -45,16 +45,14 @@
   <div class="popular-topics">
     <h1>Popular topics</h1>
     <div class="topics-grid">
-      <div class="topic-box">Web Development</div>
-      <div class="topic-box">Marketing</div>
-      <div class="topic-box">Programming</div>
-      <div class="topic-box">Finance</div>
-      <div class="topic-box">Leadership</div>
-      <div class="topic-box">Data Science</div>
-      <div class="topic-box">Design</div>
-      <div class="topic-box">Hardware</div>
-      <div class="topic-box">Economics</div>
-      <div class="topic-box">Entrepreneurship</div>
+      <div
+          class="topic-box"
+          v-for="topic in popularTopics"
+          :key="topic"
+          @click="goToCourseList(topic)"
+      >
+        {{ topic }}
+      </div>
     </div>
   </div>
 
@@ -145,6 +143,26 @@ import axiosInstances from "@/services/axiosInstance";
 import {Navigation} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const popularTopics = [
+  "Web Development",
+  "Marketing",
+  "Programming",
+  "Finance",
+  "Leadership",
+  "Data Science",
+  "Design",
+  "Hardware",
+  "Economics",
+  "Entrepreneurship"
+];
+
+const goToCourseList = (topic) => {
+  router.push({ name: 'CourseList', query: { searchQuery: topic } });
+};
 
 const atStart = ref(true);
 const atEnd = ref(false);
