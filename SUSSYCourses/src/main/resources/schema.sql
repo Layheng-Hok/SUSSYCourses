@@ -237,7 +237,7 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
         'A clever and resourceful navigator with a talent for strategy.', 0, now(), 'nami'),
        ('Usopp', '12210726@mail.sustech.edu.cn', '$2a$10$OujQGApuPH6AEivM8OwsM.K..ke0U8zkwT6Y3koDLTdu/bBS3QMq.', 2,
         true, 'bfdeef6c-7f00-441a-864c-573596891974', 'Others',
-        'A creative and resourceful student with a knack for storytelling.', 0, now(), 'usop');
+        'A creative and resourceful student with a knack for storytelling.', 0, now(), 'usopp');
 
 
 INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
@@ -340,7 +340,8 @@ VALUES ('fbringer99@gmail.com', 'hoklayheng33@gmail.com', 'Welcome to my course!
        ('hoklayheng33@gmail.com', 'fbringer99@gmail.com', 'Test', 'Test', '2023-10-02T09:30:00Z');
 
 INSERT INTO stream(teacher_id, stream_key, url, title, description)
-VALUES (4, '0ff6bfb7-1226-47ea-901a-1bbdcfe16671', 'https://embed.api.video/live/li4IiMlSifoak2VDjs6pDNTm', 'I will teach you stuff', 'This stream is me showcasing nothing'),
+VALUES (4, '0ff6bfb7-1226-47ea-901a-1bbdcfe16671', 'https://embed.api.video/live/li4IiMlSifoak2VDjs6pDNTm',
+        'I will teach you stuff', 'This stream is me showcasing nothing'),
        (7, NULL, NULL, 'I will teach you stuff', 'This stream is me showcasing nothing'),
        (8, NULL, NULL, 'I will teach you stuff', 'This stream is me showcasing nothing');
 
