@@ -117,17 +117,17 @@
   <div class="trending-courses">
     <div class="left-part">
       <h1>Trending Now</h1>
-      <h2>JAVA is a top skill</h2>
-      <router-link to="" class="course-link">See programming courses &gt;</router-link>
-      <p class="learner-count">560 learners</p>
+      <h2>Web development is a top skill</h2>
+      <router-link :to="{ path: '/course-list', query: { searchQuery: 'Web Development' } }" class="course-link">See Web Development courses &gt;</router-link>
+      <p class="learner-count">400 learners</p>
     </div>
     <div class="vertical-divider"></div>
     <div class="category-grid">
       <div class="category" v-for="(category, index) in categories" :key="index">
         <h3>{{ category.name }}</h3>
         <ul>
-          <li v-for="course in category.courses" :key="course.name">
-            <router-link to="course.link" class="course-name">{{ course.name }} &gt;</router-link>
+          <li v-for="course in category.courses" :key="course.id">
+            <router-link :to="course.link" class="course-name">{{ course.name }} &gt;</router-link>
             <p class="learner-count2">{{ course.learners }} learners</p>
           </li>
         </ul>
@@ -229,28 +229,27 @@ const categories = ref([
   {
     name: "Web Development",
     courses: [
-      {name: "Learn Axios", learners: "120", link: "#"},
-      {name: "Intro to web Development", learners: "230", link: "#"},
-      {name: "Spring Boot", learners: "450", link: "#"},
+      { id: 4, name: "Learn Axios", learners: "120", link: "/public-course/4" },
+      { id: 6, name: "Intro to Web Development", learners: "230", link: "/public-course/6" },
+      { id: 5, name: "Why React is better than Vue and Angular", learners: "50", link: "/public-course/5" },
     ],
   },
   {
-    name: "Design",
+    name: "Design and Marketing",
     courses: [
-      {name: "Interior Design", learners: "110", link: "#"},
-      {name: "Graphic Design", learners: "70", link: "#"},
-      {name: "User Experience (UX) Design", learners: "90", link: "#"},
+      { id: 8, name: "Interior Design", learners: "110", link: "/public-course/8" },
+      { id: 7, name: "How to Sell a Book", learners: "70", link: "/public-course/7" },
     ],
   },
   {
-    name: "Finance and Economics",
+    name: "Entrepreneurship and Economics",
     courses: [
-      {name: "Tips to become a billionaire", learners: "240", link: "#"},
-      {name: "Learn about Inflation", learners: "160", link: "#"},
-      {name: "Project Management", learners: "55", link: "#"},
+      { id: 13, name: "A Million Dollar Business is Not a Dream", learners: "240", link: "/public-course/13" },
+      { id: 11, name: "Learn About Inflation", learners: "160", link: "/public-course/11" },
     ],
   },
 ]);
+
 
 </script>
 
@@ -600,7 +599,7 @@ const categories = ref([
 
 .category-grid {
   display: flex;
-  gap: 80px;
+  gap: 50px;
   margin-left: 100px;
   margin-top: 40px;
 }
