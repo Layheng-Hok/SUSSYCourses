@@ -487,14 +487,8 @@ export default {
     },
     async submitCourseware(props) {
       const formData = new FormData();
-      let fileType = ""
-      if (!(this.selectedFile.type in ['pdf', 'md', 'docx', 'mp4', 'jpg'])) {
-        fileType = "pptx";
-      } else {
-        fileType = this.selectedFile.type.split("/")[-1];
-      }
       formData.append("courseId", props.courseId)
-      formData.append("fileType", fileType);
+      formData.append("fileType", this.selectedFile.name.slice(this.selectedFile.name.lastIndexOf('.') + 1));
       formData.append("fileName", this.selectedFile.name);
       formData.append("category", this.coursewareData.category)
       formData.append("downloadable", this.coursewareData.downloadable)
