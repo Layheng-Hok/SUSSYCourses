@@ -118,9 +118,9 @@ public class WebAppUserService {
                         .map(grantedAuthority -> grantedAuthority.getAuthority())
                         .collect(Collectors.joining(" "));
                 log.info("Scope: {}", scope);
-
             } else {
                 log.warn("Authentication failed for email: {}", loginRequest.email());
+                return ResponseEntity.status(401).body("Invalid credentials");
             }
 
             // Return a successful response if authentication is successful

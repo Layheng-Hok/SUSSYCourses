@@ -44,8 +44,8 @@
             <el-option label="Chinese" value="Chinese"/>
             <el-option label="Software" value="Software"/>
             <el-option label="Business" value="Business"/>
-            <el-option label="Data Science" value="Science"/>
-            <el-option label="Languages" value="Languages"/>
+            <el-option label="Data Science" value="Data Science"/>
+            <el-option label="Art" value="Art"/>
           </el-select>
         </el-form-item>
 
