@@ -362,7 +362,7 @@ export default {
 
       formData.append("coursewareId", this.updateData.coursewareId)
       formData.append("courseId", this.updateData.courseId)
-      formData.append("fileType", this.updateData.fileType)
+      formData.append("fileType", this.selectedFile.name.slice(this.selectedFile.name.lastIndexOf('.') + 1));
       formData.append("category", this.updateData.category)
       formData.append("downloadable", this.updateData.downloadable)
       formData.append("chapter", this.updateData.chapter)
@@ -394,7 +394,7 @@ export default {
       formData.append("downloadable", this.coursewareData.downloadable)
       formData.append("chapter", this.coursewareData.chapter)
       formData.append("order", 1)
-      formData.append("variantOf", -1)
+      formData.append("variant_of", -1)
       formData.append("version", 1)
       formData.append('file', this.selectedFile);
       for (const [key, value] of formData.entries()) {
