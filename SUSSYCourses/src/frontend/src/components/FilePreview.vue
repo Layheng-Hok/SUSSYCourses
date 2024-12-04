@@ -9,9 +9,11 @@
       controls
       :src="material.url"
       controlsList="nodownload"
-      :download="material.downloadable ? true : undefined"
       class="video-player"
     ></video>
+    <button v-if="material.downloadable" @click="downloadFile" class="download-button" style="margin-top: 1em;">
+        Download
+      </button>
     </div>
 
   <div v-else class="attachment-box">
@@ -148,6 +150,7 @@ const viewMarkdownInNewTab = (url) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   margin: 10px 0;
   max-width: 100%;
   width: 100%;
