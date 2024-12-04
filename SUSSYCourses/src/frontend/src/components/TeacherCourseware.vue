@@ -19,7 +19,7 @@
             <h3>Courseware {{ index + 1 }}</h3>
             <p><strong>Category:</strong> {{ courseware.category }}</p>
             <p><strong>Chapter:</strong> {{ courseware.chapter }}</p>
-            <p><strong>Courseware ID:</strong> {{ courseware.coursewareId }}</p>
+            <p><strong>Downloadable:</strong> {{ courseware.downloadable }}</p>
             <p><strong>Courseware Order:</strong> {{ courseware.coursewareOrder }}</p>
             <p><strong>Creation Time:</strong> {{ courseware.createTime }}</p>
             <p><strong>Display Version:</strong> {{ courseware.displayVersion }}</p>
@@ -29,7 +29,6 @@
           <div class="modal-item-right">
             <button class="modal-set-button" @click="setActiveVersion(courseware)">Set as Active Version</button>
             <button class="modal-update-button" @click="openEditDialog(courseware.coursewareId)">Update Version</button>
-            <button class="modal-delete-button" @click="deleteVersion(courseware)">Delete Version</button>
           </div>
         </div>
       </slot>
@@ -194,8 +193,46 @@
                           <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
                             <Edit/>
                           </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
+                        </div>
+                        <div class="courseware-information">
+                          <div class="courseware-information-header">Courseware Information</div>
+                          <div class="courseware-information-content">
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Name:</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Version:</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="material.type === 'pptx'" class="non-video-container">
+                      <a :href="material.url" download="file.pptx" class="video-frame"> link</a>
+                      <iframe
+                          :src="material.url"
+                          width="100%"
+                          height="600"
+                          frameborder="0"
+                          allowfullscreen
+                      ></iframe>
+                      <div class="courseware-right-side">
+                        <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
                           </el-icon>
                         </div>
                         <div class="courseware-information">
@@ -203,22 +240,19 @@
                           <div class="courseware-information-content">
                             <div class="courseware-info-item">
                               <span class="courseware-info-label">Name:</span>
-                              <span class="courseware-info-value">Introduction to Vue.js</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
                             </div>
                             <div class="courseware-info-item">
                               <span class="courseware-info-label">Version:</span>
-                              <span class="courseware-info-value">1.0.0</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
                             </div>
                             <div class="courseware-info-item">
-                              <span class="courseware-info-label">URL:</span>
-                              <a
-                                  href="https://example.com/vue-course"
-                                  class="courseware-info-value"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                              >
-                                https://example.com/vue-course
-                              </a>
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
                             </div>
                           </div>
                         </div>
@@ -241,31 +275,25 @@
                           <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
                             <Edit/>
                           </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
                         </div>
                         <div class="courseware-information">
                           <div class="courseware-information-header">Courseware Information</div>
                           <div class="courseware-information-content">
                             <div class="courseware-info-item">
                               <span class="courseware-info-label">Name:</span>
-                              <span class="courseware-info-value">Introduction to Vue.js</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
                             </div>
                             <div class="courseware-info-item">
                               <span class="courseware-info-label">Version:</span>
-                              <span class="courseware-info-value">1.0.0</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
                             </div>
                             <div class="courseware-info-item">
-                              <span class="courseware-info-label">URL:</span>
-                              <a
-                                  href="https://example.com/vue-course"
-                                  class="courseware-info-value"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                              >
-                                https://example.com/vue-course
-                              </a>
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
                             </div>
                           </div>
                         </div>
@@ -279,33 +307,214 @@
         </el-collapse-item>
       </el-collapse>
 
-      <el-collapse-item title="Homework Chapters" name="2">
-        <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
-          <h3>{{ chapter.name }}</h3>
-          <el-list>
-            <el-list-item v-for="material in chapter.materials" :key="material.url">
-              <a :href="`${material.url}`" target="_blank">
-                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
-                {{ material.title }}
-              </a>
-            </el-list-item>
-          </el-list>
-        </div>
-      </el-collapse-item>
+      <el-collapse v-model="outerActiveNames">
+        <el-collapse-item title="Homework Chapters" name="1">
+          <el-collapse v-model="innerActiveNames" class="inner-collapse">
+            <el-collapse-item
+                v-for="chapter in course.homeworkChapters"
+                :key="chapter.name"
+                :name="chapter.name"
+                class="inner-collapse-item"
+            >
+              <template #title>
+                <div class="chapter-header">
+                  {{ chapter.name }}
+                </div>
+              </template>
+              <el-list>
+                <el-list-item
+                    v-for="material in chapter.materials.sort((a, b) => a.order - b.order)"
+                    :key="material.url"
+                    class="material-item"
+                >
+                  <div class="material-content">
+                    <div v-if="material.type === 'mp4'" class="video-container">
+                      <video controls :src="`${material.url}`" width="60%" class="video-frame"></video>
+                      <div class="courseware-right-side">
+                        <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                        </div>
+                        <div class="courseware-information">
+                          <div class="courseware-information-header">Courseware Information</div>
+                          <div class="courseware-information-content">
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Name:</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Version:</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="non-video-container">
+                      <div class="iframe-container">
+                        <iframe
+                            :src="`${material.url}`"
+                            height="200px"
+                            class="iframe-viewer"
+                        >
+                        </iframe>
+                      </div>
+                      <div class="courseware-right-side">
+                        <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                        </div>
+                        <div class="courseware-information">
+                          <div class="courseware-information-header">Courseware Information</div>
+                          <div class="courseware-information-content">
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Name:</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Version:</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </el-list-item>
+              </el-list>
+            </el-collapse-item>
+          </el-collapse>
+        </el-collapse-item>
+      </el-collapse>
 
-      <el-collapse-item title="Project Chapters" name="3">
-        <div v-for="chapter in course.projectChapters" :key="chapter.name" class="chapter">
-          <h3>{{ chapter.name }}</h3>
-          <el-list>
-            <el-list-item v-for="material in chapter.materials" :key="material.url">
-              <a :href="`${material.url}`" target="_blank">
-                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
-                {{ material.title }}
-              </a>
-            </el-list-item>
-          </el-list>
-        </div>
-      </el-collapse-item>
+      <el-collapse v-model="outerActiveNames">
+        <el-collapse-item title="Project Chapters" name="3">
+          <el-collapse v-model="innerActiveNames" class="inner-collapse">
+            <el-collapse-item
+                v-for="chapter in course.projectChapters"
+                :key="chapter.name"
+                :name="chapter.name"
+                class="inner-collapse-item"
+            >
+              <template #title>
+                <div class="chapter-header">
+                  {{ chapter.name }}
+                </div>
+              </template>
+              <el-list>
+                <el-list-item
+                    v-for="material in chapter.materials.sort((a, b) => a.order - b.order)"
+                    :key="material.url"
+                    class="material-item"
+                >
+                  <div class="material-content">
+                    <div v-if="material.type === 'mp4'" class="video-container">
+                      <video controls :src="`${material.url}`" width="60%" class="video-frame"></video>
+                      <div class="courseware-right-side">
+                        <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                        </div>
+                        <div class="courseware-information">
+                          <div class="courseware-information-header">Courseware Information</div>
+                          <div class="courseware-information-content">
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Name:</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Version:</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="non-video-container">
+                      <div class="iframe-container">
+                        <iframe
+                            :src="`${material.url}`"
+                            height="200px"
+                            class="iframe-viewer"
+                        >
+                        </iframe>
+                      </div>
+                      <div class="courseware-right-side">
+                        <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                        </div>
+                        <div class="courseware-information">
+                          <div class="courseware-information-header">Courseware Information</div>
+                          <div class="courseware-information-content">
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Name:</span>
+                              <span class="courseware-info-value">{{material.coursewareId}}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Version:</span>
+                              <span class="courseware-info-value">{{ material.version }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Downloadable:</span>
+                              <span class="courseware-info-value">{{ material.downloadable }}</span>
+                            </div>
+                            <div class="courseware-info-item">
+                              <span class="courseware-info-label">Created:</span>
+                              <span class="courseware-info-value">{{ material.createdAt }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </el-list-item>
+              </el-list>
+            </el-collapse-item>
+          </el-collapse>
+        </el-collapse-item>
+      </el-collapse>
+
 
       <el-collapse-item title="Attachments" name="4">
         <div v-for="chapter in course.attachments" :key="chapter.name" class="chapter">
@@ -414,7 +623,7 @@ export default {
       this.updateData.version = courseware.version;
       this.updateData.changeFile = false;
       this.editDialogVisible = true;
-      console.log(this.updateData.coursewareId)
+      console.log(this.updateData.variant_of)
     },
     handleFileChange(event) {
       this.selectedFile = event.target.files[0];
@@ -429,7 +638,7 @@ export default {
       formData.append("downloadable", this.updateData.downloadable)
       formData.append("chapter", this.updateData.chapter)
       formData.append("order", 1)
-      formData.append("variantOf", this.updateData.variant_of)
+      formData.append("variant_of", this.updateData.variant_of)
       formData.append("version", this.updateData.version)
       formData.append("changeFile", this.updateData.changeFile)
       if (this.updateData.changeFile) {
@@ -551,7 +760,7 @@ export default {
 }
 
 .iframe-container {
-  width: 60%;
+  width: 50%;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   overflow: hidden;
@@ -575,6 +784,7 @@ export default {
 
 .video-frame {
   height: 300px;
+  width: 50%;
   border-radius: 8px; /* Rounded video corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle shadow for video */
 }
@@ -589,6 +799,7 @@ export default {
   border: 1px solid #e0e0e0; /* Subtle border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+  gap:20px;
 }
 
 .non-video-container {
@@ -601,10 +812,12 @@ export default {
   border: 1px solid #e0e0e0; /* Subtle border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+  gap:20px;
 }
 
 .courseware-right-side {
   display: flex;
+  width: 50%;
   flex-direction: column;
   justify-items: end;
 }
@@ -634,6 +847,7 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
   font-family: 'Arial', sans-serif; /* Clean font */
   max-width: 600px; /* Limit the container width */
+  gap:20px
 }
 
 .courseware-information-header {
@@ -656,7 +870,7 @@ export default {
   font-weight: 600; /* Bold labels for emphasis */
   color: #555; /* Slightly darker text */
   flex-shrink: 0; /* Prevent shrinking */
-  width: 30%; /* Fixed width for alignment */
+  width: auto; /* Fixed width for alignment */
 }
 
 .courseware-info-value {
