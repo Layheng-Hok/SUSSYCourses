@@ -312,14 +312,21 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
        (5, 'pdf', 'lecture', 'dsaa_L01_intro.pdf', true, 1, 1, 13, 1, true, '2024-12-04 14:08:41.468804'),
        (5, 'pdf', 'lecture', 'dsaa_L02_algorithm.pdf', true, 2, 1, 14, 1, true, '2024-12-04 14:09:01.080831'),
        (5, 'pdf', 'lecture', 'dsaa_L03_sorting.pdf', true, 3, 1, 15, 1, true, '2024-12-04 14:09:09.596356'),
-       (9, 'pdf', 'lecture', 'DigitalLogic_23F_Lec2_Boolean_Algebra.pdf', true, 1, 1, 16, 1, true, '2024-12-04 14:15:18.438480'),
+       (9, 'pdf', 'lecture', 'DigitalLogic_23F_Lec2_Boolean_Algebra.pdf', true, 1, 1, 16, 1, true,
+        '2024-12-04 14:15:18.438480'),
        (11, 'pdf', 'assignment', 'Assign01(1).pdf', true, 1, 1, 17, 1, true, '2024-12-04 14:17:22.127951'),
        (11, 'pdf', 'assignment', 'Assign02(1).pdf', true, 2, 1, 18, 1, true, '2024-12-04 14:19:37.066159'),
        (11, 'pdf', 'assignment', 'Assign03(1).pdf', true, 3, 1, 19, 1, true, '2024-12-04 14:19:45.719268'),
        (6, 'pdf', 'lecture', 'Chapter 1 Chinese Philosophy.pdf', true, 1, 1, 20, 1, true, '2024-12-04 14:23:41.374710'),
-       (6, 'pdf', 'lecture', 'Chapter 1 Chinese Philosophy and Religion II.pdf', true, 1, 1, 21, 1, true, '2024-12-04 14:23:49.270532'),
-       (6, 'pdf', 'lecture', 'Chapter 2 Chinese Literature I -Classical Literature - simplifiedversion.pdf', true, 2, 1, 22, 1, true, '2024-12-04 14:23:56.155228'),
-       (6, 'pdf', 'lecture', 'Attachment Tea wine Chinese Costume.pdf', false, 1, 1, 23, 1, true, '2024-12-04 14:24:28.901710');
+       (6, 'pdf', 'lecture', 'Chapter 1 Chinese Philosophy and Religion II.pdf', true, 1, 1, 21, 1, true,
+        '2024-12-04 14:23:49.270532'),
+       (6, 'pdf', 'lecture', 'Chapter 2 Chinese Literature I -Classical Literature - simplifiedversion.pdf', true, 2, 1,
+        22, 1, true, '2024-12-04 14:23:56.155228'),
+       (6, 'pdf', 'lecture', 'Attachment Tea wine Chinese Costume.pdf', false, 1, 1, 23, 1, true,
+        '2024-12-04 14:24:28.901710'),
+       (13, 'pdf', 'lecture', 'ch1.pdf', true, 1, 1, 24, 1, true, '2024-12-04 14:43:02.853941'),
+       (13, 'pdf', 'lecture', 'ch2.pdf', true, 2, 1, 25, 1, true, '2024-12-04 14:43:12.456519'),
+       (13, 'pdf', 'lecture', 'ch3.pdf', true, 3, 1, 26, 1, true, '2024-12-04 14:43:20.210078');
 
 
 
