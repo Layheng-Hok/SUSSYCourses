@@ -68,30 +68,34 @@
         :slides-per-group="4"
     >
       <swiper-slide v-for="course in courses" :key="course.courseId">
-        <router-link :to="`/public-course/${course.courseId}`" class="course-card-link">
-          <div class="course-card">
-            <div class="course-image-wrapper">
-              <img :src="course.coverImageUrl" :alt="course.courseName" class="course-image"/>
-            </div>
-            <div class="course-content">
-              <h3>{{ course.courseName }}</h3>
-              <p>{{ course.teacherName }}</p>
-              <p class="rating"><strong>Topic: </strong>{{ course.topic }}</p>
-              <p class="rating"><strong>Rating:</strong> {{ course.averageRating }} <img src="@/assets/img_12.png"
-                                                                                         alt="Star" class="star-icon">({{
-                  course.numEvaluations
-                }})</p>
-              <p class="rating"><strong>Type: </strong>{{ course.type }}</p>
-            </div>
+        <div class="course-card">
+          <div class="course-image-wrapper">
+            <img :src="course.coverImageUrl" :alt="course.courseName" class="course-image"/>
           </div>
-        </router-link>
+          <div class="course-content">
+            <h3>{{ course.courseName }}</h3>
+            <p>{{ course.teacherName }}</p>
+            <p class="rating"><strong>Topic: </strong>{{ course.topic }}</p>
+            <p class="rating"><strong>Rating:</strong> {{ course.averageRating }} <img src="@/assets/img_12.png"
+                                                                                       alt="Star" class="star-icon">({{
+                course.numEvaluations
+              }})</p>
+            <p class="rating"><strong>Type: </strong>{{ course.type }}</p>
+          </div>
+        </div>
       </swiper-slide>
 
       <div v-if="!atStart" class="swiper-button-prev" @click="goToPrev"></div>
       <div v-if="!atEnd" class="swiper-button-next" @click="goToNext"></div>
     </swiper>
   </div>
-
+  <div class="enroll">
+    <router-link to="/course-list">
+      <button>
+        Enroll Now
+      </button>
+    </router-link>
+  </div>
   <div class="popular-instructors">
     <h1>Popular Instructors</h1>
     <p>These real-world experts are highly rated by learners like you.</p>
@@ -104,7 +108,8 @@
           <h2>{{ teacher.fullName }}</h2>
           <p>{{ getUniqueTopics(teacher.courses) }}</p>
           <p class="rating"><strong>Rating:</strong> {{ teacher.averageRating }} <img src="@/assets/img_12.png"
-                                                                                      alt="Star" class="star-icon"></p>
+                                                                                      alt="Star" class="star-icon">
+          </p>
           <p class="student-count"><strong>{{ teacher.totalStudents }}</strong> students</p>
           <p class="course-count"><strong>{{ teacher.numCourses }}</strong> courses</p>
         </div>
@@ -437,12 +442,6 @@ const categories = ref([
 
 .course-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
-}
-
-.course-card-link {
-  display: block;
-  text-decoration: none;
 }
 
 .course-card h3 {
@@ -767,4 +766,26 @@ const categories = ref([
   vertical-align: -2px;
   margin-left: -2px;
 }
+
+.enroll {
+  text-align: left;
+  margin-left: 90px;
+}
+
+.enroll button {
+  padding: 15px 10px;
+  font-size: 16px;
+  background-color: #74B3E3;
+  border: 1px solid #74B3E3;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 25px;
+}
+
+.enroll button:hover {
+  background-color: #9DCAEB;
+  border: 1px solid #9DCAEB;
+}
+
 </style>
