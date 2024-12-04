@@ -38,7 +38,7 @@ public class CourseController {
         return courseService.getAllPendingCourses();
     }
 
-    @PreAuthorize("hasRole('ROLE_PUBLIC')")
+    @PreAuthorize("hasAnyRole('ROLE_INSTRUCTOR','ROLE_PUBLIC')")
     @GetMapping("/{courseId}")
     public StudentCourseDetailResponse getCourseDetail(@PathVariable Long courseId) throws IOException {
         return courseService.getCourseDetail(courseId);
