@@ -3,6 +3,7 @@ package com.sustech.cs309.project.sussycourses.service;
 import com.sustech.cs309.project.sussycourses.domain.Course;
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.Rating;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.RatingRequest;
 import com.sustech.cs309.project.sussycourses.dto.RatingResponse;
 import com.sustech.cs309.project.sussycourses.repository.CourseRepository;
@@ -52,6 +53,11 @@ public class RatingService {
         course.setTotalEvaluationScore(course.getTotalEvaluationScore() + overallRating);
         course.setNumEvaluations(course.getNumEvaluations() + 1);
         courseRepository.save(course);
+
+        WebAppUser student = webAppUserRepository.findById(userId).orElse(null);
+        assert student != null;
+        student.setPoints(student.getPoints() + 20);
+        webAppUserRepository.save(student);
 
         return ResponseEntity.ok("Rating submitted successfully");
     }

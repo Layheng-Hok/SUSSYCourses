@@ -2,9 +2,11 @@ package com.sustech.cs309.project.sussycourses.service;
 
 import com.sustech.cs309.project.sussycourses.domain.CourseStudent;
 import com.sustech.cs309.project.sussycourses.domain.CoursewareStudent;
+import com.sustech.cs309.project.sussycourses.domain.WebAppUser;
 import com.sustech.cs309.project.sussycourses.dto.CourseProgressResponse;
 import com.sustech.cs309.project.sussycourses.repository.CourseStudentRepository;
 import com.sustech.cs309.project.sussycourses.repository.CoursewareStudentRepository;
+import com.sustech.cs309.project.sussycourses.repository.WebAppUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class CoursewareStudentService {
     private final CoursewareStudentRepository coursewareStudentRepository;
     private final CourseStudentRepository courseStudentRepository;
+    private final WebAppUserRepository webAppUserRepository;
 
     public CourseProgressResponse getCourseProgressByStudentIdAndCourseId(Long studentId, Long courseId) {
         Optional<CourseStudent> courseStudentOptional = courseStudentRepository.findCourseStudentByStudent_UserIdAndCourse_CourseIdAndStatus(studentId, courseId, "enrolled");
@@ -48,6 +51,10 @@ public class CoursewareStudentService {
         coursewareStudent.setCompleted(true);
         coursewareStudentRepository.save(coursewareStudent);
 
+        WebAppUser student = webAppUserRepository.findByUserId(studentId).orElse(null);
+        assert student != null;
+        student.setPoints(student.getPoints() + 10);
+        webAppUserRepository.save(student);
 
         return ResponseEntity.ok("Courseware set completed");
     }
