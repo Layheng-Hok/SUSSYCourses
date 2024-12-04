@@ -160,7 +160,7 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
         true, '00b32a7b-3775-4371-99c4-195a85697784', 'Male',
         'A sly and enigmatic figure with a perpetually smiling face and hidden motives.', 0,
         '2024-11-17 20:14:27.229069', 'gin'),
-       ('Grimmjow Jaegerjaquez', 'sto@paragonisc.edu.kh',
+       ('Grimmjow Jaegerjaquez', 'jawharazerhouni0@gmail.com',
         '$2a$10$2kr8dhrAGhOaXdnV60fvM.EbnxZ2GCC.K1BDzfGPEdSB5rIFrp6ae', 2, true, '981bcafe-42fd-4978-9d0d-fe570dcf4f6f',
         'Male', 'A fierce and impulsive warrior with a passion for battle and an unyielding will.', 0,
         '2024-11-17 20:18:02.915353', 'grimmjow'),
