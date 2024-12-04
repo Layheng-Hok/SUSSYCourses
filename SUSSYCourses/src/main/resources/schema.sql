@@ -245,7 +245,7 @@ INSERT INTO course (course_name, description, teacher_id, type, status, topic, t
 VALUES ('C/C++ System Design', 'You shall learn memory management as a programmer.', 4, 'open', 'approved',
         'Programming', 5.0, 1, 3, NOW(), 'c_cpp.jpeg'),
        ('IELTS Listening', 'Improve your English listening skills for the IELTS exam.', 8, 'open', 'approved',
-        'Language', 7.0, 2, 1, NOW(), 'listening.webp'),
+        'Languages', 7.0, 2, 1, NOW(), 'listening.webp'),
        ('Principles of Database', 'Learn the fundamentals of database systems and their applications.', 4, 'semi-open',
         'pending', 'Software', 0, 0, 0, NOW(), 'database.jpg'),
        ('Chinese History', 'Explore the rich and fascinating history of China.', 8, 'open', 'approved', 'Chinese', 3.5,
