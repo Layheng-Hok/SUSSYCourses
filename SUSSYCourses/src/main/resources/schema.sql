@@ -293,21 +293,12 @@ VALUES ('C/C++ System Design', 'You shall learn memory management as a programme
        ('Elementary Chinese 1', '早上好中国。', 4, 'non-open', 'approved', 'Languages', 0, 0, 0,
         NOW(), 'chinese1.jpg');;
 
+INSERT INTO courseware (courseware_id, course_id, file_type, category, url, downloadable, chapter, courseware_order,
+                        variant_of, version, display_version, created_at)
+VALUES (1, 1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-12-04 11:18:54.071622'),
+       (2, 1, 'md', 'project', 'project1.md', true, 1, 1, 2, 1, true, '2024-12-04 11:19:32.584331'),
+       (3, 1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486');
 
-
--- INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order, variant_of,
---                         version, display_version, created_at)
--- VALUES (1, 'mp4', 'lecture', 'chapter1', FALSE, 1, 1, 1, 1, TRUE, NOW()),
---        (1, 'pdf', 'lecture', 'intro_python.pdf', FALSE, 1, 2, 2, 1, TRUE, NOW()),
---        (1, 'mp4', 'lecture', 'advanced_js.mp4', FALSE, 1, 3, 3, 1, FALSE, NOW()),
---        (2, 'md', 'assignment', 'datascience_overview.md', FALSE, 1, 1, 4, 1, FALSE, NOW()),
---        (1, 'mp4', 'lecture', 'chapter1_version2', FALSE, 1, 1, 1, 2, FALSE, NOW()),
---        (1, 'pdf', 'assignment', 'Unsupervised learning.pdf', FALSE, 1, 1, 1, 1, FALSE, NOW()),
---        (1, 'mp4', 'lecture', 'lecture2.mp4', FALSE, 2, 1, 1, 1, TRUE, NOW()),
---        (1, 'pptx', 'project', 'Overview.pptx', FALSE, 1, 1, 1, 1, FALSE, NOW()),
---        (1, 'md', 'project', 'README.md', FALSE, 2, 1, 1, 1, FALSE, NOW()),
---        (1, 'pdf', 'attachment', 'uhuh.md', FALSE, 1, 1, 1, 1, TRUE, NOW())
--- ;
 --
 -- INSERT INTO courseware_student(courseware_id, student_id, completed)
 -- VALUES (1, 3, TRUE),
