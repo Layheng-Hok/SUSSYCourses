@@ -24,15 +24,16 @@ const courses = ref([]);
 const userId = localStorage.getItem('userId');
 
 const categories = [
-  "Web Development",
-  "Marketing",
+  "Languages",
+  "Chinese",
   "Programming",
-  "Finance",
-  "Leadership",
+  "Software",
+  "Math",
   "Data Science",
-  "Design",
+  "Science",
   "Hardware",
-  "Economics",
+  "Business",
+  "Art"
 ];
 
 const fetchCourseData = async () => {
