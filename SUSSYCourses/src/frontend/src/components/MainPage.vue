@@ -68,25 +68,23 @@
         :slides-per-group="4"
     >
       <swiper-slide v-for="course in courses" :key="course.courseId">
-        <div class="course-card">
-          <div class="course-image-wrapper">
-            <img :src="course.coverImageUrl" :alt="course.courseName" class="course-image"/>
+        <router-link :to="`/public-course/${course.courseId}`" class="course-card-link">
+          <div class="course-card">
+            <div class="course-image-wrapper">
+              <img :src="course.coverImageUrl" :alt="course.courseName" class="course-image"/>
+            </div>
+            <div class="course-content">
+              <h3>{{ course.courseName }}</h3>
+              <p>{{ course.teacherName }}</p>
+              <p class="rating"><strong>Topic: </strong>{{ course.topic }}</p>
+              <p class="rating"><strong>Rating:</strong> {{ course.averageRating }} <img src="@/assets/img_12.png"
+                                                                                         alt="Star" class="star-icon">({{
+                  course.numEvaluations
+                }})</p>
+              <p class="rating"><strong>Type: </strong>{{ course.type }}</p>
+            </div>
           </div>
-          <div class="course-content">
-            <h3>{{ course.courseName }}</h3>
-            <p>{{ course.teacherName }}</p>
-            <p class="rating"><strong>Topic: </strong>{{ course.topic }}</p>
-            <p class="rating"><strong>Rating:</strong> {{ course.averageRating }} <img src="@/assets/img_12.png"
-                                                                                       alt="Star" class="star-icon">({{
-                course.numEvaluations
-              }})</p>
-            <p class="rating"><strong>Type: </strong>{{ course.type }}</p>
-
-            <button class="enroll-button">
-              <router-link to="/signup-student">Enroll Now</router-link>
-            </button>
-          </div>
-        </div>
+        </router-link>
       </swiper-slide>
 
       <div v-if="!atStart" class="swiper-button-prev" @click="goToPrev"></div>
@@ -118,7 +116,9 @@
     <div class="left-part">
       <h1>Trending Now</h1>
       <h2>Chinese is a top skill</h2>
-      <router-link :to="{ path: '/course-list', query: { searchQuery: 'Chinese' } }" class="course-link">See Chinese courses &gt;</router-link>
+      <router-link :to="{ path: '/course-list', query: { searchQuery: 'Chinese' } }" class="course-link">See Chinese
+        courses &gt;
+      </router-link>
       <p class="learner-count"> 30 learners</p>
     </div>
     <div class="vertical-divider"></div>
@@ -143,7 +143,7 @@ import axiosInstances from "@/services/axiosInstance";
 import {Navigation} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 
@@ -156,7 +156,7 @@ const popularTopics = [
 ];
 
 const goToCourseList = (topic) => {
-  router.push({ name: 'CourseList', query: { searchQuery: topic } });
+  router.push({name: 'CourseList', query: {searchQuery: topic}});
 };
 
 const atStart = ref(true);
@@ -224,31 +224,27 @@ const categories = ref([
   {
     name: "Programming",
     courses: [
-      { id: 1, name: "C/C++ System Design", learners: "20", link: "/public-course/1" },
-      { id: 5, name: "Data Structure and Algorithm Analysis", learners: "5", link: "/public-course/5" },
-      { id: 7, name: "Introduction to Java Programming", learners: "10", link: "/public-course/7" },
+      {id: 1, name: "C/C++ System Design", learners: "20", link: "/public-course/1"},
+      {id: 5, name: "Data Structure and Algorithm Analysis", learners: "5", link: "/public-course/5"},
+      {id: 7, name: "Introduction to Java Programming", learners: "10", link: "/public-course/7"},
     ],
   },
   {
     name: "Science",
     courses: [
-      { id: 13, name: "Principles of Physics", learners: "10", link: "/public-course/13" },
-      { id: 14, name: "Introduction to Chemistry", learners: "5", link: "/public-course/14" },
-      { id: 15, name: "Basic Life Science", learners: "7", link: "/public-course/15" },
-
+      {id: 13, name: "Principles of Physics", learners: "10", link: "/public-course/13"},
+      {id: 14, name: "Introduction to Chemistry", learners: "5", link: "/public-course/14"},
+      {id: 15, name: "Basic Life Science", learners: "7", link: "/public-course/15"},
     ],
   },
   {
     name: "Hardware",
     courses: [
-      { id: 9, name: "Digital Logic", learners: "12", link: "/public-course/9" },
-      { id: 10, name: "Computer Organization", learners: "4", link: "/public-course/10" },
-
+      {id: 9, name: "Digital Logic", learners: "12", link: "/public-course/9"},
+      {id: 10, name: "Computer Organization", learners: "4", link: "/public-course/10"},
     ],
   },
 ]);
-
-
 </script>
 
 <style scoped>
@@ -420,7 +416,8 @@ const categories = ref([
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 300px; /* Adjust width as needed */
+  width: 300px;
+  min-height: 350px;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 0;
@@ -440,6 +437,12 @@ const categories = ref([
 
 .course-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.course-card-link {
+  display: block;
+  text-decoration: none;
 }
 
 .course-card h3 {
@@ -453,46 +456,6 @@ const categories = ref([
   color: black;
   font-size: 14px;
   margin: 4px 0;
-}
-
-.price {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-}
-
-.old-price {
-  font-size: 14px;
-  color: #888;
-  text-decoration: line-through;
-  margin-left: 8px;
-}
-
-.enroll-button {
-  background-color: #74B3E3;
-  color: white;
-  font-size: 16px;
-  font-family: 'Aptos Narrow', sans-serif;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 16px;
-  width: 100%;
-  transition: background-color 0.3s;
-}
-
-.enroll-button:hover {
-  background-color: #9DCAEB;
-}
-
-.enroll-button a {
-  color: inherit;
-  text-decoration: none;
-  display: inline-block;
-  width: 100%;
-  height: 100%;
 }
 
 .course-image-wrapper {
