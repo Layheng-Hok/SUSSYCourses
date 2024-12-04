@@ -307,7 +307,8 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
         true, '2024-12-04 11:47:27.847548'),
        (7, 'pdf', 'lecture', 'Lab 1 - Set up JDK.pdf', true, 1, 1, 9, 1, true, '2024-12-04 11:59:11.492698'),
        (7, 'pdf', 'lecture', 'Part02-IDEA.pdf', true, 2, 1, 10, 1, true, '2024-12-04 11:59:37.332235'),
-       (7, 'java', 'attachment', 'Demo.java', true, 3, 1, 11, 1, true, '2024-12-04 11:59:37.332235');
+       (7, 'java', 'attachment', 'Demo.java', true, 3, 1, 11, 1, true, '2024-12-04 11:59:37.332235'),
+       (8, 'pdf', 'lecture', '2022calculus1.pdf', true, 1, 1, 12, 1, true, '2024-12-04 13:41:14.735840');
 
 
 --
