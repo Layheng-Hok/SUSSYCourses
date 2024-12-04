@@ -56,7 +56,7 @@ CREATE TABLE courseware
     course_id        BIGINT REFERENCES course (course_id),
     file_type        VARCHAR(10)  NOT NULL CHECK (file_type IN ('md', 'pdf', 'mp4', 'pptx')),
     category         VARCHAR(20)  NOT NULL CHECK (category IN ('lecture', 'assignment', 'project', 'attachment')),
-    url              VARCHAR(255) NOT NULL UNIQUE,
+    url              VARCHAR(255) NOT NULL,
     downloadable     BOOLEAN      NOT NULL,
     chapter          INT          NOT NULL,
     courseware_order INT          NOT NULL,
