@@ -5,7 +5,7 @@
   </template>
   
   <script setup>
-  import { ref, watch, defineProps } from 'vue';
+  import { ref, onMounted, defineProps } from 'vue';
   import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
   
   ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
@@ -27,17 +27,8 @@
   
   const barChart = ref(null);
   
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-      },
-    },
-  };
-  
-  const createChart = () => {
+  onMounted(() => {
+  if (barChart.value) {
     new ChartJS(barChart.value, {
       type: 'bar',
       data: {
@@ -48,21 +39,19 @@
             data: [
               props.contentQualityRating,
               props.teachingCompetenceRating,
-              props.workloadBalanceRating
+              props.workloadBalanceRating,
             ],
             backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
           },
         ],
       },
-      options: chartOptions,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
     });
-  };
-  
-  watch(
-    () => [props.contentQualityRating, props.teachingCompetenceRating, props.workloadBalanceRating],
-    createChart,
-    { immediate: true }
-  );
+  }
+});
   </script>
   
   <style scoped>
