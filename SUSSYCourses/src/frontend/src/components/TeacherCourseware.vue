@@ -71,7 +71,8 @@
             <!-- Chapter Field -->
             <div class="form-group">
               <label for="chapter">Chapter:</label>
-              <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
+              <input type="number" id="chapter" v-model="coursewareData.chapter" required
+                     placeholder="Enter chapter number"/>
             </div>
 
             <!-- File Upload Field -->
@@ -80,7 +81,7 @@
               <input type="file" id="file" @change="handleFileChange"/>
             </div>
 
-            <button type="submit" class="save-button" @click="addCoursewareModal = false">Save</button>
+            <button type="submit" class="save-button">Save</button>
             <button type="button" class="close-button" @click="addCoursewareModal = false">Cancel</button>
           </form>
         </slot>
@@ -165,16 +166,16 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
-                            <MessageBox/>
-                          </el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
-                            <Edit/>
-                          </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
-                        </div>
+                <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                  <MessageBox/>
+                </el-icon>
+                <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                  <Edit/>
+                </el-icon>
+                <el-icon class="delete-icon">
+                  <Delete/>
+                </el-icon>
+              </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -190,16 +191,16 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
-                            <MessageBox/>
-                          </el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
-                            <Edit/>
-                          </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
-                        </div>
+                <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                  <MessageBox/>
+                </el-icon>
+                <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                  <Edit/>
+                </el-icon>
+                <el-icon class="delete-icon">
+                  <Delete/>
+                </el-icon>
+              </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -215,16 +216,16 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
-                            <MessageBox/>
-                          </el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
-                            <Edit/>
-                          </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
-                        </div>
+                <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                  <MessageBox/>
+                </el-icon>
+                <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                  <Edit/>
+                </el-icon>
+                <el-icon class="delete-icon">
+                  <Delete/>
+                </el-icon>
+              </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -239,16 +240,16 @@
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
               <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
-                            <MessageBox/>
-                          </el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
-                            <Edit/>
-                          </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
-                        </div>
+                <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                  <MessageBox/>
+                </el-icon>
+                <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                  <Edit/>
+                </el-icon>
+                <el-icon class="delete-icon">
+                  <Delete/>
+                </el-icon>
+              </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -294,7 +295,7 @@ export default {
     return {
       storeCourseId: null,
       selectedCoursewareId: null,
-      archiveDialogVisible: false, 
+      archiveDialogVisible: false,
       editDialogVisible: false,
       addCoursewareModal: false,
       coursewareData: {
@@ -320,7 +321,7 @@ export default {
         changeFile: false,
       },
       selectedFile: null,
-      selectedCourseware: {}, 
+      selectedCourseware: {},
     };
   },
   methods: {
@@ -329,8 +330,8 @@ export default {
       const variants = await axiosInstances.axiosInstance.get(`courseware/${variantOf}/allVersions`);
       const activeVariant = variants.data.find(coursewareVersion => coursewareVersion.displayVersion === true);
       this.selectedCoursewareId = activeVariant.coursewareId
-      this.selectedCourseware = variants.data;  
-      this.archiveDialogVisible = !(this.archiveDialogVisible);     
+      this.selectedCourseware = variants.data;
+      this.archiveDialogVisible = !(this.archiveDialogVisible);
     },
     deleteVersion(coursewareId) {
       console.log(`Delete version with ID: ${coursewareId}`);
@@ -409,7 +410,7 @@ export default {
     },
     handleArchive() {
       console.log('Archiving courseware:', this.selectedCourseware);
-      this.archiveDialogVisible = false; 
+      this.archiveDialogVisible = false;
     },
   },
   watch: {
