@@ -293,11 +293,11 @@ VALUES ('C/C++ System Design', 'You shall learn memory management as a programme
        ('Elementary Chinese 1', '早上好中国。', 4, 'non-open', 'approved', 'Languages', 0, 0, 0,
         NOW(), 'chinese1.jpg');;
 
-INSERT INTO courseware (courseware_id, course_id, file_type, category, url, downloadable, chapter, courseware_order,
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,
                         variant_of, version, display_version, created_at)
-VALUES (1, 1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-12-04 11:18:54.071622'),
-       (2, 1, 'md', 'project', 'project1.md', true, 1, 1, 2, 1, true, '2024-12-04 11:19:32.584331'),
-       (3, 1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486');
+VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-12-04 11:18:54.071622'),
+       (1, 'md', 'project', 'project1.md', true, 1, 1, 2, 1, true, '2024-12-04 11:19:32.584331'),
+       (1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486');
 
 --
 -- INSERT INTO courseware_student(courseware_id, student_id, completed)
