@@ -297,7 +297,10 @@ INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapt
                         variant_of, version, display_version, created_at)
 VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-12-04 11:18:54.071622'),
        (1, 'md', 'project', 'project1.md', true, 1, 1, 2, 1, true, '2024-12-04 11:19:32.584331'),
-       (1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486');
+       (1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486'),
+       (2, 'pdf', 'lecture', 'Lecture 1.pdf', true, 1, 1, 5, 1, true, '2024-12-04 11:29:31.896166'),
+       (2, 'pdf', 'lecture', 'Answer Key (Listening Lecture 1).pdf', true, 1, 1, 6, 1, true,
+        '2024-12-04 11:29:56.307501');
 
 --
 -- INSERT INTO courseware_student(courseware_id, student_id, completed)
