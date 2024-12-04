@@ -196,7 +196,7 @@ onMounted(() => {
 
 const fetchInstructors = async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get('/courses/instructors/top-rated');
+    const response = await axiosInstances.axiosInstance2.get('/courses/instructors/top-rated');
     teachers.value = response.data;
   } catch (error) {
     console.error('Error fetching instructors:', error);
@@ -213,7 +213,7 @@ const courses = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await axiosInstances.axiosInstance.get('/courses/top-rated');
+    const response = await axiosInstances.axiosInstance2.get('/courses/top-rated');
     courses.value = response.data;
   } catch (error) {
     console.error('Error fetching courses:', error);

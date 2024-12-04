@@ -40,8 +40,11 @@
 <script setup>
 import { computed, defineProps } from 'vue';
 import { marked } from 'marked';
+import { useRouter } from 'vue-router';
 import axiosInstances from '@/services/axiosInstance';
 
+const router = useRouter();
+const userId = localStorage.getItem('userId');
 const props = defineProps({
   material: Object,
 });
@@ -113,11 +116,27 @@ const markAsCompleted = async (coursewareId) => {
     const userId = localStorage.getItem('userId');
 
     const response = await axiosInstances.axiosInstance.put(`/students/${userId}/coursewares/${coursewareId}/completed`);
+    await fetchUserData(); // refreshes points
+    // window.location.reload();
     if (response.status === 200) {
       console.log(`Courseware ${coursewareId} marked as completed after viewing.`);
     }
   } catch (error) {
     console.error('Error marking courseware as completed:', error);
+  }
+};
+
+const fetchUserData = async () => {
+  try {
+    await axiosInstances.axiosInstance.get(`students/${userId}`);
+  } catch (error) {
+
+    console.log("Error Details:", error);
+    if (error.response && error.response.status === 403) {
+      router.push({ name: 'ForbiddenPage' });
+    } else {
+      console.error("Unexpected error occurred:", error);
+    }    
   }
 };
 
@@ -150,6 +169,7 @@ const viewMarkdownInNewTab = (url) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   margin: 10px 0;
   max-width: 100%;
   width: 100%;
