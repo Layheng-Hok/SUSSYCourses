@@ -110,7 +110,7 @@
     </div>
 
     <div v-else>
-      <p>Loading course information...</p>
+      <p>You are not authorized to view this course.</p>
     </div>
 
     <!-- Sidebar Component -->
@@ -161,6 +161,7 @@ const loading = ref(false);
 const message = ref('');
 const messageType = ref(''); 
 
+
 const fetchCourseworkData = async () => {
   try {
     
@@ -202,7 +203,7 @@ const submitForm = async () => {
 
 const fetchCourseDetails = async () => {
     try {
-      const response = await axiosInstances.axiosInstance2.get(`courses/${courseId}`);
+      const response = await axiosInstances.axiosInstance.get(`courses/${courseId}`);
       course.value = response.data;
     } catch (error) {
   

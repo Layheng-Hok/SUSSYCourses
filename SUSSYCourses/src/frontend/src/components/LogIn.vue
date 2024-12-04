@@ -462,4 +462,4 @@ const handleLogin = async () => {
   margin-top: 10px;
   font-family: 'Aptos Narrow', sans-serif;
 }
-</style>/
+</style>
