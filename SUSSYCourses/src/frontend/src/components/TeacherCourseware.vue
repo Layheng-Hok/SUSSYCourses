@@ -82,7 +82,7 @@
             </div>
 
             <button type="submit" class="save-button">Save</button>
-            <button type="button" class="close-button" @click="addCoursewareModal = false">Cancel</button>
+            <button type="button" class="close-button" @click="addCoursewareModal = false">Close</button>
           </form>
         </slot>
       </div>
