@@ -12,9 +12,9 @@
       <slot name="body">
         <div v-for="(courseware, index) in selectedCourseware" :key="index"
              :class="['courseware-item', { 'selected-version': courseware.coursewareId === selectedCoursewareId }]">
-          <div class="modal-item-left">
+          <!-- <div class="modal-item-left">
             <video controls :src="`${courseware.url}`" width="60%" class="modal-video-frame"></video>
-          </div>
+          </div> -->
           <div class="modal-item-middle">
             <h3>Courseware {{ index + 1 }}</h3>
             <p><strong>Category:</strong> {{ courseware.category }}</p>
@@ -74,8 +74,6 @@
               <input type="number" id="chapter" v-model="coursewareData.chapter" required placeholder="Enter chapter number"/>
             </div>
 
-  
-
             <!-- File Upload Field -->
             <div class="form-group">
               <label for="file">Upload New File:</label>
@@ -114,7 +112,6 @@
               </select>
             </div>
 
-
             <!-- Downloadable Field -->
             <div class="form-group">
               <label for="downloadable">Downloadable:</label>
@@ -152,7 +149,6 @@
 
   </div>
 
-
   <!-- Course Content Section with Interactive Media -->
   <el-card class="course-content" shadow="hover">
     <div class="course-content-header">
@@ -163,31 +159,12 @@
       </div>
     </div>
     <el-collapse>
-      <el-collapse v-model="outerActiveNames">
-        <el-collapse-item title="Teaching Chapters" name="1">
-          <el-collapse v-model="innerActiveNames" class="inner-collapse">
-            <el-collapse-item
-                v-for="chapter in course.teachingChapters"
-                :key="chapter.name"
-                :name="chapter.name"
-                class="inner-collapse-item"
-            >
-              <template #title>
-                <div class="chapter-header">
-                  {{ chapter.name }}
-                </div>
-              </template>
-              <el-list>
-                <el-list-item
-                    v-for="material in chapter.materials.sort((a, b) => a.order - b.order)"
-                    :key="material.url"
-                    class="material-item"
-                >
-                  <div class="material-content">
-                    <div v-if="material.type === 'mp4'" class="video-container">
-                      <video controls :src="`${material.url}`" width="60%" class="video-frame"></video>
-                      <div class="courseware-right-side">
-                        <div class="courseware-icons">
+      <el-collapse-item title="Teaching Chapters" name="1">
+        <div v-for="chapter in course.teachingChapters" :key="chapter.name" class="chapter">
+          <h3>{{ chapter.name }}</h3>
+          <el-list>
+            <el-list-item v-for="material in chapter.materials" :key="material.url">
+              <div class="courseware-icons">
                           <el-icon class="archive-icon" @click="openArchiveModal(material)">
                             <MessageBox/>
                           </el-icon>
@@ -198,92 +175,31 @@
                             <Delete/>
                           </el-icon>
                         </div>
-                        <div class="courseware-information">
-                          <div class="courseware-information-header">Courseware Information</div>
-                          <div class="courseware-information-content">
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">Name:</span>
-                              <span class="courseware-info-value">Introduction to Vue.js</span>
-                            </div>
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">Version:</span>
-                              <span class="courseware-info-value">1.0.0</span>
-                            </div>
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">URL:</span>
-                              <a
-                                  href="https://example.com/vue-course"
-                                  class="courseware-info-value"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                              >
-                                https://example.com/vue-course
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else class="non-video-container">
-                      <div class="iframe-container">
-                        <iframe
-                            :src="`${material.url}`"
-                            height="200px"
-                            class="iframe-viewer"
-                        >
-                        </iframe>
-                      </div>
-                      <div class="courseware-right-side">
-                        <div class="courseware-icons">
-                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
-                            <MessageBox/>
-                          </el-icon>
-                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
-                            <Edit/>
-                          </el-icon>
-                          <el-icon class="delete-icon">
-                            <Delete/>
-                          </el-icon>
-                        </div>
-                        <div class="courseware-information">
-                          <div class="courseware-information-header">Courseware Information</div>
-                          <div class="courseware-information-content">
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">Name:</span>
-                              <span class="courseware-info-value">Introduction to Vue.js</span>
-                            </div>
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">Version:</span>
-                              <span class="courseware-info-value">1.0.0</span>
-                            </div>
-                            <div class="courseware-info-item">
-                              <span class="courseware-info-label">URL:</span>
-                              <a
-                                  href="https://example.com/vue-course"
-                                  class="courseware-info-value"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                              >
-                                https://example.com/vue-course
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </el-list-item>
-              </el-list>
-            </el-collapse-item>
-          </el-collapse>
-        </el-collapse-item>
-      </el-collapse>
+              <a :href="`${material.url}`" target="_blank">
+                <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
+                {{ material.title }}
+              </a>
+            </el-list-item>
+          </el-list>
+        </div>
+      </el-collapse-item>
 
       <el-collapse-item title="Homework Chapters" name="2">
         <div v-for="chapter in course.homeworkChapters" :key="chapter.name" class="chapter">
           <h3>{{ chapter.name }}</h3>
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
+              <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                          <el-icon class="delete-icon">
+                            <Delete/>
+                          </el-icon>
+                        </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -298,6 +214,17 @@
           <h3>{{ chapter.name }}</h3>
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
+              <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                          <el-icon class="delete-icon">
+                            <Delete/>
+                          </el-icon>
+                        </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -311,6 +238,17 @@
         <div v-for="chapter in course.attachments" :key="chapter.name" class="chapter">
           <el-list>
             <el-list-item v-for="material in chapter.materials" :key="material.url">
+              <div class="courseware-icons">
+                          <el-icon class="archive-icon" @click="openArchiveModal(material)">
+                            <MessageBox/>
+                          </el-icon>
+                          <el-icon class="edit-icon" @click="openEditDialog(material.coursewareId)">
+                            <Edit/>
+                          </el-icon>
+                          <el-icon class="delete-icon">
+                            <Delete/>
+                          </el-icon>
+                        </div>
               <a :href="`${material.url}`" target="_blank">
                 <component :is="materialIcon(material.type)" style="width: 1em; height: 1em; margin-right: 5px;"/>
                 {{ material.title }}
@@ -356,7 +294,7 @@ export default {
     return {
       storeCourseId: null,
       selectedCoursewareId: null,
-      archiveDialogVisible: false, // Controls the visibility of the archive modal
+      archiveDialogVisible: false, 
       editDialogVisible: false,
       addCoursewareModal: false,
       coursewareData: {
@@ -382,23 +320,20 @@ export default {
         changeFile: false,
       },
       selectedFile: null,
-      selectedCourseware: {}, // Holds the courseware to be archived
+      selectedCourseware: {}, 
     };
   },
   methods: {
-
-    // Opens the modal and sets the selected courseware data
     async openArchiveModal(courseware) {
       const variantOf = courseware.variantOf;
       const variants = await axiosInstances.axiosInstance.get(`courseware/${variantOf}/allVersions`);
       const activeVariant = variants.data.find(coursewareVersion => coursewareVersion.displayVersion === true);
       this.selectedCoursewareId = activeVariant.coursewareId
-      this.selectedCourseware = variants.data;  // Pass the correct courseware object
-      this.archiveDialogVisible = !(this.archiveDialogVisible);      // Show the modal
+      this.selectedCourseware = variants.data;  
+      this.archiveDialogVisible = !(this.archiveDialogVisible);     
     },
     deleteVersion(coursewareId) {
       console.log(`Delete version with ID: ${coursewareId}`);
-      // Add your delete logic here
     },
     async openEditDialog(coursewareId) {
       const data = await axiosInstances.axiosInstance.get(`courseware/${coursewareId}`);
@@ -469,18 +404,15 @@ export default {
       this.selectedCoursewareId = courseware.coursewareId;
       await axiosInstances.axiosInstance.put(`courseware/${courseware.coursewareId}/setActive`);
     },
-    // Closes the modal
     handleCloseArchiveModal() {
       this.archiveDialogVisible = false;
     },
-    // Handles the archive action
     handleArchive() {
       console.log('Archiving courseware:', this.selectedCourseware);
-      this.archiveDialogVisible = false; // Close the modal after archiving
+      this.archiveDialogVisible = false; 
     },
   },
   watch: {
-    // Watch category changes to update form fields dynamically
     'coursewareData.category': 'onCategoryChange'
   },
   name: "CourseContent",
@@ -515,7 +447,6 @@ export default {
       try {
         const response = await axiosInstances.axiosInstance.get(`/users/${userId}/courses/${props.courseId}/coursewares`);
         const coursesData = response.data
-        console.log(coursesData)
         course.value = coursesData.find((c) => c.id === props.courseId);
 
         if (!course.value) {
