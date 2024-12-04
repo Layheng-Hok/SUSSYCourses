@@ -142,7 +142,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {onMounted, ref} from 'vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import axiosInstances from "@/services/axiosInstance";
 import {Navigation} from 'swiper/modules';
