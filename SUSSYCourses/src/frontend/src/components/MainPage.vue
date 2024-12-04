@@ -773,7 +773,7 @@ const categories = ref([
 }
 
 .enroll button {
-  padding: 15px 10px;
+  padding: 10px 10px;
   font-size: 16px;
   background-color: #74B3E3;
   border: 1px solid #74B3E3;
