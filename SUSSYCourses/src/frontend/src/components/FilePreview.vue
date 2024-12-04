@@ -99,6 +99,8 @@ const viewFile = async (coursewareId) => {
     openPptxInGoogleViewer(props.material.url);
   } else if (props.material.fileType === 'md') {
     viewMarkdownInNewTab(props.material.url);
+  } else{
+    window.open(props.material.url, '_blank');
   }
 
   markAsCompleted(coursewareId);
