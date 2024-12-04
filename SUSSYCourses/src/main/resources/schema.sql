@@ -308,7 +308,10 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
        (7, 'pdf', 'lecture', 'Lab 1 - Set up JDK.pdf', true, 1, 1, 9, 1, true, '2024-12-04 11:59:11.492698'),
        (7, 'pdf', 'lecture', 'Part02-IDEA.pdf', true, 2, 1, 10, 1, true, '2024-12-04 11:59:37.332235'),
        (7, 'java', 'attachment', 'Demo.java', true, 3, 1, 11, 1, true, '2024-12-04 11:59:37.332235'),
-       (8, 'pdf', 'lecture', '2022calculus1.pdf', true, 1, 1, 12, 1, true, '2024-12-04 13:41:14.735840');
+       (8, 'pdf', 'lecture', '2022calculus1.pdf', true, 1, 1, 12, 1, true, '2024-12-04 13:41:14.735840'),
+       (5, 'pdf', 'lecture', 'dsaa_L01_intro.pdf', true, 1, 1, 13, 1, true, '2024-12-04 14:08:41.468804'),
+       (5, 'pdf', 'lecture', 'dsaa_L02_algorithm.pdf', true, 2, 1, 14, 1, true, '2024-12-04 14:09:01.080831'),
+       (5, 'pdf', 'lecture', 'dsaa_L03_sorting.pdf', true, 3, 1, 15, 1, true, '2024-12-04 14:09:09.596356');
 
 
 --
