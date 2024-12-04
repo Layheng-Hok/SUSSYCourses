@@ -328,23 +328,9 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
        (13, 'pdf', 'lecture', 'ch2.pdf', true, 2, 1, 25, 1, true, '2024-12-04 14:43:12.456519'),
        (13, 'pdf', 'lecture', 'ch3.pdf', true, 3, 1, 26, 1, true, '2024-12-04 14:43:20.210078');
 
-
-
---
--- INSERT INTO courseware_student(courseware_id, student_id, completed)
--- VALUES (1, 3, TRUE),
---        (2, 3, TRUE),
---        (3, 3, FALSE),
---        (5, 3, FALSE),
---        (6, 3, FALSE),
---        (7, 3, FALSE),
---        (8, 3, FALSE),
---        (9, 3, FALSE)
-;
-
 INSERT INTO course_student (course_id, student_id, status, liked)
 VALUES (1, 3, 'enrolled', TRUE),
-       (2, 3, 'pending', FALSE),
+       (2, 3, 'enrolled', FALSE),
        (4, 3, 'enrolled', TRUE),
        (2, 6, 'enrolled', TRUE),
        (4, 5, 'enrolled', TRUE),
@@ -359,9 +345,60 @@ VALUES (1, 3, 'enrolled', TRUE),
        (6, 5, 'enrolled', TRUE),
        (11, 3, 'enrolled', TRUE),
        (1, 5, 'enrolled', TRUE),
-       (1, 6, 'pending', TRUE),
-       (13, 3, 'pending', FALSE),
-       (13, 5, 'pending', FALSE);
+       (1, 6, 'enrolled', TRUE),
+       (13, 3, 'enrolled', FALSE),
+       (13, 5, 'enrolled', FALSE);
+
+INSERT INTO courseware_student (courseware_id, student_id, completed)
+VALUES (1, 3, TRUE),
+       (2, 3, TRUE),
+       (3, 3, FALSE),
+       (4, 3, TRUE),
+       (5, 3, FALSE),
+       (6, 3, TRUE),
+       (7, 3, FALSE),
+       (8, 3, FALSE),
+       (4, 6, FALSE),
+       (5, 6, TRUE),
+       (6, 5, FALSE),
+       (7, 5, FALSE),
+       (8, 5, FALSE),
+       (20, 3, FALSE),
+       (21, 3, TRUE),
+       (22, 3, TRUE),
+       (23, 3, FALSE),
+       (12, 6, TRUE),
+       (16, 5, FALSE),
+       (9, 6, FALSE),
+       (10, 6, FALSE),
+       (11, 6, FALSE),
+       (17, 5, FALSE),
+       (18, 5, TRUE),
+       (19, 5, TRUE),
+       (12, 3, FALSE),
+       (16, 6, FALSE),
+       (4, 5, TRUE),
+       (5, 5, FALSE),
+       (20, 5, FALSE),
+       (21, 5, FALSE),
+       (22, 5, FALSE),
+       (23, 5, FALSE),
+       (17, 3, FALSE),
+       (18, 3, FALSE),
+       (19, 3, FALSE),
+       (1, 5, TRUE),
+       (2, 5, FALSE),
+       (3, 5, FALSE),
+       (1, 6, FALSE),
+       (2, 6, FALSE),
+       (3, 6, TRUE),
+       (24, 3, FALSE),
+       (25, 3, FALSE),
+       (26, 3, TRUE),
+       (24, 5, FALSE),
+       (25, 5, FALSE),
+       (26, 5, TRUE);
+
 
 INSERT INTO comment (user_id, course_id, message, attachment, attachment_type, reply_id, created_at)
 VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, NULL, '2023-10-01T12:00:00Z'),
