@@ -9,7 +9,7 @@
       controls
       :src="material.url"
       controlsList="nodownload"
-      :download="material.isDownloadable ? true : undefined"
+      :download="material.downloadable ? true : undefined"
       class="video-player"
     ></video>
     </div>
@@ -28,7 +28,7 @@
         View
       </button>
 
-      <button v-if="material.isDownloadable" @click="downloadFile" class="download-button">
+      <button v-if="material.downloadable" @click="downloadFile" class="download-button">
         Download
       </button>
     </div>
@@ -44,9 +44,7 @@ const props = defineProps({
   material: Object,
 });
 
-// Function to forcefully pause the video by coursewareId
 const forcePause = (coursewareId) => {
-  // Select all video elements and pause them
   const videos = document.querySelectorAll('video');
   videos.forEach((video) => {
     if(video.id !== `videoPlayer-${coursewareId}`){
@@ -56,14 +54,10 @@ const forcePause = (coursewareId) => {
 };
 
 const onPlay = (coursewareId) => {
-  // Force pause all videos
   forcePause(coursewareId);
-
-  // Get the specific video element using document.querySelector
   const video = document.querySelector(`#videoPlayer-${coursewareId}`);
 
   if (video) {
-    // Video found, you can play or perform any other actions
     console.log(`Video with coursewareId: ${coursewareId} started playing`);
   }
 };
@@ -83,13 +77,20 @@ const icon = computed(() => {
 });
 
 const downloadFile = () => {
+  const fileUrl = props.material.url;
+  if (!fileUrl) {
+    console.error('No file URL found');
+    return;
+  }
+
   const link = document.createElement('a');
-  link.href = props.material.url;
+  link.href = fileUrl;
   link.download = props.title || 'file';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
+
 
 const viewFile = async (coursewareId) => {
   if (props.material.fileType === 'pdf') {
