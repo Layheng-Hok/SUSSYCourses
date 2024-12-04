@@ -48,6 +48,10 @@ public class CoursewareStudentService {
             return ResponseEntity.status(422).body("Completion can only be set for courseware marked as the display version");
         }
 
+        if (coursewareStudent.getCompleted()) {
+            return ResponseEntity.ok("Courseware already set completed");
+        }
+
         coursewareStudent.setCompleted(true);
         coursewareStudentRepository.save(coursewareStudent);
 

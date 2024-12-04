@@ -54,7 +54,7 @@ CREATE TABLE courseware
 (
     courseware_id    BIGSERIAL PRIMARY KEY,
     course_id        BIGINT REFERENCES course (course_id),
-    file_type        VARCHAR(10)  NOT NULL CHECK (file_type IN ('md', 'pdf', 'mp4', 'pptx')),
+    file_type        VARCHAR(10)  NOT NULL,
     category         VARCHAR(20)  NOT NULL CHECK (category IN ('lecture', 'assignment', 'project', 'attachment')),
     url              VARCHAR(255) NOT NULL,
     downloadable     BOOLEAN      NOT NULL,
@@ -304,7 +304,11 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
        (4, 'pdf', 'lecture', 'week 2.pdf', true, 2, 1, 6, 1, true, '2024-12-04 11:45:50.397345'),
        (4, 'pdf', 'lecture', 'week 4.pdf', true, 4, 1, 7, 1, true, '2024-12-04 11:46:03.850336'),
        (4, 'mp4', 'attachment', 'yt1s.com - Peking Man Site at Zhoukoudian UNESCONHK_360p.mp4', true, 1, 1, 8, 1,
-        true, '2024-12-04 11:47:27.847548');
+        true, '2024-12-04 11:47:27.847548'),
+       (7, 'pdf', 'lecture', 'Lab 1 - Set up JDK.pdf', true, 1, 1, 9, 1, true, '2024-12-04 11:59:11.492698'),
+       (7, 'pdf', 'lecture', 'Part02-IDEA.pdf', true, 2, 1, 10, 1, true, '2024-12-04 11:59:37.332235'),
+       (7, 'java', 'attachment', 'Demo.java', true, 3, 1, 11, 1, true, '2024-12-04 11:59:37.332235');
+
 
 --
 -- INSERT INTO courseware_student(courseware_id, student_id, completed)
