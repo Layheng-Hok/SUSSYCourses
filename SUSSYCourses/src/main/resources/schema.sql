@@ -243,7 +243,7 @@ VALUES ('Public User', 'sussycourses@gmail.com', '$2a$10$O2X7nLyPmmGr5EmTRAK5G./
 INSERT INTO course (course_name, description, teacher_id, type, status, topic, total_evaluation_score, num_evaluations,
                     like_count, created_at, cover_image)
 VALUES ('C/C++ System Design', 'You shall learn memory management as a programmer.', 4, 'open', 'approved',
-        'Programming', 5.0, 1, 3, NOW(), 'c_cpp.png'),
+        'Programming', 5.0, 1, 3, NOW(), 'c_cpp.jpeg'),
        ('IELTS Listening', 'Improve your English listening skills for the IELTS exam.', 8, 'open', 'approved',
         'Language', 7.0, 2, 1, NOW(), 'listening.webp'),
        ('Principles of Database', 'Learn the fundamentals of database systems and their applications.', 4, 'semi-open',
@@ -300,7 +300,11 @@ VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-1
        (1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486'),
        (2, 'pdf', 'lecture', 'Lecture 1.pdf', true, 1, 1, 5, 1, true, '2024-12-04 11:29:31.896166'),
        (2, 'pdf', 'lecture', 'Answer Key (Listening Lecture 1).pdf', true, 1, 1, 6, 1, true,
-        '2024-12-04 11:29:56.307501');
+        '2024-12-04 11:29:56.307501'),
+       (4, 'pdf', 'lecture', 'week 2.pdf', true, 2, 1, 6, 1, true, '2024-12-04 11:45:50.397345'),
+       (4, 'pdf', 'lecture', 'week 4.pdf', true, 4, 1, 7, 1, true, '2024-12-04 11:46:03.850336'),
+       (4, 'mp4', 'attachment', 'yt1s.com - Peking Man Site at Zhoukoudian UNESCONHK_360p.mp4', true, 1, 1, 8, 1,
+        true, '2024-12-04 11:47:27.847548');
 
 --
 -- INSERT INTO courseware_student(courseware_id, student_id, completed)
