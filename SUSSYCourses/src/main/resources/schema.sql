@@ -56,7 +56,7 @@ CREATE TABLE courseware
     course_id        BIGINT REFERENCES course (course_id),
     file_type        VARCHAR(10)  NOT NULL CHECK (file_type IN ('md', 'pdf', 'mp4', 'pptx')),
     category         VARCHAR(20)  NOT NULL CHECK (category IN ('lecture', 'assignment', 'project', 'attachment')),
-    url              VARCHAR(255) NOT NULL UNIQUE,
+    url              VARCHAR(255) NOT NULL,
     downloadable     BOOLEAN      NOT NULL,
     chapter          INT          NOT NULL,
     courseware_order INT          NOT NULL,
@@ -292,6 +292,24 @@ VALUES ('C/C++ System Design', 'You shall learn memory management as a programme
         NOW(), 'music.jpeg'),
        ('Elementary Chinese 1', '早上好中国。', 4, 'non-open', 'approved', 'Languages', 0, 0, 0,
         NOW(), 'chinese1.jpg');;
+
+INSERT INTO courseware (course_id, file_type, category, url, downloadable, chapter, courseware_order,
+                        variant_of, version, display_version, created_at)
+VALUES (1, 'pptx', 'lecture', 'Lecture01.pptx', false, 1, 1, 1, 1, true, '2024-12-04 11:18:54.071622'),
+       (1, 'md', 'project', 'project1.md', true, 1, 1, 2, 1, true, '2024-12-04 11:19:32.584331'),
+       (1, 'md', 'project', 'project2.md', true, 1, 1, 3, 1, true, '2024-12-04 11:20:00.963486');
+
+--
+-- INSERT INTO courseware_student(courseware_id, student_id, completed)
+-- VALUES (1, 3, TRUE),
+--        (2, 3, TRUE),
+--        (3, 3, FALSE),
+--        (5, 3, FALSE),
+--        (6, 3, FALSE),
+--        (7, 3, FALSE),
+--        (8, 3, FALSE),
+--        (9, 3, FALSE)
+;
 
 INSERT INTO course_student (course_id, student_id, status, liked)
 VALUES (1, 3, 'enrolled', TRUE),
