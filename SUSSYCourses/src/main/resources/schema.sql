@@ -253,7 +253,7 @@ VALUES ('C/C++ System Design', 'You shall learn memory management as a programme
        ('Data Structure and Algorithm Analysis', 'Understand and analyze core data structures and algorithms.', 7,
         'non-open', 'approved', 'Programming', 0, 0, 0,
         NOW(), 'dsaa.jpg'),
-       ('Chinese Culture', 'Dive into the traditions and cultural practices of China.', 4, 'open', 'approved',
+       ('Chinese Culture', 'Dive into the traditions and cultural practices of China.', 4, 'semi-open', 'approved',
         'Chinese', 9.5, 2, 1, NOW(),
         'culture.webp'),
        ('Introduction to Java Programming', 'A comprehensive guide to learning Java programming.', 4, 'open',
@@ -407,21 +407,21 @@ VALUES (3, 1, 'Awesome site, awesome course, what else can I say?', NULL, NULL, 
         '2023-10-03T14:15:00Z');
 
 
-INSERT INTO rating (rating_id, course_id, student_id, overall_rating, content_quality, teaching_competence,
+INSERT INTO rating (course_id, student_id, overall_rating, content_quality, teaching_competence,
                     workload_balance, feedback, created_at)
-VALUES (1, 2, 6, 4.0, 4.5, 4.0, 3.5, 'Good content, clear explanations.', NOW()),
-       (2, 4, 5, 3.5, 3.5, 4.0, 3.0, 'Fairly balanced, needs more examples.', NOW()),
-       (3, 6, 3, 5.0, 5.0, 5.0, 5.0, 'Exceptional course, highly recommend.', NOW()),
-       (4, 8, 6, 4.5, 4.5, 4.5, 4.5, 'Engaging and insightful.', NOW()),
-       (5, 9, 6, 3.0, 2.5, 3.5, 3.0, 'A bit basic, but helpful.', NOW()),
-       (6, 9, 5, 4.0, 4.0, 4.0, 4.0, 'Solid course with practical examples.', NOW()),
-       (7, 7, 6, 4.5, 4.5, 5.0, 4.0, 'Instructor was very competent.', NOW()),
-       (8, 11, 5, 3.5, 3.5, 3.0, 4.0, 'Content is good, but workload is high.', NOW()),
-       (9, 8, 3, 4.0, 4.5, 3.5, 4.0, 'Good structure, some room for improvement.', NOW()),
-       (10, 2, 5, 3.0, 3.0, 3.5, 2.5, 'Average experience overall.', NOW()),
-       (11, 6, 5, 4.5, 4.5, 4.5, 4.5, 'Interesting insights, well-structured.', NOW()),
-       (12, 11, 3, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW()),
-       (13, 1, 3, 5.0, 5.0, 5.0, 5.0, 'Literally the best Java course out there!', NOW());
+VALUES (2, 6, 4.0, 4.5, 4.0, 3.5, 'Good content, clear explanations.', NOW()),
+       (4, 5, 3.5, 3.5, 4.0, 3.0, 'Fairly balanced, needs more examples.', NOW()),
+       (6, 3, 5.0, 5.0, 5.0, 5.0, 'Exceptional course, highly recommend.', NOW()),
+       (8, 6, 4.5, 4.5, 4.5, 4.5, 'Engaging and insightful.', NOW()),
+       (9, 6, 3.0, 2.5, 3.5, 3.0, 'A bit basic, but helpful.', NOW()),
+       (9, 5, 4.0, 4.0, 4.0, 4.0, 'Solid course with practical examples.', NOW()),
+       (7, 6, 4.5, 4.5, 5.0, 4.0, 'Instructor was very competent.', NOW()),
+       (11, 5, 3.5, 3.5, 3.0, 4.0, 'Content is good, but workload is high.', NOW()),
+       (8, 3, 4.0, 4.5, 3.5, 4.0, 'Good structure, some room for improvement.', NOW()),
+       (2, 5, 3.0, 3.0, 3.5, 2.5, 'Average experience overall.', NOW()),
+       (6, 5, 4.5, 4.5, 4.5, 4.5, 'Interesting insights, well-structured.', NOW()),
+       (3, 11, 3.5, 3.0, 4.0, 3.5, 'Good content but needs better pacing.', NOW()),
+       (1, 3, 5.0, 5.0, 5.0, 5.0, 'Literally the best Java course out there!', NOW());
 
 
 INSERT INTO notification (sender_email, receiver_email, subject, text, created_at)
