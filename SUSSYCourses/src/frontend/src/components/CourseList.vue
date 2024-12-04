@@ -49,6 +49,8 @@
         <p class="course-likes">Likes Count: {{ course?.likesCount || 0 }} ❤️</p>
         <p class="course-rating">Rating: {{ course?.averageRating || 0 }} ⭐</p>
         <p class="course-rating">Topic: {{ course.topic }}</p>
+        <p class="course-rating">Course Type: <b>{{ course.type }}</b></p>
+
 
       </div>
     </div>

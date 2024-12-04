@@ -57,15 +57,18 @@
     try {
       const response = await axiosInstances.axiosInstance2.get(`/courses/${courseId}/coursewares`);
       
-      if (response.data && Array.isArray(response.data)) {
-        courseMaterials.value = response.data;
-        if (response.data[0].courseType === 'semi-open') {
+      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      courseMaterials.value = response.data;
+      console.log('Course materials:', courseMaterials.value);
+    
+
+      if (courseMaterials.value[0].courseType === 'semi-open') {
         courseMaterials.value = response.data.slice(0, 2);
+        } else {
+          courseMaterials.value = response.data;
+        }
       } else {
-        courseMaterials.value = response.data;
-      }
-      } else {
-        console.error('Invalid data format');
+        console.error('Invalid data format or empty array');
       }
     } catch (error) {
       console.error('Error fetching courseware materials:', error);
