@@ -229,8 +229,7 @@ public class CoursewareService {
                     teachingChapter.put("materials", materials);
                     teachingChapters.put(teachingChapter);
                 }
-            }
-            else if (Objects.equals(c.getCategory(), "assignment")) {
+            } else if (Objects.equals(c.getCategory(), "assignment")) {
                 if (homeworkChapters.length() == c.getChapter()) {
                     JSONObject chapter = homeworkChapters.getJSONObject(c.getChapter() - 1);
                     JSONArray materials = chapter.getJSONArray("materials");
@@ -266,8 +265,7 @@ public class CoursewareService {
                     homeworkChapter.put("materials", materials);
                     homeworkChapters.put(homeworkChapter);
                 }
-            }
-            else if (Objects.equals(c.getCategory(), "project")) {
+            } else if (Objects.equals(c.getCategory(), "project")) {
                 if (projectChapters.length() == c.getChapter()) {
                     JSONObject chapter = projectChapters.getJSONObject(c.getChapter() - 1);
                     JSONArray materials = chapter.getJSONArray("materials");
@@ -283,8 +281,7 @@ public class CoursewareService {
                     material.put("type", c.getFileType());
                     material.put("version", c.getVersion());
                     materials.put(material);
-                }
-                else if (projectChapters.length() < c.getChapter()) {
+                } else if (projectChapters.length() < c.getChapter()) {
                     JSONObject projectChapter = new JSONObject();
                     JSONArray materials = new JSONArray();
                     JSONObject material = new JSONObject();
@@ -303,8 +300,7 @@ public class CoursewareService {
                     projectChapter.put("materials", materials);
                     projectChapters.put(projectChapter);
                 }
-            }
-            else if (Objects.equals(c.getCategory(), "attachment")) {
+            } else if (Objects.equals(c.getCategory(), "attachment")) {
                 JSONObject attachment = new JSONObject();
                 JSONArray materials = new JSONArray();
                 JSONObject material = new JSONObject();
@@ -350,8 +346,8 @@ public class CoursewareService {
 
         courseware.setVersion(version);
         for (Courseware v : allVersions) {
-            if(v.getVersion() >= courseware.getVersion()){
-                courseware.setVersion(v.getVersion()+1);
+            if (v.getVersion() >= courseware.getVersion()) {
+                courseware.setVersion(v.getVersion() + 1);
             }
         }
 
@@ -366,12 +362,16 @@ public class CoursewareService {
         courseware.setVariantOf(variant);
         courseware.setDisplayVersion(false);
         courseware.setCreatedAt(LocalDateTime.now());
+        coursewareRepository.save(courseware);
+
         if (changeFile) {
             String url = CloudUtils.resolveCoursewareLocation(courseware.getCourse().getCourseId(), courseware.getCoursewareId());
             String urlToStore = url.split("/")[url.split("/").length - 1];
             courseware.setUrl(urlToStore);
             CloudUtils.putStorageKey(file, fileType, url);
         }
+
+        coursewareRepository.save(courseware);
         //Sort Order Logic
         List<Courseware> coursewareOrders = coursewareRepository.findByCourseIdAndCategoryAndChapter(courseId, category, chapter);
         coursewareOrders.add(courseware.getCoursewareOrder() - 1, courseware);
