@@ -1,4 +1,5 @@
-
+<div align=center>
+    
 # SUSSYCourses
 
 OpenCourseWare Web App
