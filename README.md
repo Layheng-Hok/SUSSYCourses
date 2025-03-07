@@ -16,7 +16,7 @@ SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design
 │   ├── gradle
 │   ├── node_modules
 │   └── src
-│       ├── frontend                                                                            # main folder of frontend code
+│       ├── frontend                                                                  # main folder of frontend code
 │       │   ├── src
 │       │   │   ├── App.vue
 │       │   │   ├── assets
@@ -74,7 +74,7 @@ SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design
 │       │   │   └── services
 │       │   │       └── axiosInstance.js
 │       │   └── vue.config.js
-│       ├── main                                                                                # main folder of backend code
+│       ├── main                                                                      # main folder of backend code
 │       │   ├── config
 │       │   │   ├── admin_key.json
 │       │   │   └── storage_key.json
@@ -84,7 +84,7 @@ SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design
 │       │   │           └── cs309
 │       │   │               └── project
 │       │   │                   └── sussycourses
-│       │   │                       ├── SussyCoursesApplication.java                            # driver code of Spring Boot
+│       │   │                       ├── SussyCoursesApplication.java                  # driver code of Spring Boot
 │       │   │                       ├── controller
 │       │   │                       │   ├── AuthController.java
 │       │   │                       │   ├── CommentsController.java
