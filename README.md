@@ -2,7 +2,7 @@
     
 # SUSSYCourses
 
-OpenCourseWare Web App
+Role-based OpenCourseWare Web App
 
 SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design` Led by Professor [Yuqun ZHANG](https://zhangyuqun.github.io/)
 
@@ -214,3 +214,50 @@ SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design
     </a>
 </p>
 
+
+### Features  
+
+#### For Administrators  
+- **Course Management**  
+  - Approve course creation requests submitted by instructors  
+
+#### For Instructors  
+- **Course Management**  
+  - Apply for course creation; courses can be:  
+    - **Open** (anyone can join)  
+    - **Semi-open** (students must request to join)  
+    - **Non-open** (instructors manually add students)  
+  - Make announcements to students in a specific course  
+  - Start a live stream for remote learning and automatically notify students
+
+- **Courseware Management**  
+  - Upload courseware, including but not limited to DOCX, PDF, MD, PPTX, and MP4  
+  - Categorize courseware into lectures, assignments, and projects  
+  - Update courseware with version tracking  
+  - Set download permissions for courseware  
+  - Enforce video anti-cheat (only one video can be played at a time)  
+  - Upload supplementary materials (e.g., data, code) for students  
+
+- **Course Evaluation**  
+  - Receive student feedback on content quality, teaching effectiveness, and workload balance  
+
+#### For Students  
+- **Course Management**  
+  - Join an open course or request to join a semi-open course  
+  - Receive notifications for updates and course announcements  
+
+- **Learning Resources**  
+  - View top-rated courses and instructors  
+  - Access and download courseware (if permitted)  
+  - Watch course videos online or join a live lecture stream  
+  - Access a free LLM/AI chatbot  
+
+- **Engagement & Feedback**  
+  - Like favorite courses  
+  - Comment on courseware and participate in instructor Q&A (supports text and media formats)  
+  - Submit course evaluations with ratings and reviews  
+
+- **Homework & Progress**  
+  - Submit homework assignments  
+  - Track courseware viewing progress  
+  - Earn points for engagement, including providing feedback and completing course materials  
