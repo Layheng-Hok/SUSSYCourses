@@ -336,6 +336,6 @@ Ensure you have the following installed:
 | Name                                | Role     |
 |-------------------------------------|----------|
 | [Jaouhara Zerhouni Khal](https://github.com/Jouwy)         | Frontend |
-| [Harrold Tok Kwan Hang](https://github.com/Barracudapi)          | Frontend |
+| [Tan Hao Yang](https://github.com/haoyanghy)          | Frontend |
+| [Harrold Tok Kwan Hang](https://github.com/Barracudapi)                 | Backend  |
 | [Hok Lay Heng](https://github.com/Layheng-Hok)                   | Backend  |
-| [Tan Hao Yang](https://github.com/haoyanghy)                   | Backend  |
