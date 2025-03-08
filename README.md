@@ -2,7 +2,7 @@
     
 # SUSSYCourses
 
-Role-based OpenCourseWare Web App
+Role-based OpenCourseWare Web App in Vue.js + Spring Boot
 
 SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design` Led by Professor [Yuqun ZHANG](https://zhangyuqun.github.io/)
 
@@ -260,4 +260,112 @@ SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design
 - **Homework & Progress**  
   - Submit homework assignments  
   - Track courseware viewing progress  
-  - Earn points for engagement, including providing feedback and completing course materials  
+  - Earn points for engagement, including providing feedback and completing course materials
+
+### Tech Stack
+#### Frontend
+<p align="left">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noreferrer">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/HTML5_Badge.svg" alt="html5" width="40" height="40"/>
+    </a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noreferrer">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/CSS3_logo.svg" alt="css3" width="40" height="40"/>
+    </a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer">
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/>
+    </a>
+    <a href="https://vuejs.org/" target="_blank" rel="noreferrer">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1024px-Vue.js_Logo_2.svg.png" alt="vuejs" width="45" height="40"/>
+    </a>
+</p>
+
+#### Backend
+<p align="left">
+    <a href="https://spring.io/" target="_blank" rel="noreferrer">
+        <img src="https://www.vectorlogo.zone/logos/springio/springio-icon.svg" alt="spring" width="40" height="40"/>
+    </a>
+    <a href="https://www.postgresql.org" target="_blank" rel="noreferrer">
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/>
+    </a>
+    <a href="https://gradle.org/" target="_blank" rel="noreferrer">
+        <img src="https://cdn.iconscout.com/icon/free/png-512/free-gradle-logo-icon-download-in-svg-png-gif-file-formats--programming-language-logos-pack-icons-1174969.png?f=webp&w=512" alt="gradle" width="40" height="40"/>
+    </a>
+</p>
+
+### Project Setup
+
+#### Prerequisites
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (Latest LTS recommended)
+- [Vue CLI](https://cli.vuejs.org/) (`npm install -g @vue/cli`)
+- [Java 17+](https://adoptium.net/)
+- [Gradle](https://gradle.org/install/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+
+#### Database Setup
+1. Start PostgreSQL and create a database:
+    ```sql
+    CREATE DATABASE cs309_project;
+    ```
+2. Update `application.yml` in `src/main/resources/` with your database credentials:
+    ```properties
+    spring:
+      datasource:
+        url: jdbc:postgresql://localhost:5432/cs309_project
+        username: your_username
+        password: your_password
+    ```
+
+#### Backend Setup
+1. Navigate to the backend directory:
+    ```sh
+    cd main
+    ```
+2. Build and run the Spring Boot application:
+    ```sh
+    ./gradlew bootRun
+    ```
+3. However, IntelliJ IDEA is a recommended approach to run the backend server.
+
+   The backend will start on **http://localhost:8081**.
+
+
+#### Frontend Setup
+1. Navigate to the frontend directory:
+    ```sh
+    cd frontend
+    ```
+2. Install dependencies:
+    ```sh
+    npm install
+    ```
+3. Run the server:
+    ```sh
+    npm run serve
+    ```
+    The frontend will be available at **http://localhost:8080**.
+
+#### Running the Full Stack Application
+1. Ensure PostgreSQL is running.
+2. Start the backend using `./gradlew bootRun`.
+3. Start the frontend using `npm run dev`.
+4. Open `http://localhost:8080` in your browser.
+
+#### Troubleshooting
+- **Port Conflicts:** Ensure no other applications are running on ports `8080` or `8081`.
+- **Database Connection Issues:** Double-check PostgreSQL credentials in `application.yml`.
+- **Vue Not Loading:** Clear cache and restart the development server.
+  ```sh
+  rm -rf node_modules package-lock.json
+  npm install
+  npm run serve
+  ```
+  
+### Dev Team
+
+| Name                                | Role     |
+|-------------------------------------|----------|
+| [Jaouhara Zerhouni Khal](https://github.com/Jouwy)         | Frontend |
+| [Harrold Tok Kwan Hang](https://github.com/Barracudapi)          | Frontend |
+| [Hok Lay Heng](https://github.com/Layheng-Hok)                   | Backend  |
+| [Tan Hao Yang](https://github.com/haoyanghy)                   | Backend  |
