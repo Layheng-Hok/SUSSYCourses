@@ -4,7 +4,7 @@
 
 Role-based OpenCourseWare Web App in Vue.js + Spring Boot
 
-SUSTech 2024 Fall Project of Course `CS309 - Object-oriented Analysis and Design` Led by Professor [Yuqun ZHANG](https://zhangyuqun.github.io/)
+SUSTech 2024 Fall Project of `CS309 - Object-oriented Analysis and Design` Led by Professor [Yuqun ZHANG](https://zhangyuqun.github.io/)
 
 </div>
 
