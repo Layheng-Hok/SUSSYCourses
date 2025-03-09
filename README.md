@@ -331,7 +331,7 @@ Ensure you have the following installed:
   npm run serve
   ```
   
-### Dev Team
+### Contributors
 
 | Name                                | Role     |
 |-------------------------------------|----------|
